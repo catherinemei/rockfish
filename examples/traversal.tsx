@@ -11,11 +11,39 @@ export type Node = {
 
 type TraversalGraph = { [uid: Id]: Node };
 
+function calculateDefaultPaths(
+  graph: TraversalGraph,
+  rootNodeId: Id
+): Map<Id, Id[]> {
+  let paths = new Map<Id, Id[]>();
+  let queue = [[rootNodeId]]; // Queue for BFS, starts with the path containing only the root
+
+  while (queue.length > 0) {
+    let path = queue.shift()!; // Non-null assertion
+
+    let node = path[path.length - 1]; // The last node in the path
+
+    // If this node hasn't been visited yet, or the new path is shorter, store the path
+    if (!paths.has(node) || path.length < (paths.get(node) || []).length) {
+      paths.set(node, path);
+      if (graph[node] && graph[node].children) {
+        graph[node].children.forEach((childId) => {
+          queue.push([...path, childId]);
+        });
+      }
+    }
+  }
+
+  return paths;
+}
+
 export const TraversalComponent = (props: { nodes: Node[] }) => {
   // Convert nodes array to TraversalGraph
+  let rootId = "";
   const graph: TraversalGraph = props.nodes.reduce<TraversalGraph>(
     (acc, node) => {
       acc[node.id] = node;
+      node.parents.length === 0 ? (rootId = node.id) : null;
       return acc;
     },
     {}
@@ -26,6 +54,8 @@ export const TraversalComponent = (props: { nodes: Node[] }) => {
 
   // Stack to keep track of accessed nodes
   const [accessedNodes, setAccessedNodes] = createSignal([props.nodes[0].id]);
+
+  const defaultPaths = calculateDefaultPaths(graph, rootId);
 
   // Function to update focused node and accessed nodes stack
   const updateFocus = (nodeId: Id) => {
@@ -41,7 +71,19 @@ export const TraversalComponent = (props: { nodes: Node[] }) => {
       // If the new node is the same as the current, do nothing
     } else if (newFocusedNode.children.includes(currentFocusedId)) {
       // If new node is a parent, pop 2 from stack (child, old parent) and push the new node
-      setAccessedNodes(currentAccessedNodes.slice(0, -2).concat(nodeId));
+      const lastAccessedNode =
+        currentAccessedNodes[currentAccessedNodes.length - 2];
+      if (!newFocusedNode.parents.includes(lastAccessedNode)) {
+        // Take care of case where parents of previously focused node are not on same level
+        const firstParent = newFocusedNode.parents[0];
+        let defaultPath = defaultPaths.get(firstParent);
+        defaultPath = defaultPath?.concat(newFocusedNode.id) || [
+          newFocusedNode.id,
+        ];
+        setAccessedNodes(defaultPath);
+      } else {
+        setAccessedNodes(currentAccessedNodes.slice(0, -2).concat(nodeId));
+      }
     } else {
       // If new node is a sibling, replace the current node with the new node on the stack
       setAccessedNodes(currentAccessedNodes.slice(0, -1).concat(nodeId));
@@ -78,6 +120,38 @@ export const TraversalComponent = (props: { nodes: Node[] }) => {
     return focusedNodeId() === nodeId;
   };
 
+  const isCurrentParent = (nodeId: Id) => {
+    const currentAccessedNodes = accessedNodes();
+    const lastAccessedNode =
+      currentAccessedNodes[currentAccessedNodes.length - 2];
+    return nodeId === lastAccessedNode;
+  };
+
+  // Function to cycle through parents of the current focused node
+  const cycleThroughParents = () => {
+    const currentFocusedId = focusedNodeId();
+    const focusedNode = graph[currentFocusedId];
+    let currentAccessedNodes = accessedNodes();
+
+    if (focusedNode.parents.length > 0) {
+      // Find the index of the current parent in the parents array
+      const currentParentIndex = focusedNode.parents.indexOf(
+        currentAccessedNodes[currentAccessedNodes.length - 2]
+      );
+      const nextParentIndex =
+        (currentParentIndex + 1) % focusedNode.parents.length;
+
+      // Update the accessedNodes to set the next parent as the current parent
+      const newAccessedNodes = [
+        ...currentAccessedNodes.slice(0, -2),
+        focusedNode.parents[nextParentIndex],
+        currentFocusedId,
+      ];
+      setAccessedNodes(newAccessedNodes);
+      console.log("final accessed node state:", accessedNodes());
+    }
+  };
+
   return (
     <div>
       <For each={["Parents", "Focused Node & Siblings", "Children"]}>
@@ -85,13 +159,20 @@ export const TraversalComponent = (props: { nodes: Node[] }) => {
           <div
             style={{
               display: "grid",
-              "grid-template-columns": "150px 1fr",
+              "grid-template-columns": "200px 1fr",
               "align-items": "center",
               gap: "10px",
               "min-height": "50px",
             }}
           >
-            <span style={{ "text-align": "right" }}>{layerLabel}</span>
+            <div>
+              <span style={{ "text-align": "right" }}>{layerLabel}</span>
+              {layerLabel === "Parents" ? (
+                <button onClick={cycleThroughParents}>
+                  Change Parent Focus
+                </button>
+              ) : null}
+            </div>
             <div
               style={{
                 display: "grid",
@@ -108,6 +189,8 @@ export const TraversalComponent = (props: { nodes: Node[] }) => {
                     }}
                     style={
                       isFocusedNode(node.id)
+                        ? { "background-color": "lightskyblue" }
+                        : isCurrentParent(node.id) && index() === 0 // Apply the style only to parent nodes
                         ? { "background-color": "lightblue" }
                         : {}
                     }
