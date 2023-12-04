@@ -139,6 +139,55 @@ const App: Component = () => {
     },
   ];
 
+  // Questions from this structure:
+  // 1. When we elevate Venus to be direct child of Root, doesn't solve problem that we don't know Venus's siblings?
+  // 2.
+  const planetsTraversal2: Node[] = [
+    {
+      id: "0",
+      parents: [],
+      children: ["1", "3"],
+      description: "Root SVG (0)",
+    },
+    {
+      id: "1",
+      parents: ["0"],
+      children: ["2", "3", "4", "5"],
+      description: "Planets Row (1)",
+    },
+    {
+      id: "2",
+      parents: ["0", "1"],
+      children: [],
+      description: "Mercury (2)",
+    },
+
+    {
+      id: "3",
+      parents: ["1"],
+      children: ["6"],
+      description: "Venus (3)",
+    },
+    {
+      id: "4",
+      parents: ["1"],
+      children: [],
+      description: "Earth (4)",
+    },
+    {
+      id: "5",
+      parents: ["1"],
+      children: [],
+      description: "Mars (5)",
+    },
+    {
+      id: "6",
+      parents: ["3"],
+      children: [],
+      description: "Annotation (6)",
+    },
+  ];
+
   return (
     <>
       <Bluefish id="bluefish-planets" padding={20}>
@@ -190,9 +239,9 @@ const App: Component = () => {
         </Arrow>
       </Bluefish>
       <br />
-      <GraphVisualizer nodes={planetsTraversal} />
+      <GraphVisualizer nodes={planetsTraversal2} />
       <br />
-      <TraversalComponent nodes={planetsTraversal} />
+      <TraversalComponent nodes={planetsTraversal2} />
       <br />
     </>
   );
