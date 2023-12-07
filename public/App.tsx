@@ -92,13 +92,13 @@ const App: Component = () => {
       id: "2",
       parents: ["1"],
       children: ["4", "5", "6", "7"],
-      description: "Planets Row (2)",
+      description: "Row of Planets (2)",
     },
     {
       id: "3",
       parents: ["0"],
       children: ["4", "8", "9"],
-      description: "Annotation Col (3)",
+      description: "Annotation Group (3)",
     },
 
     {
@@ -129,13 +129,13 @@ const App: Component = () => {
       id: "8",
       parents: ["3"],
       children: [],
-      description: "Mercury Label (8)",
+      description: "Annotation Text (8)",
     },
     {
       id: "9",
       parents: ["3"],
       children: [],
-      description: "Arrow (9)",
+      description: "Annotation Arrow (9)",
     },
   ];
 
@@ -153,19 +153,19 @@ const App: Component = () => {
       id: "1",
       parents: ["0"],
       children: ["2", "3", "4", "5"],
-      description: "Planets Row (1)",
+      description: "Row of Planets (1)",
     },
     {
       id: "2",
       parents: ["0", "1"],
-      children: [],
+      children: ["6"],
       description: "Mercury (2)",
     },
 
     {
       id: "3",
       parents: ["1"],
-      children: ["6"],
+      children: [],
       description: "Venus (3)",
     },
     {
@@ -182,9 +182,9 @@ const App: Component = () => {
     },
     {
       id: "6",
-      parents: ["3"],
+      parents: ["2"],
       children: [],
-      description: "Annotation (6)",
+      description: "Description (6)",
     },
   ];
 
