@@ -43,7 +43,7 @@ export const GraphVisualizer = (props: GraphProps) => {
     levels.forEach((level, nodeId) => {
       const position = levelWidths[level];
       nodePositions.set(nodeId, {
-        x: position * 150 + 50,
+        x: position * 130 + 50,
         y: level * 100 + 50,
         description: nodeMap.get(nodeId)?.description,
       });
@@ -80,8 +80,8 @@ export const GraphVisualizer = (props: GraphProps) => {
       <For each={layout().nodes}>
         {(node) => (
           <g transform={`translate(${node.x}, ${node.y})`}>
-            <rect width="140" height="20" fill="lightblue" />
-            <text x="70" y="15" text-anchor="middle">
+            <rect width="120" height="20" fill="lightblue" />
+            <text x="60" y="15" text-anchor="middle">
               {node.description}
             </text>
           </g>

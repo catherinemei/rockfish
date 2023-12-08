@@ -17,174 +17,309 @@ import { StackV } from "../src/stackv";
 const arr = Array.from({ length: 1000 }, (_, i) => i + 1);
 
 const App: Component = () => {
-  const [x, setX] = createSignal(0);
-  const wordArr = () => Array.from({ length: x() }, (_) => "Mercury");
-  const words = () => wordArr().join(" ");
-
-  const [horizontalAlignment, setHorizontalAlignment] = createSignal("centerX");
-
-  const [verticalAlignment, setVerticalAlignment] = createSignal("centerY");
-
-  const [alignment, setAlignment] = createSignal("center");
-
-  const canvas = document.createElement("canvas");
-  const paperScope = new PaperScope();
-  paperScope.setup(canvas);
-  const dims = {
-    x: 50,
-    y: 25,
-    width: 200,
-    height: 100,
-  };
-  const myPath = new Path.Rectangle(
-    new Point(dims.x, dims.y),
-    new Size(dims.width, dims.height)
-  );
-  // const myPath = new Path();
-  // myPath.add(new Point(50, 75));
-  // myPath.add(new Point(50, 25));
-  // myPath.add(new Point(150, 25));
-  // myPath.add(new Point(150, 75));
-  myPath.insert(
-    4,
-    new Point(
-      dims.x + dims.width / 2,
-      dims.y + dims.height - (dims.height * 5) / 50
-    )
-  );
-
-  const dims2 = {
-    x: 50,
-    y: 50,
-    width: 100,
-    height: 50,
-  };
-  const myPath2 = new Path.Rectangle(
-    new Point(dims2.x, dims2.y),
-    new Size(dims2.width, dims2.height)
-  );
-  myPath2.insert(
-    2,
-    new Point(dims2.x + dims2.width / 2, dims2.y + (dims2.height * 5) / 50)
-  );
-  myPath2.insert(
-    5,
-    new Point(
-      dims2.x + dims2.width / 2,
-      dims2.y + dims2.height - (dims2.height * 5) / 50
-    )
-  );
-
-  const planetsTraversal: Node[] = [
+  const planetsTraversalNoAnnotation: Node[] = [
     {
       id: "0",
       parents: [],
-      children: ["1", "3"],
-      description: "Root SVG (0)",
+      children: ["1"],
+      description: "Root SVG",
     },
     {
       id: "1",
       parents: ["0"],
       children: ["2"],
-      description: "Background (1)",
+      description: "Background",
     },
     {
       id: "2",
       parents: ["1"],
-      children: ["4", "5", "6", "7"],
-      description: "Row of Planets (2)",
-    },
-    {
-      id: "3",
-      parents: ["0"],
-      children: ["4", "8", "9"],
-      description: "Annotation Group (3)",
-    },
-
-    {
-      id: "4",
-      parents: ["2", "3"],
-      children: [],
-      description: "Mercury (4)",
+      children: ["5", "6", "7", "8"],
+      description: "StackH",
     },
     {
       id: "5",
       parents: ["2"],
       children: [],
-      description: "Venus (5)",
+      description: "Circle (mercury)",
     },
     {
       id: "6",
       parents: ["2"],
       children: [],
-      description: "Earth (6)",
+      description: "Circle (venus)",
     },
     {
       id: "7",
       parents: ["2"],
       children: [],
-      description: "Mars (7)",
+      description: "Circle (earth)",
     },
     {
       id: "8",
-      parents: ["3"],
+      parents: ["2"],
       children: [],
-      description: "Annotation Text (8)",
-    },
-    {
-      id: "9",
-      parents: ["3"],
-      children: [],
-      description: "Annotation Arrow (9)",
+      description: "Circle (mars)",
     },
   ];
 
-  // Questions from this structure:
-  // 1. When we elevate Venus to be direct child of Root, doesn't solve problem that we don't know Venus's siblings?
-  // 2.
-  const planetsTraversal2: Node[] = [
+  const planetsTraversal: Node[] = [
     {
       id: "0",
       parents: [],
-      children: ["1", "3"],
-      description: "Root SVG (0)",
+      children: ["1", "3", "4"],
+      description: "Root SVG",
     },
     {
       id: "1",
       parents: ["0"],
-      children: ["2", "3", "4", "5"],
-      description: "Row of Planets (1)",
+      children: ["2"],
+      description: "Background",
     },
     {
       id: "2",
-      parents: ["0", "1"],
-      children: ["6"],
-      description: "Mercury (2)",
+      parents: ["1"],
+      children: ["5", "6", "7", "8"],
+      description: "StackH",
     },
-
     {
       id: "3",
-      parents: ["1"],
-      children: [],
-      description: "Venus (3)",
+      parents: ["0"],
+      children: ["5", "9"],
+      description: "StackV",
     },
     {
       id: "4",
-      parents: ["1"],
-      children: [],
-      description: "Earth (4)",
+      parents: ["0"],
+      children: ["5", "9"],
+      description: "Arrow",
     },
     {
       id: "5",
-      parents: ["1"],
+      parents: ["2", "3", "4"],
       children: [],
-      description: "Mars (5)",
+      description: "Circle (mercury)",
     },
     {
       id: "6",
       parents: ["2"],
       children: [],
-      description: "Description (6)",
+      description: "Circle (venus)",
+    },
+    {
+      id: "7",
+      parents: ["2"],
+      children: [],
+      description: "Circle (earth)",
+    },
+    {
+      id: "8",
+      parents: ["2"],
+      children: [],
+      description: "Circle (mars)",
+    },
+    {
+      id: "9",
+      parents: ["3", "4"],
+      children: [],
+      description: "Text (label)",
+    },
+  ];
+
+  const planetsTraversal2: Node[] = [
+    {
+      id: "0",
+      parents: [],
+      children: ["2", "3", "4"],
+      description: "Root SVG",
+    },
+    {
+      id: "2",
+      parents: ["0"],
+      children: ["5", "6", "7", "8"],
+      description: "Modifier",
+    },
+    {
+      id: "3",
+      parents: ["0"],
+      children: ["5", "9"],
+      description: "StackV",
+    },
+    {
+      id: "4",
+      parents: ["0"],
+      children: ["5", "9"],
+      description: "Arrow",
+    },
+    {
+      id: "5",
+      parents: ["2", "3", "4"],
+      children: [],
+      description: "Circle (mercury)",
+    },
+    {
+      id: "6",
+      parents: ["2"],
+      children: [],
+      description: "Circle (venus)",
+    },
+    {
+      id: "7",
+      parents: ["2"],
+      children: [],
+      description: "Circle (earth)",
+    },
+    {
+      id: "8",
+      parents: ["2"],
+      children: [],
+      description: "Circle (mars)",
+    },
+    {
+      id: "9",
+      parents: ["3", "4"],
+      children: [],
+      description: "Text (label)",
+    },
+  ];
+
+  const planetsTraversal3: Node[] = [
+    {
+      id: "0",
+      parents: [],
+      children: ["2", "3"],
+      description: "Root SVG",
+    },
+    {
+      id: "2",
+      parents: ["0"],
+      children: ["5", "6", "7", "8"],
+      description: "Modifier",
+    },
+    {
+      id: "3",
+      parents: ["0"],
+      children: ["5", "9"],
+      description: "Annotation",
+    },
+    {
+      id: "5",
+      parents: ["2", "3"],
+      children: [],
+      description: "Circle (mercury)",
+    },
+    {
+      id: "6",
+      parents: ["2"],
+      children: [],
+      description: "Circle (venus)",
+    },
+    {
+      id: "7",
+      parents: ["2"],
+      children: [],
+      description: "Circle (earth)",
+    },
+    {
+      id: "8",
+      parents: ["2"],
+      children: [],
+      description: "Circle (mars)",
+    },
+    {
+      id: "9",
+      parents: ["3"],
+      children: [],
+      description: "Text (label)",
+    },
+  ];
+
+  const planetsTraversal4: Node[] = [
+    {
+      id: "0",
+      parents: [],
+      children: ["2", "5"],
+      description: "Root SVG",
+    },
+    {
+      id: "2",
+      parents: ["0"],
+      children: ["5", "6", "7", "8"],
+      description: "Modifier",
+    },
+    {
+      id: "5",
+      parents: ["2", "3"],
+      children: ["9"],
+      description: "Circle (mercury)",
+    },
+    {
+      id: "6",
+      parents: ["2"],
+      children: [],
+      description: "Circle (venus)",
+    },
+    {
+      id: "7",
+      parents: ["2"],
+      children: [],
+      description: "Circle (earth)",
+    },
+    {
+      id: "8",
+      parents: ["2"],
+      children: [],
+      description: "Circle (mars)",
+    },
+    {
+      id: "9",
+      parents: ["5"],
+      children: [],
+      description: "Text (label)",
+    },
+  ];
+
+  const planetsTraversal5: Node[] = [
+    {
+      id: "0",
+      parents: [],
+      children: ["2", "5"],
+      description: "Root SVG",
+    },
+    {
+      id: "2",
+      parents: ["0"],
+      children: ["5", "6", "7", "8"],
+      description: "Modifier",
+    },
+    {
+      id: "5",
+      parents: ["2", "3", "9"],
+      children: [],
+      description: "Circle (mercury)",
+    },
+    {
+      id: "6",
+      parents: ["2"],
+      children: [],
+      description: "Circle (venus)",
+    },
+    {
+      id: "7",
+      parents: ["2"],
+      children: [],
+      description: "Circle (earth)",
+    },
+    {
+      id: "8",
+      parents: ["2"],
+      children: [],
+      description: "Circle (mars)",
+    },
+    {
+      id: "9",
+      parents: [],
+      children: ["5"],
+      description: "Text (label)",
     },
   ];
 
@@ -239,9 +374,9 @@ const App: Component = () => {
         </Arrow>
       </Bluefish>
       <br />
-      <GraphVisualizer nodes={planetsTraversal2} />
+      <GraphVisualizer nodes={planetsTraversalNoAnnotation} />
       <br />
-      <TraversalComponent nodes={planetsTraversal2} />
+      <TraversalComponent nodes={planetsTraversalNoAnnotation} />
       <br />
     </>
   );
