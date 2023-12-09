@@ -374,9 +374,9 @@ const App: Component = () => {
         </Arrow>
       </Bluefish>
       <br />
-      <GraphVisualizer nodes={planetsTraversalNoAnnotation} />
+      <GraphVisualizer nodes={planetsTraversal} />
       <br />
-      <TraversalComponent nodes={planetsTraversalNoAnnotation} />
+      <TraversalComponent nodes={planetsTraversal} />
       <br />
     </>
   );
