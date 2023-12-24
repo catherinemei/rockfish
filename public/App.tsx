@@ -326,53 +326,50 @@ const App: Component = () => {
   return (
     <>
       <Bluefish id="bluefish-planets" padding={20}>
-        <StackH spacing={50}>
-          <Circle
-            name="mercury"
-            r={15}
-            fill={"#EBE3CF"}
-            stroke-width={3}
-            stroke={"black"}
-          />
-          <Circle
-            name="venus"
-            r={36}
-            fill={"#DC933C"}
-            stroke-width={3}
-            stroke={"black"}
-          />
-          <Circle
-            name="earth"
-            r={38}
-            fill={"#179DD7"}
-            stroke-width={3}
-            stroke={"black"}
-          />
-          <Circle
-            name="mars"
-            r={21}
-            fill={"#F1CF8E"}
-            stroke-width={3}
-            stroke={"black"}
-          />
-        </StackH>
+        <Background>
+          <StackH spacing={50}>
+            <Circle
+              name="mercury"
+              r={15}
+              fill={"#EBE3CF"}
+              stroke-width={3}
+              stroke={"black"}
+            />
+            <Circle
+              name="venus"
+              r={36}
+              fill={"#DC933C"}
+              stroke-width={3}
+              stroke={"black"}
+            />
+            <Circle
+              name="earth"
+              r={38}
+              fill={"#179DD7"}
+              stroke-width={3}
+              stroke={"black"}
+            />
+            <Circle
+              name="mars"
+              r={21}
+              fill={"#F1CF8E"}
+              stroke-width={3}
+              stroke={"black"}
+            />
+          </StackH>
+        </Background>
         <StackV spacing={60}>
           <Text name="label" vertical-anchor="start" width={500}>
             Mercury
           </Text>
           <Ref select="mercury" />
         </StackV>
-        <Background>
-          <Ref select="mercury" />
-          <Ref select="venus" />
-          <Ref select="earth" />
-          <Ref select="mars" />
-        </Background>
         <Arrow>
           <Ref select="label" />
           <Ref select="mercury" />
         </Arrow>
       </Bluefish>
+
       <br />
       <GraphVisualizer nodes={planetsTraversal} />
       <br />
