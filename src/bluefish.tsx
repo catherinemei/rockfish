@@ -15,6 +15,7 @@ import {
   ParentProps,
   Show,
   createEffect,
+  onCleanup,
   createUniqueId,
   mergeProps,
 } from "solid-js";
@@ -53,6 +54,26 @@ export function Bluefish(props: BluefishProps) {
   const autoGenScopeId = createUniqueId();
   const id = autoGenId;
   const scopeId = props.id ?? autoGenScopeId;
+
+  createEffect(() => {
+    if (window.bluefish === undefined) {
+      window.bluefish = {};
+    }
+
+    if (window.bluefish[id] !== undefined) {
+      console.error(`Duplicate id ${id}. Not writing to window.bluefish`);
+    } else {
+      window.bluefish[id] = scenegraph;
+      console.log("setting the scenegraph");
+    }
+
+    // onCleanup(() => {
+    //   if (window.bluefish !== undefined && window.bluefish[id] === scenegraph) {
+    //     console.log("deleting the scenegraph");
+    //     delete window.bluefish[id];
+    //   }
+    // });
+  });
 
   const layout = (childNodes: ChildNode[]) => {
     for (const childNode of childNodes) {

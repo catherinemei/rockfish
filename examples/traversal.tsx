@@ -37,25 +37,62 @@ function calculateDefaultPaths(
   return paths;
 }
 
+function parseScenegraphToTraversalGraph(scenegraph: {
+  [key: string]: any;
+}): [TraversalGraph, string] {
+  let graph: TraversalGraph = {};
+
+  let [rootNode, scenegraphNodes] = Object.entries(scenegraph)[0];
+  let rootId = JSON.stringify(rootNode);
+
+  for (const scenegraphNodeId in scenegraphNodes) {
+    const scenegraphNodeVal = scenegraphNodes[scenegraphNodeId];
+    const node: Node = {
+      id: scenegraphNodeId,
+      parents: [],
+      children: [],
+      description: scenegraphNodeId,
+    };
+    if (scenegraphNodeVal["children"]) {
+      node.children = scenegraphNodeVal["children"].map((child: any) => child);
+    }
+    if (scenegraphNodeVal["parent"]) {
+      node.parents.push(scenegraphNodeVal["parent"]);
+    }
+    graph[scenegraphNodeId] = node;
+  }
+
+  return [graph, rootId];
+}
+
 export const TraversalComponent = (props: { nodes: Node[] }) => {
   // Convert nodes array to TraversalGraph
-  let rootId = "";
-  const graph: TraversalGraph = props.nodes.reduce<TraversalGraph>(
-    (acc, node) => {
-      acc[node.id] = node;
-      node.parents.length === 0 ? (rootId = node.id) : null;
-      return acc;
-    },
-    {}
-  );
 
-  // State for the currently focused node
-  const [focusedNodeId, setFocusedNodeId] = createSignal(props.nodes[0].id);
+  let rootId = "0";
+  let graph: TraversalGraph = {};
 
-  // Stack to keep track of accessed nodes
-  const [accessedNodes, setAccessedNodes] = createSignal([props.nodes[0].id]);
+  setTimeout(() => {
+    let scenegraph = window.bluefish ? window.bluefish : {};
+    console.log("scenegraph", JSON.stringify(scenegraph));
+    let [graph, rootId] = parseScenegraphToTraversalGraph(scenegraph);
+  }, 5000);
+
+  // const graph: TraversalGraph = props.nodes.reduce<TraversalGraph>(
+  //   (acc, node) => {
+  //     acc[node.id] = node;
+  //     // node.parents.length === 0 ? (rootId = node.id) : null;
+  //     return acc;
+  //   },
+  //   {}
+  // );
 
   const defaultPaths = calculateDefaultPaths(graph, rootId);
+
+  // State for the currently focused node
+  const [focusedNodeId, setFocusedNodeId] = createSignal(rootId);
+
+  // Stack to keep track of accessed nodes
+  const [accessedNodes, setAccessedNodes] = createSignal([rootId]);
 
   // Function to update focused node and accessed nodes stack
   const updateFocus = (nodeId: Id) => {
@@ -95,6 +132,10 @@ export const TraversalComponent = (props: { nodes: Node[] }) => {
   // Function to get parent, sibling, and children nodes
   const getGraphLayers = (): [Node[], Node[], Node[]] => {
     const focusedNode = graph[focusedNodeId()];
+    console.log("focusedNodeId", focusedNodeId());
+    console.log("focusedNode", JSON.stringify(focusedNode));
+    console.log("graph in getGraphLayers", graph);
+
     const parents = focusedNode.parents.map((id) => graph[id]);
 
     let siblings: Node[] = [];
