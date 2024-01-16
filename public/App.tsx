@@ -4,7 +4,6 @@ import { createSignal, type Component, For } from "solid-js";
 
 import { PaperScope, Path, Point, Size } from "paper/dist/paper-core";
 import { TraversalComponent, Node } from "../examples/traversal";
-import { GraphVisualizer } from "../examples/traversal-target";
 import { Bluefish } from "../src/bluefish";
 import Background from "../src/background";
 import { StackH } from "../src/stackh";
@@ -371,9 +370,7 @@ const App: Component = () => {
       </Bluefish>
 
       <br />
-      {/* <GraphVisualizer nodes={planetsTraversal} /> */}
-      <br />
-      <TraversalComponent nodes={planetsTraversal} />
+      <TraversalComponent visualizeGraph={true} />
       <br />
     </>
   );

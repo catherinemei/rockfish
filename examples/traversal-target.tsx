@@ -1,17 +1,16 @@
 import { For, createSignal, onMount } from "solid-js";
-import { TraversalGraph, Node } from "./traversal";
+import { TraversalGraph } from "./traversal";
 
 type Id = string;
 
 type GraphProps = {
-  nodes: Node[];
+  travGraph: TraversalGraph;
 };
 
 export const GraphVisualizer = (props: GraphProps) => {
   // Function to calculate positions and paths for nodes and edges
-  const calculateLayout = (nodes: Node[]) => {
-    const nodeMap = new Map(nodes.map((node) => [node.id, node]));
-    const levels = new Map();
+  const calculateLayout = (travGraph: TraversalGraph) => {
+    const levels = new Map<Id, number>();
     let maxLevel = 0;
 
     // Assign levels to each node
@@ -20,40 +19,45 @@ export const GraphVisualizer = (props: GraphProps) => {
       levels.set(nodeId, level);
       maxLevel = Math.max(maxLevel, level);
 
-      const children = nodeMap.get(nodeId)?.children || [];
+      const children = travGraph[nodeId]?.children || [];
       children.forEach((childId) => assignLevel(childId, level + 1));
     };
 
     // Start from root nodes (nodes without parents)
-    nodes
+    Object.values(travGraph)
       .filter((node) => node.parents.length === 0)
       .forEach((rootNode) => {
         assignLevel(rootNode.id, 0);
       });
 
     // Calculate positions
-    const nodePositions = new Map();
+    const nodePositions = new Map<
+      Id,
+      { x: number; y: number; description: string }
+    >();
     const levelWidths = new Array(maxLevel + 1).fill(0);
     levels.forEach((level, nodeId) => {
       const position = levelWidths[level];
       nodePositions.set(nodeId, {
         x: position * 130 + 50,
         y: level * 100 + 50,
-        description: nodeMap.get(nodeId)?.description,
+        description: travGraph[nodeId].description,
       });
       levelWidths[level] += 1;
     });
 
     // Calculate paths for edges
     const edges: { path: string }[] = [];
-    nodes.forEach((node) => {
+    Object.values(travGraph).forEach((node) => {
       const fromPos = nodePositions.get(node.id);
       node.children.forEach((childId) => {
         const toPos = nodePositions.get(childId);
-        const path = `M ${fromPos.x + 50} ${fromPos.y + 20} L ${
-          toPos.x + Math.floor(20 * Math.random()) + 50
-        } ${toPos.y - 5}`;
-        edges.push({ path });
+        if (fromPos && toPos) {
+          const path = `M ${fromPos.x + 50} ${fromPos.y + 20} L ${
+            toPos.x + Math.floor(20 * Math.random()) + 50
+          } ${toPos.y - 5}`;
+          edges.push({ path });
+        }
       });
     });
 
@@ -63,10 +67,10 @@ export const GraphVisualizer = (props: GraphProps) => {
     };
   };
 
-  const [layout, setLayout] = createSignal(calculateLayout(props.nodes));
+  const [layout, setLayout] = createSignal(calculateLayout(props.travGraph));
 
   onMount(() => {
-    setLayout(calculateLayout(props.nodes));
+    setLayout(calculateLayout(props.travGraph));
   });
 
   return (

@@ -66,13 +66,6 @@ export function Bluefish(props: BluefishProps) {
       window.bluefish[id] = scenegraph;
       console.log("setting the scenegraph");
     }
-
-    // onCleanup(() => {
-    //   if (window.bluefish !== undefined && window.bluefish[id] === scenegraph) {
-    //     console.log("deleting the scenegraph");
-    //     delete window.bluefish[id];
-    //   }
-    // });
   });
 
   const layout = (childNodes: ChildNode[]) => {

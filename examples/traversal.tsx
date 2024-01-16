@@ -1,4 +1,5 @@
 import { createEffect, createSignal, For } from "solid-js";
+import { GraphVisualizer } from "./traversal-target";
 
 type Id = string;
 
@@ -65,7 +66,11 @@ export function parseScenegraphToTraversalGraph(scenegraph: {
   return [graph, rootId];
 }
 
-export const TraversalComponent = (props: { nodes: Node[] }) => {
+export type TraversalProps = {
+  visualizeGraph?: boolean;
+};
+
+export const TraversalComponent = (props: TraversalProps) => {
   const [graph, setGraph] = createSignal<TraversalGraph>({});
   const [rootId, setRootId] = createSignal<string>("0");
   const [scenegraph, setScenegraph] = createSignal({});
@@ -211,6 +216,7 @@ export const TraversalComponent = (props: { nodes: Node[] }) => {
 
   return (
     <div>
+      {props.visualizeGraph ? <GraphVisualizer travGraph={graph()} /> : null}
       <For each={["Parents", "Focused Node & Siblings", "Children"]}>
         {(layerLabel, index) => (
           <div
