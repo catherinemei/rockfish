@@ -1,13 +1,7 @@
 import { For, createSignal, onMount } from "solid-js";
+import { TraversalGraph, Node } from "./traversal";
 
 type Id = string;
-
-type Node = {
-  id: Id;
-  parents: Id[];
-  children: Id[];
-  description: string;
-};
 
 type GraphProps = {
   nodes: Node[];

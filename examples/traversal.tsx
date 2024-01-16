@@ -1,4 +1,4 @@
-import { createSignal, For } from "solid-js";
+import { createEffect, createSignal, For } from "solid-js";
 
 type Id = string;
 
@@ -9,7 +9,7 @@ export type Node = {
   description: string;
 };
 
-type TraversalGraph = { [uid: Id]: Node };
+export type TraversalGraph = { [uid: Id]: Node };
 
 function calculateDefaultPaths(
   graph: TraversalGraph,
@@ -37,13 +37,13 @@ function calculateDefaultPaths(
   return paths;
 }
 
-function parseScenegraphToTraversalGraph(scenegraph: {
+export function parseScenegraphToTraversalGraph(scenegraph: {
   [key: string]: any;
 }): [TraversalGraph, string] {
   let graph: TraversalGraph = {};
 
   let [rootNode, scenegraphNodes] = Object.entries(scenegraph)[0];
-  let rootId = JSON.stringify(rootNode);
+  let rootId = rootNode;
 
   for (const scenegraphNodeId in scenegraphNodes) {
     const scenegraphNodeVal = scenegraphNodes[scenegraphNodeId];
@@ -66,39 +66,53 @@ function parseScenegraphToTraversalGraph(scenegraph: {
 }
 
 export const TraversalComponent = (props: { nodes: Node[] }) => {
-  // Convert nodes array to TraversalGraph
-
-  let rootId = "0";
-  let graph: TraversalGraph = {};
-
-  setTimeout(() => {
-    let scenegraph = window.bluefish ? window.bluefish : {};
-    console.log("scenegraph", JSON.stringify(scenegraph));
-    let [graph, rootId] = parseScenegraphToTraversalGraph(scenegraph);
-  }, 5000);
-
-  // const graph: TraversalGraph = props.nodes.reduce<TraversalGraph>(
-  //   (acc, node) => {
-  //     acc[node.id] = node;
-  //     // node.parents.length === 0 ? (rootId = node.id) : null;
-  //     return acc;
-  //   },
-  //   {}
-  // );
-
-  const defaultPaths = calculateDefaultPaths(graph, rootId);
+  const [graph, setGraph] = createSignal<TraversalGraph>({});
+  const [rootId, setRootId] = createSignal<string>("0");
+  const [scenegraph, setScenegraph] = createSignal({});
 
   // State for the currently focused node
-  const [focusedNodeId, setFocusedNodeId] = createSignal(rootId);
+  const [focusedNodeId, setFocusedNodeId] = createSignal<string>(rootId());
 
   // Stack to keep track of accessed nodes
-  const [accessedNodes, setAccessedNodes] = createSignal([rootId]);
+  const [accessedNodes, setAccessedNodes] = createSignal([rootId()]);
+
+  // Watch for changes in window.bluefish and update scenegraph signal
+  createEffect(() => {
+    if (window.bluefish) {
+      console.log("setting scenegraph inside of the traversal component");
+      console.log(JSON.stringify(window.bluefish));
+      setScenegraph(window.bluefish);
+      console.log("-----------------------------------------------------");
+    }
+  });
+
+  // React to changes in scenegraph
+  createEffect(() => {
+    const currentScenegraph = scenegraph();
+    if (Object.keys(currentScenegraph).length > 0) {
+      let [outputGraph, outputRootId] =
+        parseScenegraphToTraversalGraph(currentScenegraph);
+      setGraph(outputGraph);
+      setRootId(outputRootId);
+      setFocusedNodeId(outputRootId);
+      setAccessedNodes([outputRootId]);
+
+      console.log(
+        "set the graph and root id inside of the traversal component"
+      );
+      console.log(JSON.stringify(outputGraph));
+      console.log(JSON.stringify(outputRootId));
+      console.log("-----------------------------------------------------");
+    }
+  });
+
+  const defaultPaths = calculateDefaultPaths(graph(), rootId());
 
   // Function to update focused node and accessed nodes stack
   const updateFocus = (nodeId: Id) => {
-    console.log("updateFocus:", graph[nodeId].description);
+    console.log("updateFocus:", graph()[nodeId].description);
     const currentFocusedId = focusedNodeId();
-    const newFocusedNode = graph[nodeId];
+    const newFocusedNode = graph()[nodeId];
     const currentAccessedNodes = accessedNodes(); // Correctly accessing the value of the signal
 
     if (newFocusedNode.parents.includes(currentFocusedId)) {
@@ -131,12 +145,14 @@ export const TraversalComponent = (props: { nodes: Node[] }) => {
 
   // Function to get parent, sibling, and children nodes
   const getGraphLayers = (): [Node[], Node[], Node[]] => {
-    const focusedNode = graph[focusedNodeId()];
-    console.log("focusedNodeId", focusedNodeId());
-    console.log("focusedNode", JSON.stringify(focusedNode));
-    console.log("graph in getGraphLayers", graph);
+    const currentFocusedId = focusedNodeId();
+    const focusedNode = graph()[currentFocusedId];
 
-    const parents = focusedNode.parents.map((id) => graph[id]);
+    if (!focusedNode) {
+      return [[], [], []]; // Return empty arrays if the focusedNode is not found
+    }
+
+    const parents = focusedNode.parents.map((id) => graph()[id]);
 
     let siblings: Node[] = [];
     const currentAccessedNodes = accessedNodes();
@@ -146,14 +162,14 @@ export const TraversalComponent = (props: { nodes: Node[] }) => {
     if (focusedNode.parents.length === 0) {
       siblings = [focusedNode]; // Root node case
     } else if (lastAccessedNode) {
-      siblings = graph[lastAccessedNode].children.map((id) => graph[id]);
+      siblings = graph()[lastAccessedNode].children.map((id) => graph()[id]);
     } else {
       siblings = focusedNode.parents
-        .flatMap((id) => graph[id].children)
-        .map((id) => graph[id]);
+        .flatMap((id) => graph()[id].children)
+        .map((id) => graph()[id]);
     }
 
-    const children = focusedNode.children.map((id) => graph[id]);
+    const children = focusedNode.children.map((id) => graph()[id]);
     return [parents, siblings, children];
   };
 
@@ -171,7 +187,7 @@ export const TraversalComponent = (props: { nodes: Node[] }) => {
   // Function to cycle through parents of the current focused node
   const cycleThroughParents = () => {
     const currentFocusedId = focusedNodeId();
-    const focusedNode = graph[currentFocusedId];
+    const focusedNode = graph()[currentFocusedId];
     let currentAccessedNodes = accessedNodes();
 
     if (focusedNode.parents.length > 0) {
