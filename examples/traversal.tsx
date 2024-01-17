@@ -66,7 +66,8 @@ export function parseScenegraphToTraversalGraph(scenegraph: {
         id: scenegraphNodeId,
         parents: [],
         children: [],
-        description: scenegraphNodeId,
+        description:
+          scenegraphNodeVal.customData["aria-label"] ?? scenegraphNodeId,
       };
       if (scenegraphNodeVal["children"]) {
         node.children = scenegraphNodeVal["children"].map(
@@ -91,6 +92,9 @@ export const TraversalComponent = (props: TraversalProps) => {
   const [graph, setGraph] = createSignal<TraversalGraph>({});
   const [rootId, setRootId] = createSignal<string>("0");
   const [scenegraph, setScenegraph] = createSignal({});
+  const [defaultPaths, setDefaultPaths] = createSignal<Map<Id, Id[]>>(
+    new Map()
+  );
 
   // State for the currently focused node
   const [focusedNodeId, setFocusedNodeId] = createSignal<string>(rootId());
@@ -115,44 +119,48 @@ export const TraversalComponent = (props: TraversalProps) => {
       setRootId(outputRootId);
       setFocusedNodeId(outputRootId);
       setAccessedNodes([outputRootId]);
+      let curDefaultPaths = calculateDefaultPaths(outputGraph, outputRootId);
+      setDefaultPaths(curDefaultPaths);
     }
   });
 
-  const defaultPaths = calculateDefaultPaths(graph(), rootId());
-
-  // Function to update focused node and accessed nodes stack
   const updateFocus = (nodeId: Id) => {
     console.log("updateFocus:", graph()[nodeId].description);
-    const currentFocusedId = focusedNodeId();
     const newFocusedNode = graph()[nodeId];
-    const currentAccessedNodes = accessedNodes(); // Correctly accessing the value of the signal
+    const currentAccessedNodes = accessedNodes();
 
-    if (newFocusedNode.parents.includes(currentFocusedId)) {
+    if (
+      newFocusedNode.parents.includes(
+        currentAccessedNodes[currentAccessedNodes.length - 1]
+      )
+    ) {
       // If new node is a child, push it onto the stack
       setAccessedNodes([...currentAccessedNodes, nodeId]);
-    } else if (newFocusedNode.id === currentFocusedId) {
-      // If the new node is the same as the current, do nothing
-    } else if (newFocusedNode.children.includes(currentFocusedId)) {
-      // If new node is a parent, pop 2 from stack (child, old parent) and push the new node
-      const lastAccessedNode =
-        currentAccessedNodes[currentAccessedNodes.length - 2];
-      if (!newFocusedNode.parents.includes(lastAccessedNode)) {
-        // Take care of case where parents of previously focused node are not on same level
-        const firstParent = newFocusedNode.parents[0];
-        let defaultPath = defaultPaths.get(firstParent);
-        defaultPath = defaultPath?.concat(newFocusedNode.id) || [
-          newFocusedNode.id,
-        ];
-        setAccessedNodes(defaultPath);
-      } else {
-        setAccessedNodes(currentAccessedNodes.slice(0, -2).concat(nodeId));
-      }
     } else {
-      // If new node is a sibling, replace the current node with the new node on the stack
-      setAccessedNodes(currentAccessedNodes.slice(0, -1).concat(nodeId));
+      // Find the closest common ancestor in the accessedNodes stack
+      let commonAncestorIndex = -1;
+      for (let i = currentAccessedNodes.length - 1; i >= 0; i--) {
+        if (newFocusedNode.parents.includes(currentAccessedNodes[i])) {
+          commonAncestorIndex = i;
+          break;
+        }
+      }
+
+      if (commonAncestorIndex !== -1) {
+        // Update the stack up to the common ancestor and then add the new node
+        setAccessedNodes([
+          ...currentAccessedNodes.slice(0, commonAncestorIndex + 1),
+          nodeId,
+        ]);
+      } else {
+        // If there's no common ancestor, reset the stack
+        setAccessedNodes(defaultPaths().get(nodeId) || [nodeId]);
+      }
     }
+
     setFocusedNodeId(nodeId);
     console.log("final accessed node state:", accessedNodes());
+    console.log("------------------------");
   };
 
   // Function to get parent, sibling, and children nodes
@@ -191,9 +199,13 @@ export const TraversalComponent = (props: TraversalProps) => {
 
   const isCurrentParent = (nodeId: Id) => {
     const currentAccessedNodes = accessedNodes();
-    const lastAccessedNode =
-      currentAccessedNodes[currentAccessedNodes.length - 2];
-    return nodeId === lastAccessedNode;
+    const currentFocusedId = focusedNodeId();
+    const focusedNode = graph()[currentFocusedId];
+
+    return (
+      focusedNode.parents.includes(nodeId) &&
+      currentAccessedNodes.includes(nodeId)
+    );
   };
 
   // Function to cycle through parents of the current focused node

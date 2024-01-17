@@ -26,6 +26,9 @@ export const Circle = withBluefish((props: CircleProps) => {
           y: props.cy,
         },
       },
+      customData: {
+        "aria-label": props["aria-label"],
+      },
     };
   };
 

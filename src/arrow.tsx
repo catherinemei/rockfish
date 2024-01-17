@@ -21,6 +21,7 @@ export type ArrowProps = ParentProps<
     start?: boolean;
     "stroke-width"?: number;
     stroke?: string;
+    "aria-label"?: string;
   } & ArrowOptions
 >;
 
@@ -90,6 +91,7 @@ export const Arrow = withBluefish((props: ArrowProps) => {
         ae: arrow[6],
         as: arrow[7],
         ec: arrow[8],
+        "aria-label": props["aria-label"],
       },
     };
   };

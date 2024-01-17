@@ -12,6 +12,7 @@ export type DistributeProps = ParentProps<{
   direction: "vertical" | "horizontal";
   total?: number;
   spacing?: number;
+  "aria-label"?: string;
 }>;
 
 export const Distribute = withBluefish((props: DistributeProps) => {
@@ -120,6 +121,9 @@ export const Distribute = withBluefish((props: DistributeProps) => {
         transform: {
           translate: {},
         },
+        customData: {
+          "aria-label": props["aria-label"],
+        },
       };
     } else if (props.direction === "horizontal") {
       let width: number;
@@ -215,6 +219,9 @@ export const Distribute = withBluefish((props: DistributeProps) => {
         },
         transform: {
           translate: {},
+        },
+        customData: {
+          "aria-label": props["aria-label"],
         },
       };
     } else {

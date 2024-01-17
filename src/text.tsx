@@ -84,6 +84,9 @@ export const Text = withBluefish((props: TextProps) => {
           y: props.dy !== undefined ? parseFloat(`${props.dy}`) : undefined,
         },
       },
+      customData: {
+        "aria-label": props["aria-label"],
+      },
     };
   };
 

@@ -29,6 +29,7 @@ export type BluefishProps = ParentProps<{
   id?: string;
   debug?: boolean;
   positioning?: "absolute" | "relative";
+  "aria-label"?: string;
 }>;
 
 declare global {
@@ -109,6 +110,9 @@ export function Bluefish(props: BluefishProps) {
         },
       },
       bbox: { left, top, width, height },
+      customData: {
+        "aria-label": props["aria-label"],
+      },
     };
   };
 

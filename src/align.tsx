@@ -97,6 +97,7 @@ export type AlignProps = ParentProps<{
   x?: number;
   y?: number;
   alignment: Alignment2D | Alignment1D;
+  "aria-label"?: string;
 }>;
 
 export const Align = withBluefish((props: AlignProps) => {
@@ -184,6 +185,9 @@ export const Align = withBluefish((props: AlignProps) => {
           verticalAlignment(props.alignment) !== undefined
             ? bbox.height
             : undefined,
+      },
+      customData: {
+        "aria-label": props["aria-label"],
       },
     };
   };

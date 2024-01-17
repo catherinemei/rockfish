@@ -39,7 +39,7 @@ export const GraphVisualizer = (props: GraphProps) => {
     levels.forEach((level, nodeId) => {
       const position = levelWidths[level];
       nodePositions.set(nodeId, {
-        x: position * 130 + 50,
+        x: position * 190 + 50,
         y: level * 100 + 50,
         description: travGraph[nodeId].description,
       });
@@ -78,8 +78,8 @@ export const GraphVisualizer = (props: GraphProps) => {
       <For each={layout().nodes}>
         {(node) => (
           <g transform={`translate(${node.x}, ${node.y})`}>
-            <rect width="120" height="20" fill="lightblue" />
-            <text x="60" y="15" text-anchor="middle">
+            <rect width="180" height="20" fill="lightblue" />
+            <text x="90" y="15" text-anchor="middle" aria-hidden={true}>
               {node.description}
             </text>
           </g>

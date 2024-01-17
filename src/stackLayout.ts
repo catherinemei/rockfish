@@ -17,6 +17,7 @@ export type StackArgs = {
   direction: "vertical" | "horizontal";
   total?: number;
   spacing?: number;
+  "aria-label"?: string;
 };
 
 export const stackLayout =
@@ -153,6 +154,9 @@ export const stackLayout =
             y: maybeSub(args.y, bbox.top),
           },
         },
+        customData: {
+          "aria-label": args["aria-label"],
+        },
       };
     } else if (args.direction === "horizontal") {
       let width: number;
@@ -256,6 +260,9 @@ export const stackLayout =
             x: maybeSub(args.x, bbox.left),
             y: maybeSub(args.y, bbox.top),
           },
+        },
+        customData: {
+          "aria-label": args["aria-label"],
         },
       };
     } else {

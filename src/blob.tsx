@@ -36,6 +36,9 @@ export const Blob = withBluefish((props: BlobProps) => {
       transform: {
         translate: {},
       },
+      customData: {
+        "aria-label": props["aria-label"],
+      },
     };
   };
 

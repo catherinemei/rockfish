@@ -17,6 +17,7 @@ export type GroupProps = ParentProps<{
   x?: number;
   y?: number;
   rels?: () => JSX.Element;
+  "aria-label"?: string;
 }>;
 
 export const Group = withBluefish((props: GroupProps) => {
@@ -70,6 +71,9 @@ export const Group = withBluefish((props: GroupProps) => {
         },
       },
       bbox: { left, top, right, bottom, width, height },
+      customData: {
+        "aria-label": props["aria-label"],
+      },
     };
   };
 

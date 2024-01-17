@@ -13,6 +13,7 @@ export type GraphLayeredProps = ParentProps<{
   direction?: "left-right" | "right-left" | "top-bottom" | "bottom-top";
   x?: number;
   y?: number;
+  "aria-label"?: string;
 }>;
 
 export const convertDirection = {
@@ -139,6 +140,9 @@ export const GraphLayered = withBluefish((props: GraphLayeredProps) => {
           x: maybeSub(props.x, bbox.left),
           y: maybeSub(props.y, bbox.top),
         },
+      },
+      customData: {
+        "aria-label": props["aria-label"],
       },
     };
   };

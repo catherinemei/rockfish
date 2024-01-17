@@ -27,6 +27,9 @@ export const Rect = withBluefish((props: RectProps) => {
           y: props.y,
         },
       },
+      customData: {
+        "aria-label": props["aria-label"],
+      },
     };
   };
 

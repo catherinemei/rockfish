@@ -13,6 +13,7 @@ export type BackgroundProps = ParentProps<{
   y?: number;
   background?: () => JSX.Element;
   padding?: number;
+  "aria-label"?: string;
 }>;
 
 export const Background = withBluefish((props: BackgroundProps) => {
@@ -126,6 +127,9 @@ export const Background = withBluefish((props: BackgroundProps) => {
           y: maybeSub(props.y, top),
         },
       },
+      customData: {
+        "aria-label": props["aria-label"],
+      },
     };
   };
 
@@ -149,7 +153,14 @@ export const Background = withBluefish((props: BackgroundProps) => {
     <Layout name={props.name} layout={layout} paint={paint}>
       <Show
         when={props.background}
-        fallback={<Rect stroke="black" fill="none" stroke-width="3" />}
+        fallback={
+          <Rect
+            stroke="black"
+            fill="none"
+            stroke-width="3"
+            aria-label={`${props["aria-label"]} Rectangle`}
+          />
+        }
       >
         {props.background!()}
       </Show>

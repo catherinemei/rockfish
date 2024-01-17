@@ -27,6 +27,9 @@ export const Image = withBluefish((props: ImageProps) => {
           y: props.y,
         },
       },
+      customData: {
+        "aria-label": props["aria-label"],
+      },
     };
   };
 

@@ -324,15 +324,16 @@ const App: Component = () => {
 
   return (
     <>
-      <Bluefish id="bluefish-planets" padding={20}>
-        <Background>
-          <StackH spacing={50}>
+      <Bluefish id="bluefish-planets" padding={20} aria-label="Bluefish">
+        <Background aria-label="Background">
+          <StackH spacing={50} aria-label="StackH">
             <Circle
               name="mercury"
               r={15}
               fill={"#EBE3CF"}
               stroke-width={3}
               stroke={"black"}
+              aria-label="Mercury"
             />
             <Circle
               name="venus"
@@ -340,6 +341,7 @@ const App: Component = () => {
               fill={"#DC933C"}
               stroke-width={3}
               stroke={"black"}
+              aria-label="Venus"
             />
             <Circle
               name="earth"
@@ -347,6 +349,7 @@ const App: Component = () => {
               fill={"#179DD7"}
               stroke-width={3}
               stroke={"black"}
+              aria-label="Earth"
             />
             <Circle
               name="mars"
@@ -354,16 +357,22 @@ const App: Component = () => {
               fill={"#F1CF8E"}
               stroke-width={3}
               stroke={"black"}
+              aria-label="Mars"
             />
           </StackH>
         </Background>
-        <StackV spacing={60}>
-          <Text name="label" vertical-anchor="start" width={500}>
+        <StackV spacing={60} aria-label="StackV">
+          <Text
+            name="label"
+            vertical-anchor="start"
+            width={500}
+            aria-label="Text Label"
+          >
             Mercury
           </Text>
           <Ref select="mercury" />
         </StackV>
-        <Arrow>
+        <Arrow aria-label="Arrow">
           <Ref select="label" />
           <Ref select="mercury" />
         </Arrow>
@@ -371,7 +380,6 @@ const App: Component = () => {
 
       <br />
       <TraversalComponent visualizeGraph />
-      <br />
     </>
   );
 };
