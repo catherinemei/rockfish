@@ -48,19 +48,36 @@ export function parseScenegraphToTraversalGraph(scenegraph: {
 
   for (const scenegraphNodeId in scenegraphNodes) {
     const scenegraphNodeVal = scenegraphNodes[scenegraphNodeId];
-    const node: Node = {
-      id: scenegraphNodeId,
-      parents: [],
-      children: [],
-      description: scenegraphNodeId,
-    };
-    if (scenegraphNodeVal["children"]) {
-      node.children = scenegraphNodeVal["children"].map((child: any) => child);
+    if (scenegraphNodeVal.type === "ref") {
+      const fromId = scenegraphNodeVal.parent;
+      const toId = scenegraphNodeVal.refId;
+      graph[fromId].children.push(toId);
+      graph[toId].parents.push(fromId);
+
+      // Remove the ref node from the graph
+      graph[fromId].children = graph[fromId].children.filter(
+        (id) => id !== scenegraphNodeId
+      );
+      graph[toId].parents = graph[toId].parents.filter(
+        (id) => id !== scenegraphNodeId
+      );
+    } else {
+      const node: Node = {
+        id: scenegraphNodeId,
+        parents: [],
+        children: [],
+        description: scenegraphNodeId,
+      };
+      if (scenegraphNodeVal["children"]) {
+        node.children = scenegraphNodeVal["children"].map(
+          (child: any) => child
+        );
+      }
+      if (scenegraphNodeVal["parent"]) {
+        node.parents.push(scenegraphNodeVal["parent"]);
+      }
+      graph[scenegraphNodeId] = node;
     }
-    if (scenegraphNodeVal["parent"]) {
-      node.parents.push(scenegraphNodeVal["parent"]);
-    }
-    graph[scenegraphNodeId] = node;
   }
 
   return [graph, rootId];
@@ -84,10 +101,7 @@ export const TraversalComponent = (props: TraversalProps) => {
   // Watch for changes in window.bluefish and update scenegraph signal
   createEffect(() => {
     if (window.bluefish) {
-      console.log("setting scenegraph inside of the traversal component");
-      console.log(JSON.stringify(window.bluefish));
       setScenegraph(window.bluefish);
-      console.log("-----------------------------------------------------");
     }
   });
 
@@ -101,13 +115,6 @@ export const TraversalComponent = (props: TraversalProps) => {
       setRootId(outputRootId);
       setFocusedNodeId(outputRootId);
       setAccessedNodes([outputRootId]);
-
-      console.log(
-        "set the graph and root id inside of the traversal component"
-      );
-      console.log(JSON.stringify(outputGraph));
-      console.log(JSON.stringify(outputRootId));
-      console.log("-----------------------------------------------------");
     }
   });
 

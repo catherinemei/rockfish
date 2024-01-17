@@ -370,7 +370,7 @@ const App: Component = () => {
       </Bluefish>
 
       <br />
-      <TraversalComponent visualizeGraph={true} />
+      <TraversalComponent visualizeGraph />
       <br />
     </>
   );
