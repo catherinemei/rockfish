@@ -239,6 +239,10 @@ export const TraversalComponent = (props: TraversalProps) => {
       <For each={["Parents", "Focused Node & Siblings", "Children"]}>
         {(layerLabel, index) => (
           <div
+            role="group"
+            aria-label={`${layerLabel} layer with ${
+              getGraphLayers()[index()].length
+            } nodes`}
             style={{
               display: "grid",
               "grid-template-columns": "200px 1fr",
@@ -248,7 +252,9 @@ export const TraversalComponent = (props: TraversalProps) => {
             }}
           >
             <div>
-              <span style={{ "text-align": "right" }}>{layerLabel}</span>
+              <span aria-hidden={true} style={{ "text-align": "right" }}>
+                {layerLabel}
+              </span>
               {layerLabel === "Parents" ? (
                 <button onClick={cycleThroughParents}>
                   Change Parent Focus
@@ -266,6 +272,7 @@ export const TraversalComponent = (props: TraversalProps) => {
               <For each={getGraphLayers()[index()]}>
                 {(node) => (
                   <button
+                    aria-label={node.description}
                     onClick={() => {
                       updateFocus(node.id);
                     }}
@@ -282,7 +289,12 @@ export const TraversalComponent = (props: TraversalProps) => {
                 )}
               </For>
               {getGraphLayers()[index()].length === 0 && (
-                <span style={{ color: "grey" }}>None</span>
+                <span
+                  style={{ color: "grey" }}
+                  aria-label={`There are no nodes in the ${layerLabel} layer`}
+                >
+                  None
+                </span>
               )}
             </div>
           </div>
