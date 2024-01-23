@@ -236,70 +236,82 @@ export const TraversalComponent = (props: TraversalProps) => {
   return (
     <div>
       {props.visualizeGraph ? <GraphVisualizer travGraph={graph()} /> : null}
-      <For each={["Parents", "Focused Node & Siblings", "Children"]}>
-        {(layerLabel, index) => (
-          <div
-            role="group"
-            aria-label={`${layerLabel} layer with ${
-              getGraphLayers()[index()].length
-            } nodes`}
-            style={{
-              display: "grid",
-              "grid-template-columns": "200px 1fr",
-              "align-items": "center",
-              gap: "10px",
-              "min-height": "50px",
-            }}
-          >
-            <div>
-              <span aria-hidden={true} style={{ "text-align": "right" }}>
-                {layerLabel}
-              </span>
-              {layerLabel === "Parents" ? (
-                <button onClick={cycleThroughParents}>
-                  Change Parent Focus
-                </button>
-              ) : null}
-            </div>
-            <div
+      <ul
+        style={{
+          "list-style": "none",
+          padding: 0,
+          margin: 0,
+        }}
+      >
+        <For each={["Parents", "Focused Node & Siblings", "Children"]}>
+          {(layerLabel, index) => (
+            <li
+              role="group"
+              aria-label={`${layerLabel} layer with ${
+                getGraphLayers()[index()].length
+              } nodes`}
               style={{
                 display: "grid",
-                "grid-template-columns":
-                  "repeat(auto-fill, minmax(100px, 1fr))",
+                "grid-template-columns": "200px 1fr",
+                "align-items": "center",
                 gap: "10px",
+                "min-height": "50px",
               }}
             >
-              <For each={getGraphLayers()[index()]}>
-                {(node) => (
-                  <button
-                    aria-label={node.description}
-                    onClick={() => {
-                      updateFocus(node.id);
-                    }}
-                    style={
-                      isFocusedNode(node.id)
-                        ? { "background-color": "lightskyblue" }
-                        : isCurrentParent(node.id) && index() === 0 // Apply the style only to parent nodes
-                        ? { "background-color": "lightblue" }
-                        : {}
-                    }
-                  >
-                    {node.description}
-                  </button>
-                )}
-              </For>
-              {getGraphLayers()[index()].length === 0 && (
-                <span
-                  style={{ color: "grey" }}
-                  aria-label={`There are no nodes in the ${layerLabel} layer`}
-                >
-                  None
+              <div>
+                <span aria-hidden={true} style={{ "text-align": "right" }}>
+                  {layerLabel}
                 </span>
-              )}
-            </div>
-          </div>
-        )}
-      </For>
+                {layerLabel === "Parents" ? (
+                  <button onClick={cycleThroughParents}>
+                    Change Parent Focus
+                  </button>
+                ) : null}
+              </div>
+              <ul
+                style={{
+                  display: "grid",
+                  "grid-template-columns":
+                    "repeat(auto-fill, minmax(100px, 1fr))",
+                  gap: "10px",
+                  padding: 0,
+                  "list-style": "none",
+                }}
+              >
+                <For each={getGraphLayers()[index()]}>
+                  {(node) => (
+                    <li style={{ margin: 0 }}>
+                      <button
+                        aria-label={node.description}
+                        onClick={() => {
+                          updateFocus(node.id);
+                        }}
+                        style={
+                          isFocusedNode(node.id)
+                            ? { "background-color": "lightskyblue" }
+                            : isCurrentParent(node.id) && index() === 0
+                            ? { "background-color": "lightblue" }
+                            : {}
+                        }
+                      >
+                        {node.description}
+                      </button>
+                    </li>
+                  )}
+                </For>
+                {getGraphLayers()[index()].length === 0 && (
+                  <li
+                    style={{ color: "grey", "grid-column": "1 / -1" }}
+                    aria-label={`There are no nodes in the ${layerLabel} layer`}
+                  >
+                    None
+                  </li>
+                )}
+              </ul>
+            </li>
+          )}
+        </For>
+      </ul>
     </div>
   );
 };
