@@ -129,6 +129,7 @@ export const Background = withBluefish((props: BackgroundProps) => {
       },
       customData: {
         "aria-label": props["aria-label"],
+        isBackground: true,
       },
     };
   };

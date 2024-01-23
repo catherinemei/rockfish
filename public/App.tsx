@@ -12,6 +12,7 @@ import Ref from "../src/ref";
 import Arrow from "../src/arrow";
 import Text from "../src/text";
 import { StackV } from "../src/stackv";
+import Group from "../src/group";
 
 const arr = Array.from({ length: 1000 }, (_, i) => i + 1);
 
@@ -325,43 +326,57 @@ const App: Component = () => {
   return (
     <>
       <Bluefish id="bluefish-planets" padding={20} aria-label="Bluefish">
-        <Background aria-label="Background">
-          <StackH spacing={50} aria-label="StackH">
-            <Circle
-              name="mercury"
-              r={15}
-              fill={"#EBE3CF"}
-              stroke-width={3}
-              stroke={"black"}
-              aria-label="Mercury"
-            />
-            <Circle
-              name="venus"
-              r={36}
-              fill={"#DC933C"}
-              stroke-width={3}
-              stroke={"black"}
-              aria-label="Venus"
-            />
-            <Circle
-              name="earth"
-              r={38}
-              fill={"#179DD7"}
-              stroke-width={3}
-              stroke={"black"}
-              aria-label="Earth"
-            />
-            <Circle
-              name="mars"
-              r={21}
-              fill={"#F1CF8E"}
-              stroke-width={3}
-              stroke={"black"}
-              aria-label="Mars"
-            />
-          </StackH>
-        </Background>
-        <StackV spacing={60} aria-label="StackV">
+        <Group
+          aria-label="Group"
+          rels={() => (
+            <>
+              <StackV spacing={60} aria-label="StackV">
+                <Ref select="label" />
+                <Ref select="mercury" />
+              </StackV>
+              <Arrow aria-label="Arrow">
+                <Ref select="label" />
+                <Ref select="mercury" />
+              </Arrow>
+            </>
+          )}
+        >
+          <Background aria-label="Background">
+            <StackH spacing={50} aria-label="StackH">
+              <Circle
+                name="mercury"
+                r={15}
+                fill={"#EBE3CF"}
+                stroke-width={3}
+                stroke={"black"}
+                aria-label="Mercury"
+              />
+              <Circle
+                name="venus"
+                r={36}
+                fill={"#DC933C"}
+                stroke-width={3}
+                stroke={"black"}
+                aria-label="Venus"
+              />
+              <Circle
+                name="earth"
+                r={38}
+                fill={"#179DD7"}
+                stroke-width={3}
+                stroke={"black"}
+                aria-label="Earth"
+              />
+              <Circle
+                name="mars"
+                r={21}
+                fill={"#F1CF8E"}
+                stroke-width={3}
+                stroke={"black"}
+                aria-label="Mars"
+              />
+            </StackH>
+          </Background>
           <Text
             name="label"
             vertical-anchor="start"
@@ -370,12 +385,7 @@ const App: Component = () => {
           >
             Mercury
           </Text>
-          <Ref select="mercury" />
-        </StackV>
-        <Arrow aria-label="Arrow">
-          <Ref select="label" />
-          <Ref select="mercury" />
-        </Arrow>
+        </Group>
       </Bluefish>
 
       <br />

@@ -45,10 +45,13 @@ export function parseScenegraphToTraversalGraph(scenegraph: {
 
   let [rootNode, scenegraphNodes] = Object.entries(scenegraph)[0];
   let rootId = rootNode;
+  const nodesToSkip = [];
 
   for (const scenegraphNodeId in scenegraphNodes) {
     const scenegraphNodeVal = scenegraphNodes[scenegraphNodeId];
-    if (scenegraphNodeVal.type === "ref") {
+    if (scenegraphNodeId in nodesToSkip) {
+      continue;
+    } else if (scenegraphNodeVal.type === "ref") {
       const fromId = scenegraphNodeVal.parent;
       const toId = scenegraphNodeVal.refId;
       graph[fromId].children.push(toId);
@@ -69,13 +72,20 @@ export function parseScenegraphToTraversalGraph(scenegraph: {
         description:
           scenegraphNodeVal.customData["aria-label"] ?? scenegraphNodeId,
       };
-      if (scenegraphNodeVal["children"]) {
-        node.children = scenegraphNodeVal["children"].map(
-          (child: any) => child
-        );
+
+      // TODO: remove this hack for background once it's fixed
+      if (scenegraphNodeVal.customData.isBackground) {
+        const backgroundShapeId: string = scenegraphNodeVal.children[0];
+        nodesToSkip.push(backgroundShapeId);
+        node.children = scenegraphNodeVal.children.filter((child: string) => {
+          return child !== backgroundShapeId;
+        });
+      } else if (scenegraphNodeVal.children) {
+        node.children = scenegraphNodeVal.children.map((child: any) => child);
       }
-      if (scenegraphNodeVal["parent"]) {
-        node.parents.push(scenegraphNodeVal["parent"]);
+
+      if (scenegraphNodeVal.parent) {
+        node.parents.push(scenegraphNodeVal.parent);
       }
       graph[scenegraphNodeId] = node;
     }
