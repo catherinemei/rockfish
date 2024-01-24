@@ -94,8 +94,20 @@ export function parseScenegraphToTraversalGraph(scenegraph: {
   return [graph, rootId];
 }
 
+export function parseNodesToTraversalGraph(nodes: Node[]): TraversalGraph {
+  let graph: TraversalGraph = {};
+
+  nodes.forEach((node) => {
+    graph[node.id] = node;
+  });
+
+  return graph;
+}
+
 export type TraversalProps = {
   visualizeGraph?: boolean;
+  useHardcodedGraph?: boolean;
+  hardcodedNodes?: Node[];
 };
 
 export const TraversalComponent = (props: TraversalProps) => {
@@ -121,16 +133,27 @@ export const TraversalComponent = (props: TraversalProps) => {
 
   // React to changes in scenegraph
   createEffect(() => {
-    const currentScenegraph = scenegraph();
-    if (Object.keys(currentScenegraph).length > 0) {
-      let [outputGraph, outputRootId] =
-        parseScenegraphToTraversalGraph(currentScenegraph);
+    if (props.useHardcodedGraph) {
+      const outputGraph = parseNodesToTraversalGraph(props.hardcodedNodes!);
+      const outputRootId = props.hardcodedNodes![0].id;
       setGraph(outputGraph);
       setRootId(outputRootId);
       setFocusedNodeId(outputRootId);
       setAccessedNodes([outputRootId]);
       let curDefaultPaths = calculateDefaultPaths(outputGraph, outputRootId);
       setDefaultPaths(curDefaultPaths);
+    } else {
+      const currentScenegraph = scenegraph();
+      if (Object.keys(currentScenegraph).length > 0) {
+        let [outputGraph, outputRootId] =
+          parseScenegraphToTraversalGraph(currentScenegraph);
+        setGraph(outputGraph);
+        setRootId(outputRootId);
+        setFocusedNodeId(outputRootId);
+        setAccessedNodes([outputRootId]);
+        let curDefaultPaths = calculateDefaultPaths(outputGraph, outputRootId);
+        setDefaultPaths(curDefaultPaths);
+      }
     }
   });
 

@@ -74,7 +74,7 @@ export const GraphVisualizer = (props: GraphProps) => {
   });
 
   return (
-    <svg width="1000" height="600">
+    <svg width="1000" height="500">
       <For each={layout().nodes}>
         {(node) => (
           <g transform={`translate(${node.x}, ${node.y})`}>
