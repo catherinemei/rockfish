@@ -13,6 +13,11 @@ import Arrow from "../src/arrow";
 import Text from "../src/text";
 import { StackV } from "../src/stackv";
 import Group from "../src/group";
+import {
+  ObjectNode,
+  RelationNode,
+  TraverseObjRelComponent,
+} from "../examples/traversal-rel-obj";
 
 const arr = Array.from({ length: 1000 }, (_, i) => i + 1);
 
@@ -323,9 +328,196 @@ const App: Component = () => {
     },
   ];
 
+  const pulleyTraversal: (ObjectNode | RelationNode)[] = [
+    {
+      id: "root",
+      description: "Bluefish",
+      parent: "root",
+      children: [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+      ],
+      relations: [],
+    },
+    {
+      id: "0",
+      description: "W1 (a)",
+      parent: "root",
+      children: ["13"],
+      relations: ["17"],
+    },
+    {
+      id: "1",
+      description: "RopeP (b)",
+      parent: "root",
+      children: [],
+      relations: ["14", "17"],
+    },
+    {
+      id: "2",
+      description: "RopeQ (c)",
+      parent: "root",
+      children: [],
+      relations: ["14", "18"],
+    },
+    {
+      id: "3",
+      description: "PulleyA (d)",
+      parent: "root",
+      children: [],
+      relations: ["14", "19"],
+    },
+    {
+      id: "4",
+      description: "W2 (e)",
+      parent: "root",
+      children: [],
+      relations: ["18", "20"],
+    },
+    {
+      id: "5",
+      description: "RopeX (f)",
+      parent: "root",
+      children: [],
+      relations: ["15", "19"],
+    },
+    {
+      id: "6",
+      description: "PulleyB (g)",
+      parent: "root",
+      children: [],
+      relations: ["15", "21"],
+    },
+    {
+      id: "7",
+      description: "RopeY (h)",
+      parent: "root",
+      children: [],
+      relations: ["15", "16", "22"],
+    },
+    {
+      id: "8",
+      description: "PulleyC (i)",
+      parent: "root",
+      children: [],
+      relations: ["16", "22", "23", "24"],
+    },
+    {
+      id: "9",
+      description: "RopeZ (j)",
+      parent: "root",
+      children: [],
+      relations: ["16", "23", "25"],
+    },
+    {
+      id: "10",
+      description: "RopeT (k)",
+      parent: "root",
+      children: [],
+      relations: ["21", "26"],
+    },
+    {
+      id: "11",
+      description: "RopeS (l)",
+      parent: "root",
+      children: [],
+      relations: ["20", "24"],
+    },
+    {
+      id: "12",
+      description: "Wall (m)",
+      parent: "root",
+      children: [],
+      relations: ["25", "26"],
+    },
+    {
+      id: "13",
+      description: "1 (W1 label)",
+      parent: "0",
+      children: [],
+      relations: [],
+    },
+    {
+      id: "14",
+      description: "Pulley-system at PulleyA (d)",
+      members: ["1", "2", "3"],
+    },
+    {
+      id: "15",
+      description: "Pulley-system at PulleyB (g)",
+      members: ["5", "6", "7"],
+    },
+    {
+      id: "16",
+      description: "Pulley-system at PulleyC (i)",
+      members: ["7", "8", "9"],
+    },
+    {
+      id: "17",
+      description: "Weight W1 (a) hangs from RopeP (b)",
+      members: ["0", "1"],
+    },
+    {
+      id: "18",
+      description: "Weight W2 (e) hangs from RopeQ (c)",
+      members: ["4", "2"],
+    },
+    {
+      id: "19",
+      description: "PulleyA (d) hangs from RopeX (f)",
+      members: ["3", "5"],
+    },
+    {
+      id: "20",
+      description: "Weight W2 (e) hangs from RopeS (l)",
+      members: ["4", "11"],
+    },
+    {
+      id: "21",
+      description: "PulleyB (g) hangs from RopeT (k)",
+      members: ["6", "10"],
+    },
+    {
+      id: "22",
+      description: "PulleyC (i) hangs from RopeY (h)",
+      members: ["8", "7"],
+    },
+    {
+      id: "23",
+      description: "PulleyC (i) hangs from RopeZ (j)",
+      members: ["8", "9"],
+    },
+    {
+      id: "24",
+      description: "RopeS (l) hangs PulleyC (i)",
+      members: ["11", "8"],
+    },
+    {
+      id: "25",
+      description: "RopeZ (j) hangs from Wall (m)",
+      members: ["9", "12"],
+    },
+    {
+      id: "26",
+      description: "RopeT (k) hangs from Wall (m)",
+      members: ["10", "12"],
+    },
+  ];
+
   return (
     <>
-      <Bluefish id="bluefish-planets" padding={20} aria-label="Bluefish">
+      {/* <Bluefish id="bluefish-planets" padding={20} aria-label="Bluefish">
         <Group
           aria-label="Group"
           rels={() => (
@@ -386,10 +578,11 @@ const App: Component = () => {
             Mercury
           </Text>
         </Group>
-      </Bluefish>
+      </Bluefish> */}
 
+      {/* <TraversalComponent visualizeGraph /> */}
       <br />
-      <TraversalComponent visualizeGraph />
+      <TraverseObjRelComponent nodes={pulleyTraversal} />
     </>
   );
 };
