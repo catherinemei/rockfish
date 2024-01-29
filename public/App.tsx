@@ -329,27 +329,27 @@ const App: Component = () => {
   ];
 
   const pulleyTraversal: (ObjectNode | RelationNode)[] = [
-    {
-      id: "root",
-      description: "Bluefish",
-      parent: "",
-      children: [
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "11",
-        "12",
-      ],
-      relations: [],
-    },
+    // {
+    //   id: "root",
+    //   description: "Bluefish",
+    //   parent: "",
+    //   children: [
+    //     "0",
+    //     "1",
+    //     "2",
+    //     "3",
+    //     "4",
+    //     "5",
+    //     "6",
+    //     "7",
+    //     "8",
+    //     "9",
+    //     "10",
+    //     "11",
+    //     "12",
+    //   ],
+    //   relations: [],
+    // },
     {
       id: "0",
       description: "W1 (a)",

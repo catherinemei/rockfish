@@ -1,5 +1,7 @@
 import { createSignal, For } from "solid-js";
 import { RelationNode, ObjectNode } from "./traversal-rel-obj";
+import dagre from "dagre";
+
 type Id = string;
 export type RelObjVisualizerComponentProps = {
   objectNodes: ObjectNode[];
@@ -10,134 +12,116 @@ export const RelObjGraphVisualizer = (
   props: RelObjVisualizerComponentProps
 ) => {
   const calculateLayout = () => {
-    const levels = new Map();
-    let maxLevel = 0;
-    const nodePositions = new Map();
-    const edges: any = [];
+    // Create a new directed graph
+    const g = new dagre.graphlib.Graph();
+    g.setGraph({});
+    g.setDefaultEdgeLabel(() => ({}));
 
-    // Assign levels to ObjectNodes, starting from level 2
-    const assignLevel = (nodeId: Id, level: number) => {
-      if (levels.has(nodeId)) return;
-      levels.set(nodeId, level);
-      maxLevel = Math.max(maxLevel, level);
+    const augmentedEdges: any = [];
 
-      const children =
-        props.objectNodes.find((n) => n.id === nodeId)?.children || [];
-      children.forEach((childId) => assignLevel(childId, level + 1));
-    };
-
-    // Start from root ObjectNodes
-    assignLevel("root", 0); // Assign level 1 to root node
-    props.objectNodes
-      .filter((node) => !node.parent || node.parent === "root")
-      .forEach((nonRootNode) => {
-        assignLevel(nonRootNode.id, 1); // Start from level 2 for ObjectNodes that are not root
-      });
-
-    // Calculate positions for ObjectNodes
-    const levelWidths = new Array(maxLevel + 1).fill(0);
-
-    levels.forEach((level, nodeId) => {
-      const position = levelWidths[level]++;
-      const node = props.objectNodes.find((n) => n.id === nodeId);
-      nodePositions.set(nodeId, {
-        x: position * 90 + 50,
-        y: level * 100,
-        description: node?.description,
-        type: "object",
-      });
-    });
-
-    // Adjust root to be central
-    const maxWidth = Math.max(...levelWidths);
-    const oldRootObject = nodePositions.get("root");
-    nodePositions.set("root", {
-      x: (maxWidth * 90) / 2,
-      y: oldRootObject.y,
-      description: oldRootObject.description,
-      type: oldRootObject.type,
-    });
-
-    // Calculate paths for ObjectNode edges
+    // Set nodes for ObjectNodes
     props.objectNodes.forEach((node) => {
-      const fromPos = nodePositions.get(node.id);
+      g.setNode(node.id, { label: node.description, width: 80, height: 20 }); // Adjust width and height as needed
       node.children.forEach((childId) => {
-        const toPos = nodePositions.get(childId);
-        if (fromPos && toPos) {
-          const path = `M ${fromPos.x + 45} ${fromPos.y + 20} L ${
-            toPos.x + 45
-          } ${toPos.y - 5}`;
-          edges.push({ path, type: "object" });
-        }
+        g.setEdge(node.id, childId);
+        augmentedEdges.push({ from: node.id, to: childId, type: "object" });
       });
     });
 
-    // Calculate positions for RelationNodes
-    props.relationNodes.forEach((node, index) => {
-      const x = index * 110;
-      const y = (maxLevel + 1) * 100;
-      nodePositions.set(node.id, {
-        x,
-        y,
-        description: node.description,
-        type: "relation",
-      });
-
-      // Calculate paths for RelationNode edges
+    // Set nodes for RelationNodes
+    props.relationNodes.forEach((node) => {
+      g.setNode(node.id, { label: node.description, width: 80, height: 40 }); // Adjust width and height as needed
       node.members.forEach((memberId) => {
-        const memberNode = nodePositions.get(memberId);
-        if (memberNode) {
-          const path = `M ${x + 90} ${y} L ${memberNode.x + 45} ${
-            memberNode.y + 25
-          }`;
-          edges.push({ path, type: "relation" });
-        }
+        g.setEdge(node.id, memberId);
+        augmentedEdges.push({ from: node.id, to: memberId, type: "relation" });
       });
     });
+
+    // Compute the layout (synchronous)
+    dagre.layout(g);
+
+    const augmentedNodes = g.nodes().map((node) => {
+      const dagreNode = g.node(node);
+      const originalNode =
+        props.objectNodes.find((n) => n.id === node) ||
+        props.relationNodes.find((n) => n.id === node);
+
+      // Determine the type of the node
+      let type = "object";
+      if (originalNode && "members" in originalNode) {
+        type = "relation";
+      }
+
+      return { ...dagreNode, id: node, type: type };
+    });
+
+    // Extract the nodes and edges from the graph
+    const nodes = g.nodes().map((node) => ({ ...g.node(node), id: node }));
 
     // Calculate SVG dimensions
-    const svgWidth =
-      Math.max(...Array.from(nodePositions.values(), (pos) => pos.x)) + 250;
+    const svgWidth = Math.max(...nodes.map((node) => node.x + node.width)) + 50;
     const svgHeight =
-      Math.max(...Array.from(nodePositions.values(), (pos) => pos.y)) + 100;
-    console.log(nodePositions);
-    console.log(props.objectNodes);
-    console.log(props.relationNodes);
+      Math.max(...nodes.map((node) => node.y + node.height)) + 50;
 
     return {
-      nodes: Array.from(nodePositions.values()),
-      edges,
+      nodes: augmentedNodes,
+      edges: augmentedEdges,
       svgWidth,
       svgHeight,
     };
   };
 
+  const getEdgePath = (edge: any) => {
+    console.log(edge);
+    const fromNode = layout().nodes.find((node) => node.id === edge.from);
+    const toNode = layout().nodes.find((node) => node.id === edge.to);
+
+    if (!fromNode || !toNode) return "";
+
+    // Calculate edge path considering node dimensions
+    const fromX = fromNode.x + (fromNode.type === "relation" ? 20 : 0);
+    const fromY = fromNode.y + fromNode.height / 2;
+    const toX = toNode.x;
+    const toY = toNode.y - toNode.height / 2;
+
+    return `M ${fromX} ${fromY} L ${toX} ${toY}`;
+  };
+
   const [layout, setLayout] = createSignal(calculateLayout());
 
   return (
-    <svg width={layout().svgWidth} height={layout().svgHeight}>
+    <svg
+      width={layout().svgWidth}
+      height={layout().svgHeight}
+      style={{ "padding-left": "10px" }}
+    >
       <For each={layout().nodes}>
         {(node) => (
-          <g transform={`translate(${node.x}, ${node.y})`}>
+          <g
+            transform={`translate(${node.x - node.width / 2}, ${
+              node.y - node.height / 2
+            })`}
+          >
             {node.type === "object" ? (
               <rect width="80" height="20" fill="lightblue" />
             ) : (
               <ellipse
-                cx="80"
-                cy="0"
-                rx="55"
+                cx="60"
+                cy="20"
+                rx="60"
                 ry="20"
                 fill="purple"
                 opacity={0.5}
               />
             )}
             <text
-              x={node.type === "object" ? 40 : 80}
-              y={node.type === "object" ? 15 : 5}
+              x={node.type === "object" ? 40 : 60}
+              y={node.type === "object" ? 10 : 20}
               font-size={node.type === "object" ? "15px" : "12px"}
               text-anchor="middle"
+              dominant-baseline="central"
             >
-              {node.description}
+              {node.label}
             </text>
           </g>
         )}
@@ -145,7 +129,7 @@ export const RelObjGraphVisualizer = (
       <For each={layout().edges}>
         {(edge) => (
           <path
-            d={edge.path}
+            d={getEdgePath(edge)}
             stroke={edge.type === "relation" ? "purple" : "green"}
             fill="none"
             marker-end={
