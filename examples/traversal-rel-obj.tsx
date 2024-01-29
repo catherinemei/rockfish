@@ -24,8 +24,7 @@ export type ObjectComponentProps = {
 export function ObjectNodeComponent(props: ObjectComponentProps) {
   return (
     <div style="padding-left: 50px;">
-      <p style="font-weight:bold;">Object with ID: {props.object.id}</p>
-      <p style="font-weight:bold;">Description: {props.object.description}</p>
+      <p style="font-weight:bold;">{props.object.description}</p>
       <div
         style={{
           display: "flex",
@@ -128,8 +127,7 @@ export type RelationComponentProps = {
 export function RelationNodeComponent(props: RelationComponentProps) {
   return (
     <div style="padding-left: 50px;">
-      <p style="font-weight:bold;">Relation with ID: {props.relation.id}</p>
-      <p style="font-weight:bold;">Description: {props.relation.description}</p>
+      <p style="font-weight:bold;">{props.relation.description}</p>
       <div
         style={{
           display: "flex",
@@ -193,7 +191,6 @@ export function TraverseObjRelComponent(props: TraverseObjRelComponentProps) {
   const renderCurrentNode = () => {
     const currentNode = nodeMap.get(currentNodeId());
     if ("members" in currentNode) {
-      // It's a RelationNode
       return (
         <RelationNodeComponent
           relation={currentNode}
@@ -202,7 +199,6 @@ export function TraverseObjRelComponent(props: TraverseObjRelComponentProps) {
         />
       );
     } else {
-      // It's an ObjectNode
       return (
         <ObjectNodeComponent
           object={currentNode}
