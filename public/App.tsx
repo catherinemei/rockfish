@@ -332,7 +332,7 @@ const App: Component = () => {
     {
       id: "root",
       description: "Bluefish",
-      parent: "root",
+      parent: "",
       children: [
         "0",
         "1",
@@ -450,67 +450,80 @@ const App: Component = () => {
     },
     {
       id: "14",
-      description: "Pulley-system at PulleyA (d)",
+      description: "Pulley-system (14)",
+      // description: "Pulley-system at PulleyA (d)",
       members: ["1", "2", "3"],
     },
     {
       id: "15",
-      description: "Pulley-system at PulleyB (g)",
+      description: "Pulley-system (15)",
+      // description: "Pulley-system at PulleyB (g)",
       members: ["5", "6", "7"],
     },
     {
       id: "16",
-      description: "Pulley-system at PulleyC (i)",
+      description: "Pulley-system (16)",
+      // description: "Pulley-system at PulleyC (i)",
       members: ["7", "8", "9"],
     },
     {
       id: "17",
-      description: "Weight W1 (a) hangs from RopeP (b)",
+      description: "Hangs from (17)",
+      // description: "Weight W1 (a) hangs from RopeP (b)",
       members: ["0", "1"],
     },
     {
       id: "18",
-      description: "Weight W2 (e) hangs from RopeQ (c)",
+      description: "Hangs from (18)",
+      // description: "Weight W2 (e) hangs from RopeQ (c)",
       members: ["4", "2"],
     },
     {
       id: "19",
-      description: "PulleyA (d) hangs from RopeX (f)",
+      description: "Hangs from (19)",
+      // description: "PulleyA (d) hangs from RopeX (f)",
       members: ["3", "5"],
     },
     {
       id: "20",
-      description: "Weight W2 (e) hangs from RopeS (l)",
+      description: "Hangs from (20)",
+      // description: "Weight W2 (e) hangs from RopeS (l)",
       members: ["4", "11"],
     },
     {
       id: "21",
-      description: "PulleyB (g) hangs from RopeT (k)",
+      description: "Hangs from (21)",
+      // description: "PulleyB (g) hangs from RopeT (k)",
       members: ["6", "10"],
     },
     {
       id: "22",
-      description: "PulleyC (i) hangs from RopeY (h)",
+      description: "Hangs from (22)",
+      // description: "PulleyC (i) hangs from RopeY (h)",
       members: ["8", "7"],
     },
     {
       id: "23",
-      description: "PulleyC (i) hangs from RopeZ (j)",
+      description: "Hangs from (23)",
+      // description: "PulleyC (i) hangs from RopeZ (j)",
       members: ["8", "9"],
     },
     {
       id: "24",
-      description: "RopeS (l) hangs PulleyC (i)",
+      description: "Hangs from (24)",
+      // description: "RopeS (l) hangs from PulleyC (i)",
       members: ["11", "8"],
     },
     {
       id: "25",
-      description: "RopeZ (j) hangs from Wall (m)",
+      description: "Hangs from (25)",
+      // description: "RopeZ (j) hangs from Wall (m)",
       members: ["9", "12"],
     },
     {
       id: "26",
-      description: "RopeT (k) hangs from Wall (m)",
+      description: "Hangs from (26)",
+      // description: "RopeT (k) hangs from Wall (m)",
       members: ["10", "12"],
     },
   ];
@@ -582,7 +595,7 @@ const App: Component = () => {
 
       {/* <TraversalComponent visualizeGraph /> */}
       <br />
-      <TraverseObjRelComponent nodes={pulleyTraversal} />
+      <TraverseObjRelComponent nodes={pulleyTraversal} visualizeGraph />
     </>
   );
 };
