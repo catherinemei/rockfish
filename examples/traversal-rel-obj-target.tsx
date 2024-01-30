@@ -108,7 +108,7 @@ export const RelObjGraphVisualizer = (
               <ellipse
                 cx="60"
                 cy="20"
-                rx="60"
+                rx="65"
                 ry="20"
                 fill="purple"
                 opacity={0.5}
@@ -117,7 +117,7 @@ export const RelObjGraphVisualizer = (
             <text
               x={node.type === "object" ? 40 : 60}
               y={node.type === "object" ? 10 : 20}
-              font-size={node.type === "object" ? "15px" : "12px"}
+              font-size={node.type === "object" ? "15px" : "11px"}
               text-anchor="middle"
               dominant-baseline="central"
             >
