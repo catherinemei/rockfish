@@ -328,6 +328,75 @@ const App: Component = () => {
     },
   ];
 
+  const planetTraversalRelObject: (ObjectNode | RelationNode)[] = [
+    {
+      id: "0",
+      description: "Bluefish",
+      parent: "",
+      children: ["1", "2"],
+      relations: [],
+    },
+    {
+      id: "1",
+      description: "Background",
+      parent: "0",
+      children: ["3"],
+      relations: [],
+    },
+    {
+      id: "2",
+      description: "Text",
+      parent: "0",
+      children: [],
+      relations: ["8", "9"],
+    },
+    {
+      id: "3",
+      description: "StackH",
+      parent: "1",
+      children: ["4", "5", "6", "7"],
+      relations: [],
+    },
+    {
+      id: "4",
+      description: "Circle (mercury)",
+      parent: "3",
+      children: [],
+      relations: ["8", "9"],
+    },
+    {
+      id: "5",
+      description: "Circle (venus)",
+      parent: "3",
+      children: [],
+      relations: [],
+    },
+    {
+      id: "6",
+      description: "Circle (earth)",
+      parent: "3",
+      children: [],
+      relations: [],
+    },
+    {
+      id: "7",
+      description: "Circle (mars)",
+      parent: "3",
+      children: [],
+      relations: [],
+    },
+    {
+      id: "8",
+      description: "Arrow",
+      members: ["2", "4"],
+    },
+    {
+      id: "9",
+      description: "StackV",
+      members: ["2", "4"],
+    },
+  ];
+
   const pulleyTraversal: (ObjectNode | RelationNode)[] = [
     // {
     //   id: "root",
@@ -596,6 +665,11 @@ const App: Component = () => {
       {/* <TraversalComponent visualizeGraph /> */}
       <br />
       <TraverseObjRelComponent nodes={pulleyTraversal} visualizeGraph />
+      <br />
+      <TraverseObjRelComponent
+        nodes={planetTraversalRelObject}
+        visualizeGraph
+      />
     </>
   );
 };

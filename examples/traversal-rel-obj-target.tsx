@@ -30,11 +30,22 @@ export const RelObjGraphVisualizer = (
 
     // Set nodes for RelationNodes
     props.relationNodes.forEach((node) => {
-      g.setNode(node.id, { label: node.description, width: 80, height: 40 }); // Adjust width and height as needed
-      node.members.forEach((memberId) => {
-        g.setEdge(node.id, memberId);
-        augmentedEdges.push({ from: node.id, to: memberId, type: "relation" });
-      });
+      if (node.members.length === 2) {
+        // Direct edge between the two members for binary relation
+        const [from, to] = node.members;
+        augmentedEdges.push({ from, to, type: "binary-relation" });
+      } else {
+        // Regular relation node and edges
+        g.setNode(node.id, { label: node.description, width: 80, height: 40 });
+        node.members.forEach((memberId) => {
+          g.setEdge(node.id, memberId);
+          augmentedEdges.push({
+            from: node.id,
+            to: memberId,
+            type: "relation",
+          });
+        });
+      }
     });
 
     // Compute the layout (synchronous)
@@ -78,13 +89,23 @@ export const RelObjGraphVisualizer = (
 
     if (!fromNode || !toNode) return "";
 
-    // Calculate edge path considering node dimensions
-    const fromX = fromNode.x + (fromNode.type === "relation" ? 20 : 0);
-    const fromY = fromNode.y + fromNode.height / 2;
-    const toX = toNode.x;
-    const toY = toNode.y - toNode.height / 2;
+    if (edge.type === "binary-relation") {
+      const fromX = fromNode.x + 50;
+      const fromY = fromNode.y;
+      const toX = toNode.x + 20;
+      const toY = toNode.y;
+      // Adjust these values to change the curvature
+      const ctrlPointX = (fromX + toX) / 2;
+      const ctrlPointY = Math.min(fromY, toY) + 50;
 
-    return `M ${fromX} ${fromY} L ${toX} ${toY}`;
+      return `M ${fromX} ${fromY} Q ${ctrlPointX} ${ctrlPointY}, ${toX} ${toY}`;
+    } else {
+      const fromX = fromNode.x + 20;
+      const fromY = fromNode.y + fromNode.height / 2;
+      const toX = toNode.x + 20;
+      const toY = toNode.y - toNode.height / 2;
+      return `M ${fromX} ${fromY} L ${toX} ${toY}`;
+    }
   };
 
   const [layout, setLayout] = createSignal(calculateLayout());
@@ -103,7 +124,7 @@ export const RelObjGraphVisualizer = (
             })`}
           >
             {node.type === "object" ? (
-              <rect width="80" height="20" fill="lightblue" />
+              <rect width="120" height="20" fill="lightblue" />
             ) : (
               <ellipse
                 cx="60"
@@ -115,7 +136,7 @@ export const RelObjGraphVisualizer = (
               />
             )}
             <text
-              x={node.type === "object" ? 40 : 60}
+              x="60"
               y={node.type === "object" ? 10 : 20}
               font-size={node.type === "object" ? "15px" : "11px"}
               text-anchor="middle"
@@ -130,13 +151,16 @@ export const RelObjGraphVisualizer = (
         {(edge) => (
           <path
             d={getEdgePath(edge)}
-            stroke={edge.type === "relation" ? "purple" : "green"}
+            stroke={edge.type === "object" ? "green" : "purple"}
             fill="none"
             marker-end={
               edge.type === "relation"
                 ? "url(#arrowhead-purple)"
-                : "url(#arrowhead-green)"
+                : edge.type === "object"
+                ? "url(#arrowhead-green)"
+                : "none"
             }
+            marker-start="none"
           />
         )}
       </For>

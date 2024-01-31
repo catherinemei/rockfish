@@ -22,6 +22,36 @@ export type ObjectComponentProps = {
 };
 
 export function ObjectNodeComponent(props: ObjectComponentProps) {
+  const renderRelationButton = (relationId: Id) => {
+    const relation = props.nodeMap.get(relationId) as RelationNode;
+    if (relation && relation.members && relation.members.length === 2) {
+      // Find the other member in the relation
+      const otherMemberId: Id =
+        relation.members.find((member) => member !== props.object.id) || "";
+      return (
+        <button
+          onClick={() => props.onNodeClick(otherMemberId)}
+          aria-label={otherMemberId}
+          style={{ "margin-right": "5px", "margin-bottom": "5px" }}
+        >
+          {relation.description} connects to{" "}
+          {props.nodeMap.get(otherMemberId)?.description || otherMemberId}
+        </button>
+      );
+    } else {
+      // Render a button for the relation itself
+      return (
+        <button
+          onClick={() => props.onNodeClick(relationId)}
+          aria-label={relationId}
+          style={{ "margin-right": "5px", "margin-bottom": "5px" }}
+        >
+          {relation?.description || relationId}
+        </button>
+      );
+    }
+  };
+
   return (
     <div style="padding-left: 50px;">
       <p style="font-weight:bold;">{props.object.description}</p>
@@ -99,15 +129,7 @@ export function ObjectNodeComponent(props: ObjectComponentProps) {
           }}
         >
           <For each={props.object.relations}>
-            {(relation) => (
-              <button
-                onClick={() => props.onNodeClick(relation)}
-                aria-label={relation}
-                style={{ "margin-right": "5px", "margin-bottom": "5px" }}
-              >
-                {props.nodeMap.get(relation)?.description || relation}
-              </button>
-            )}
+            {(relationId) => renderRelationButton(relationId)}
           </For>
           {props.object.relations.length === 0 && (
             <span style={{ color: "grey" }}>None</span>
