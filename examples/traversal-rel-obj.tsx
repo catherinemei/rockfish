@@ -239,7 +239,7 @@ export function TraverseObjRelComponent(props: TraverseObjRelComponentProps) {
           relationNodes={relationNodes}
         />
       ) : null}
-      <Show when={nodeMap.has(currentNodeId())}>{renderCurrentNode()}</Show>
+      {/* <Show when={nodeMap.has(currentNodeId())}>{renderCurrentNode()}</Show> */}
     </div>
   );
 }

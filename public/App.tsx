@@ -18,6 +18,10 @@ import {
   RelationNode,
   TraverseObjRelComponent,
 } from "../examples/traversal-rel-obj";
+import {
+  PriorityNode,
+  TraversePriorityComponent,
+} from "../examples/traversal-priority";
 
 const arr = Array.from({ length: 1000 }, (_, i) => i + 1);
 
@@ -397,6 +401,85 @@ const App: Component = () => {
     },
   ];
 
+  const planetTraversalPriority: PriorityNode[] = [
+    {
+      id: "0",
+      description: "Bluefish",
+      relations: [
+        { id: "1", priority: "contains/child" },
+        { id: "2", priority: "contains/child" },
+      ],
+    },
+    {
+      id: "1",
+      description: "Background",
+      relations: [
+        { id: "0", priority: "contained by/parent" },
+        { id: "3", priority: "contains/child" },
+      ],
+    },
+    {
+      id: "2",
+      description: "Text",
+      relations: [
+        { id: "0", priority: "contained by/parent" },
+        { id: "4", priority: "connected" },
+        { id: "4", priority: "aligned" },
+      ],
+    },
+    {
+      id: "3",
+      description: "StackH",
+      relations: [
+        { id: "1", priority: "contained by/parent" },
+        { id: "4", priority: "contains/child" },
+        { id: "5", priority: "contains/child" },
+        { id: "6", priority: "contains/child" },
+        { id: "7", priority: "contains/child" },
+      ],
+    },
+    {
+      id: "4",
+      description: "Circle (mercury)",
+      relations: [
+        { id: "3", priority: "contained by/parent" },
+        { id: "2", priority: "connected" },
+        { id: "2", priority: "aligned" },
+      ],
+    },
+    {
+      id: "5",
+      description: "Circle (venus)",
+      relations: [{ id: "3", priority: "contained by/parent" }],
+    },
+    {
+      id: "6",
+      description: "Circle (earth)",
+      relations: [{ id: "3", priority: "contained by/parent" }],
+    },
+    {
+      id: "7",
+      description: "Circle (mars)",
+      relations: [{ id: "3", priority: "contained by/parent" }],
+    },
+    // {
+    //   id: "8",
+    //   description: "Arrow",
+    //   relations: [
+    //     { id: "2", priority: "related" },
+    //     { id: "4", priority: "related" },
+    //   ],
+    // },
+    // {
+    //   id: "9",
+    //   description: "StackV",
+    //   relations: [
+    //     { id: "2", priority: "related" },
+    //     { id: "4", priority: "related" },
+    //   ],
+    // },
+  ];
+
   const pulleyTraversal: (ObjectNode | RelationNode)[] = [
     // {
     //   id: "root",
@@ -599,7 +682,7 @@ const App: Component = () => {
 
   return (
     <>
-      {/* <Bluefish id="bluefish-planets" padding={20} aria-label="Bluefish">
+      <Bluefish id="bluefish-planets" padding={20} aria-label="Bluefish">
         <Group
           aria-label="Group"
           rels={() => (
@@ -660,16 +743,18 @@ const App: Component = () => {
             Mercury
           </Text>
         </Group>
-      </Bluefish> */}
+      </Bluefish>
 
       {/* <TraversalComponent visualizeGraph /> */}
-      <br />
-      <TraverseObjRelComponent nodes={pulleyTraversal} visualizeGraph />
-      <br />
+      {/* <br /> */}
+      {/* <TraverseObjRelComponent nodes={pulleyTraversal} visualizeGraph /> */}
+      {/* <br /> */}
       <TraverseObjRelComponent
         nodes={planetTraversalRelObject}
         visualizeGraph
       />
+      <br />
+      <TraversePriorityComponent nodes={planetTraversalPriority} />
     </>
   );
 };
