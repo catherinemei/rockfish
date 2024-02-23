@@ -83,7 +83,6 @@ export const RelObjGraphVisualizer = (
   };
 
   const getEdgePath = (edge: any) => {
-    console.log(edge);
     const fromNode = layout().nodes.find((node) => node.id === edge.from);
     const toNode = layout().nodes.find((node) => node.id === edge.to);
 

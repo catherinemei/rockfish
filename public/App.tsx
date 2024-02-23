@@ -22,6 +22,8 @@ import {
   PriorityNode,
   TraversePriorityComponent,
 } from "../examples/traversal-priority";
+import Rect from "../src/rect";
+import Distribute from "../src/distribute";
 
 const arr = Array.from({ length: 1000 }, (_, i) => i + 1);
 
@@ -406,61 +408,61 @@ const App: Component = () => {
       id: "0",
       description: "Bluefish",
       relations: [
-        { id: "1", priority: "contains/child" },
-        { id: "2", priority: "contains/child" },
+        { id: "1", priority: "Contains (child)" },
+        { id: "2", priority: "Contains (child)" },
       ],
     },
     {
       id: "1",
       description: "Background",
       relations: [
-        { id: "0", priority: "contained by/parent" },
-        { id: "3", priority: "contains/child" },
+        { id: "0", priority: "Contained by (parent)" },
+        { id: "3", priority: "Contains (child)" },
       ],
     },
     {
       id: "2",
       description: "Text",
       relations: [
-        { id: "0", priority: "contained by/parent" },
-        { id: "4", priority: "connected" },
-        { id: "4", priority: "aligned" },
+        { id: "0", priority: "Contained by (parent)" },
+        { id: "4", priority: "Connected" },
+        { id: "4", priority: "Aligned" },
       ],
     },
     {
       id: "3",
       description: "StackH",
       relations: [
-        { id: "1", priority: "contained by/parent" },
-        { id: "4", priority: "contains/child" },
-        { id: "5", priority: "contains/child" },
-        { id: "6", priority: "contains/child" },
-        { id: "7", priority: "contains/child" },
+        { id: "1", priority: "Contained by (parent)" },
+        { id: "4", priority: "Contains (child)" },
+        { id: "5", priority: "Contains (child)" },
+        { id: "6", priority: "Contains (child)" },
+        { id: "7", priority: "Contains (child)" },
       ],
     },
     {
       id: "4",
       description: "Circle (mercury)",
       relations: [
-        { id: "3", priority: "contained by/parent" },
-        { id: "2", priority: "connected" },
-        { id: "2", priority: "aligned" },
+        { id: "3", priority: "Contained by (parent)" },
+        { id: "2", priority: "Connected" },
+        { id: "2", priority: "Aligned" },
       ],
     },
     {
       id: "5",
       description: "Circle (venus)",
-      relations: [{ id: "3", priority: "contained by/parent" }],
+      relations: [{ id: "3", priority: "Contained by (parent)" }],
     },
     {
       id: "6",
       description: "Circle (earth)",
-      relations: [{ id: "3", priority: "contained by/parent" }],
+      relations: [{ id: "3", priority: "Contained by (parent)" }],
     },
     {
       id: "7",
       description: "Circle (mars)",
-      relations: [{ id: "3", priority: "contained by/parent" }],
+      relations: [{ id: "3", priority: "Contained by (parent)" }],
     },
     // {
     //   id: "8",
@@ -632,7 +634,7 @@ const App: Component = () => {
     },
     {
       id: "19",
-      description: "PulleyA \nhangs from \nRopeX",
+      description: "PulleyA hangs from RopeX",
       // description: "PulleyA (d) hangs from RopeX (f)",
       members: ["3", "5"],
     },
@@ -677,6 +679,131 @@ const App: Component = () => {
       description: "RopeT hangs from Wall",
       // description: "RopeT (k) hangs from Wall (m)",
       members: ["10", "12"],
+    },
+  ];
+
+  const pulleyTraversalPriority: PriorityNode[] = [
+    {
+      id: "0",
+      description: "a: W1",
+      relations: [
+        { id: "13", priority: "Contains (child)" },
+        { id: "1", priority: "Hangs from" },
+      ],
+    },
+    {
+      id: "1",
+      description: "b: RopeP",
+      relations: [
+        { id: "2", priority: "Pulley System" },
+        { id: "3", priority: "Pulley System" },
+        { id: "0", priority: "Hangs from" },
+      ],
+    },
+    {
+      id: "2",
+      description: "c: RopeQ",
+      relations: [
+        { id: "1", priority: "Pulley System" },
+        { id: "3", priority: "Pulley System" },
+        { id: "4", priority: "Hangs from" },
+      ],
+    },
+    {
+      id: "3",
+      description: "d: PulleyA",
+      relations: [
+        { id: "1", priority: "Pulley System" },
+        { id: "2", priority: "Pulley System" },
+        { id: "5", priority: "Hangs from" },
+      ],
+    },
+    {
+      id: "4",
+      description: "e: W2",
+      relations: [
+        { id: "2", priority: "Hangs from" },
+        { id: "11", priority: "Hangs from" },
+      ],
+    },
+    {
+      id: "5",
+      description: "f: RopeX",
+      relations: [
+        { id: "6", priority: "Pulley System" },
+        { id: "7", priority: "Pulley System" },
+        { id: "3", priority: "Hangs from" },
+      ],
+    },
+    {
+      id: "6",
+      description: "g: PulleyB",
+      relations: [
+        { id: "5", priority: "Pulley System" },
+        { id: "7", priority: "Pulley System" },
+        { id: "10", priority: "Hangs from" },
+      ],
+    },
+    {
+      id: "7",
+      description: "h: RopeY",
+      relations: [
+        { id: "5", priority: "Pulley System" },
+        { id: "6", priority: "Pulley System" },
+        { id: "8", priority: "Pulley System" },
+        { id: "9", priority: "Pulley System" },
+        { id: "8", priority: "Hangs from" },
+      ],
+    },
+    {
+      id: "8",
+      description: "i: PulleyC",
+      relations: [
+        { id: "7", priority: "Pulley System" },
+        { id: "9", priority: "Pulley System" },
+        { id: "7", priority: "Hangs from" },
+        { id: "9", priority: "Hangs from" },
+        { id: "11", priority: "Hangs from" },
+      ],
+    },
+    {
+      id: "9",
+      description: "j: RopeZ",
+      relations: [
+        { id: "7", priority: "Pulley System" },
+        { id: "8", priority: "Pulley System" },
+        { id: "8", priority: "Hangs from" },
+        { id: "12", priority: "Hangs from" },
+      ],
+    },
+    {
+      id: "10",
+      description: "k: RopeT",
+      relations: [
+        { id: "6", priority: "Hangs from" },
+        { id: "12", priority: "Hangs from" },
+      ],
+    },
+    {
+      id: "11",
+      description: "l: RopeS",
+      relations: [
+        { id: "4", priority: "Hangs from" },
+        { id: "8", priority: "Hangs from" },
+      ],
+    },
+    {
+      id: "12",
+      description: "m: Wall",
+      relations: [
+        { id: "9", priority: "Hangs from" },
+        { id: "10", priority: "Hangs from" },
+      ],
+    },
+    {
+      id: "13",
+      description: "W1 label: 1",
+      relations: [{ id: "0", priority: "Contained by (parent)" }],
     },
   ];
 
@@ -755,6 +882,97 @@ const App: Component = () => {
       />
       <br />
       <TraversePriorityComponent nodes={planetTraversalPriority} />
+      <br />
+      {/* <Bluefish>
+        <Group
+          rels={() => (
+            <>
+              <StackH name="weights" spacing={20}>
+                <Ref select="w1" />
+                <Ref select="w2" />
+              </StackH>
+
+              <Align alignment="center">
+                <Ref select="w1Label" />
+                <Ref select="w1" />
+              </Align>
+              <Align alignment="center">
+                <Ref select="w2Label" />
+                <Ref select="w2" />
+              </Align>
+
+              <Distribute direction="vertical" spacing={300}>
+                <Ref select="wall" />
+                <Ref select="weights" />
+              </Distribute>
+
+              <Distribute direction="vertical" spacing={140}>
+                <Ref select="pulleyA" />
+                <Ref select="w1" />
+              </Distribute>
+              <Distribute direction="vertical" spacing={200}>
+                <Ref select="pulleyB" />
+                <Ref select="w1" />
+              </Distribute>
+              <Distribute direction="vertical" spacing={130}>
+                <Ref select="pulleyC" />
+                <Ref select="w2" />
+              </Distribute>
+
+              <Distribute direction="horizontal" spacing={0}>
+                <Ref select="pulleyA" />
+                <Ref select="pulleyB" />
+              </Distribute>
+              <Distribute direction="horizontal" spacing={0}>
+                <Ref select="pulleyB" />
+                <Ref select="pulleyC" />
+              </Distribute>
+              <Arrow>
+                <Ref select="pulleyA" />
+                <Ref select="w1" />
+              </Arrow>
+              <Arrow flip>
+                <Ref select="pulleyB" />
+                <Ref select="pulleyA" />
+              </Arrow>
+              <Arrow flip>
+                <Ref select="pulleyB" />
+                <Ref select="pulleyC" />
+              </Arrow>
+              <Arrow flip>
+                <Ref select="wall" />
+                <Ref select="pulleyB" />
+              </Arrow>
+              <Arrow flip>
+                <Ref select="wall" />
+                <Ref select="pulleyC" />
+              </Arrow>
+              <Arrow flip>
+                <Ref select="pulleyA" />
+                <Ref select="w2" />
+              </Arrow>
+              <Arrow flip>
+                <Ref select="pulleyC" />
+                <Ref select="w2" />
+              </Arrow>
+            </>
+          )}
+        >
+          <Text name="w1Label">W1</Text>
+          <Text name="w2Label">W2</Text>
+          <Rect name="w1" width={50} height={30} fill="none" stroke="black" />
+          <Rect name="w2" width={80} height={30} fill="none" stroke="black" />
+          <Rect name="wall" width={150} height={30} fill="gray" />
+          <Circle name="pulleyA" r={20} fill="none" stroke="black" />
+          <Circle name="pulleyB" r={20} fill="none" stroke="black" />
+          <Circle name="pulleyC" r={20} fill="none" stroke="black" />
+        </Group>
+      </Bluefish> */}
+
+      {/* <br />
+      <TraverseObjRelComponent nodes={pulleyTraversal} visualizeGraph />
+      <br />
+      <TraversePriorityComponent nodes={pulleyTraversalPriority} /> */}
     </>
   );
 };
