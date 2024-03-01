@@ -881,98 +881,15 @@ const App: Component = () => {
         visualizeGraph
       />
       <br />
-      <TraversePriorityComponent nodes={planetTraversalPriority} />
+      <TraversePriorityComponent
+        nodes={planetTraversalPriority}
+        // useHardCodedGraph
+      />
+
       <br />
-      {/* <Bluefish>
-        <Group
-          rels={() => (
-            <>
-              <StackH name="weights" spacing={20}>
-                <Ref select="w1" />
-                <Ref select="w2" />
-              </StackH>
-
-              <Align alignment="center">
-                <Ref select="w1Label" />
-                <Ref select="w1" />
-              </Align>
-              <Align alignment="center">
-                <Ref select="w2Label" />
-                <Ref select="w2" />
-              </Align>
-
-              <Distribute direction="vertical" spacing={300}>
-                <Ref select="wall" />
-                <Ref select="weights" />
-              </Distribute>
-
-              <Distribute direction="vertical" spacing={140}>
-                <Ref select="pulleyA" />
-                <Ref select="w1" />
-              </Distribute>
-              <Distribute direction="vertical" spacing={200}>
-                <Ref select="pulleyB" />
-                <Ref select="w1" />
-              </Distribute>
-              <Distribute direction="vertical" spacing={130}>
-                <Ref select="pulleyC" />
-                <Ref select="w2" />
-              </Distribute>
-
-              <Distribute direction="horizontal" spacing={0}>
-                <Ref select="pulleyA" />
-                <Ref select="pulleyB" />
-              </Distribute>
-              <Distribute direction="horizontal" spacing={0}>
-                <Ref select="pulleyB" />
-                <Ref select="pulleyC" />
-              </Distribute>
-              <Arrow>
-                <Ref select="pulleyA" />
-                <Ref select="w1" />
-              </Arrow>
-              <Arrow flip>
-                <Ref select="pulleyB" />
-                <Ref select="pulleyA" />
-              </Arrow>
-              <Arrow flip>
-                <Ref select="pulleyB" />
-                <Ref select="pulleyC" />
-              </Arrow>
-              <Arrow flip>
-                <Ref select="wall" />
-                <Ref select="pulleyB" />
-              </Arrow>
-              <Arrow flip>
-                <Ref select="wall" />
-                <Ref select="pulleyC" />
-              </Arrow>
-              <Arrow flip>
-                <Ref select="pulleyA" />
-                <Ref select="w2" />
-              </Arrow>
-              <Arrow flip>
-                <Ref select="pulleyC" />
-                <Ref select="w2" />
-              </Arrow>
-            </>
-          )}
-        >
-          <Text name="w1Label">W1</Text>
-          <Text name="w2Label">W2</Text>
-          <Rect name="w1" width={50} height={30} fill="none" stroke="black" />
-          <Rect name="w2" width={80} height={30} fill="none" stroke="black" />
-          <Rect name="wall" width={150} height={30} fill="gray" />
-          <Circle name="pulleyA" r={20} fill="none" stroke="black" />
-          <Circle name="pulleyB" r={20} fill="none" stroke="black" />
-          <Circle name="pulleyC" r={20} fill="none" stroke="black" />
-        </Group>
-      </Bluefish> */}
-
-      {/* <br />
-      <TraverseObjRelComponent nodes={pulleyTraversal} visualizeGraph />
+      {/* <TraverseObjRelComponent nodes={pulleyTraversal} visualizeGraph /> */}
       <br />
-      <TraversePriorityComponent nodes={pulleyTraversalPriority} /> */}
+      {/* <TraversePriorityComponent nodes={pulleyTraversalPriority} /> */}
     </>
   );
 };
