@@ -1,4 +1,5 @@
 import { For, createSignal, Show, createMemo, createEffect } from "solid-js";
+import { PriorityGraphVisualizer } from "./traversal-priority-target";
 type Id = string;
 
 export type PriorityNode = {
@@ -8,7 +9,7 @@ export type PriorityNode = {
 };
 
 export type RelationType = {
-  id: Id;
+  id: Id; // id of node in relation with current node
   priority: string;
 };
 
@@ -76,8 +77,9 @@ export function PriorityNodeComponent(props: PriorityNodeComponentProps) {
 // for nodes where children are all refs -> inline as relation with some priority in traversal structure
 export function parseScenegraphToNodeMap(scenegraph: {
   [key: string]: any;
-}): [Map<string, PriorityNode>, string] {
+}): [Map<string, PriorityNode>, string, PriorityNode[]] {
   const nodes = new Map<string, any>();
+  const nodesOnly: PriorityNode[] = [];
   let [rootNode, scenegraphNodes] = Object.entries(scenegraph)[0];
 
   // Extract all nodes from scenegraph
@@ -105,7 +107,6 @@ export function parseScenegraphToNodeMap(scenegraph: {
     }
   });
 
-  console.log("nodesWithRefChildren:", nodesWithRefChildren);
   const nodeMap = new Map<string, PriorityNode>();
 
   // Go through each node and process to make it into PriorityNode format
@@ -163,7 +164,12 @@ export function parseScenegraphToNodeMap(scenegraph: {
     }
   });
 
-  return [nodeMap, rootNode];
+  // Go through nodeMap and extract the nodes only (without id field) and push to nodesOnly
+  nodeMap.forEach((node) => {
+    nodesOnly.push(node);
+  });
+
+  return [nodeMap, rootNode, nodesOnly];
 }
 
 export type TraversePriorityComponentProps = {
@@ -177,6 +183,7 @@ export function TraversePriorityComponent(
   const [scenegraph, setScenegraph] = createSignal({});
   const [currentNodeId, setCurrentNodeId] = createSignal(props.nodes[0].id); // Root node's ID as initial state
   const [nodeMap, setNodeMap] = createSignal(new Map<string, PriorityNode>()); // Map of nodes
+  const [nodeListForVisual, setNodeList] = createSignal<PriorityNode[]>([]);
 
   // Watch for changes in window.bluefish and update scenegraph signal
   createEffect(() => {
@@ -196,10 +203,11 @@ export function TraversePriorityComponent(
     } else {
       const currentScenegraph = scenegraph();
       if (Object.keys(currentScenegraph).length > 0) {
-        let [tempNodeMap, rootNode] =
+        let [tempNodeMap, rootNode, tempNodeList] =
           parseScenegraphToNodeMap(currentScenegraph);
         setNodeMap(tempNodeMap);
         setCurrentNodeId(rootNode);
+        setNodeList(tempNodeList);
       }
     }
   });
@@ -225,6 +233,9 @@ export function TraversePriorityComponent(
 
   return (
     <div>
+      {props.visualizeGraph ? (
+        <PriorityGraphVisualizer priorityNode={nodeListForVisual()} />
+      ) : null}
       <Show when={nodeMap().has(currentNodeId())}>{renderCurrentNode()}</Show>
     </div>
   );

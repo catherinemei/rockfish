@@ -2,7 +2,6 @@
 
 import { createSignal, type Component, For } from "solid-js";
 
-import { PaperScope, Path, Point, Size } from "paper/dist/paper-core";
 import { TraversalComponent, Node } from "../examples/traversal";
 import { Bluefish } from "../src/bluefish";
 import Background from "../src/background";
@@ -22,8 +21,7 @@ import {
   PriorityNode,
   TraversePriorityComponent,
 } from "../examples/traversal-priority";
-import Rect from "../src/rect";
-import Distribute from "../src/distribute";
+import { Pulley } from "../src/pulley";
 
 const arr = Array.from({ length: 1000 }, (_, i) => i + 1);
 
@@ -872,24 +870,12 @@ const App: Component = () => {
         </Group>
       </Bluefish>
 
-      {/* <TraversalComponent visualizeGraph /> */}
-      {/* <br /> */}
-      {/* <TraverseObjRelComponent nodes={pulleyTraversal} visualizeGraph /> */}
-      {/* <br /> */}
-      <TraverseObjRelComponent
-        nodes={planetTraversalRelObject}
-        visualizeGraph
-      />
+      {/* <Pulley /> */}
       <br />
       <TraversePriorityComponent
         nodes={planetTraversalPriority}
-        // useHardCodedGraph
+        visualizeGraph
       />
-
-      <br />
-      {/* <TraverseObjRelComponent nodes={pulleyTraversal} visualizeGraph /> */}
-      <br />
-      {/* <TraversePriorityComponent nodes={pulleyTraversalPriority} /> */}
     </>
   );
 };
