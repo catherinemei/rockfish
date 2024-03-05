@@ -208,6 +208,7 @@ export function TraversePriorityComponent(
         setNodeMap(tempNodeMap);
         setCurrentNodeId(rootNode);
         setNodeList(tempNodeList);
+        console.log(tempNodeList);
       }
     }
   });

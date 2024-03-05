@@ -70,92 +70,102 @@ export const Pulley = () => {
         stroke="black"
         fill="none"
         stroke-width={3}
-      ></Rect>
+        x={0}
+        y={0}
+      />
+
+      <Text name={"Atext"} x={r} y={-r}>
+        A
+      </Text>
+      <Text name={"Btext"} x={r} y={-r}>
+        B
+      </Text>
+      <Text name={"Ctext"} x={r} y={-r}>
+        C
+      </Text>
+      <Text name="t4">p</Text>
+      <Text name="t5">q</Text>
+      <Text name="t6">s</Text>
 
       <PulleyCircle name="A" r={r} />
       <PulleyCircle name="B" r={r} />
       <PulleyCircle name="C" r={r} />
 
       <Distribute direction="horizontal" spacing={-r}>
-        <Ref select="A"></Ref>
-        <Ref select="B"></Ref>
+        <Ref select="A" />
+        <Ref select="B" />
       </Distribute>
       <Distribute direction="horizontal" spacing={0}>
-        <Ref select="B"></Ref>
-        <Ref select="C"></Ref>
+        <Ref select="B" />
+        <Ref select="C" />
       </Distribute>
       <Distribute direction="vertical" spacing={40}>
-        <Ref select="rect"></Ref>
-        <Ref select="B"></Ref>
+        <Ref select="rect" />
+        <Ref select="B" />
       </Distribute>
       <Distribute direction="vertical" spacing={30}>
-        <Ref select="B"></Ref>
-        <Ref select="A"></Ref>
+        <Ref select="B" />
+        <Ref select="A" />
       </Distribute>
       <Distribute direction="vertical" spacing={50}>
-        <Ref select="B"></Ref>
-        <Ref select="C"></Ref>
+        <Ref select="B" />
+        <Ref select="C" />
       </Distribute>
 
       <Align alignment="center">
-        <Ref select="B"></Ref>
-        <Text x={r} y={-r}>
-          B
-        </Text>
+        <Ref select="B" />
+        <Ref select="Btext" />
       </Align>
       <Align alignment="center">
-        <Ref select="A"></Ref>
-        <Text x={-r} y={-r}>
-          A
-        </Text>
+        <Ref select="A" />
+        <Ref select="Atext" />
       </Align>
       <Align alignment="center">
-        <Ref select="C"></Ref>
-        <Text x={r} y={r}>
-          C
-        </Text>
+        <Ref select="C" />
+        <Ref select="Ctext" />
       </Align>
 
       <Line target={[0.5, 0.5]} name="l0">
-        <Ref select="rect"></Ref>
-        <Ref select="B"></Ref>
+        <Ref select="rect" />
+        <Ref select="B" />
       </Line>
+
       <StackH spacing={5}>
         <Text name="t0" y={-10}>
           t
         </Text>
-        <Ref select="l0"></Ref>
+        <Ref select="l0" />
       </StackH>
 
       <Line target={[1, 0.5]} name="l3">
-        <Ref select="rect"></Ref>
-        <Ref select="C"></Ref>
+        <Ref select="rect" />
+        <Ref select="C" />
       </Line>
       <Line source={[0, 0.5]} target={[0.5, 0.5]} name="l1">
-        <Ref select="B"></Ref>
-        <Ref select="A"></Ref>
+        <Ref select="B" />
+        <Ref select="A" />
       </Line>
       <Line source={[1, 0.5]} target={[0, 0.5]} name="l2">
-        <Ref select="B"></Ref>
-        <Ref select="C"></Ref>
+        <Ref select="B" />
+        <Ref select="C" />
       </Line>
 
       <StackH spacing={5}>
-        <Ref select="l1"></Ref>
+        <Ref select="l1" />
         <Text name="t1">x</Text>
       </StackH>
       <Distribute spacing={5} direction="horizontal">
-        <Ref select="l2"></Ref>
+        <Ref select="l2" />
         <Text name="t2">y</Text>
       </Distribute>
       <Distribute spacing={5} direction="horizontal">
-        <Ref select="l3"></Ref>
+        <Ref select="l3" />
         <Text name="t3">z</Text>
       </Distribute>
       <Align alignment="centerY">
-        <Ref select="t1"></Ref>
-        <Ref select="t2"></Ref>
-        <Ref select="t3"></Ref>
+        <Ref select="t1" />
+        <Ref select="t2" />
+        <Ref select="t3" />
       </Align>
 
       <StackH name="w1">
@@ -173,61 +183,61 @@ export const Pulley = () => {
         </Weight>
       </StackH>
       <Distribute spacing={50} direction="vertical">
-        <Ref select="C"></Ref>
-        <Ref select="w2"></Ref>
+        <Ref select="C" />
+        <Ref select="w2" />
       </Distribute>
       <Align alignment="left">
-        <Ref select="A"></Ref>
-        <Ref select="w2"></Ref>
+        <Ref select="A" />
+        <Ref select="w2" />
       </Align>
       <Align alignment="centerX">
-        <Ref select="A"></Ref>
-        <Ref select="w1"></Ref>
+        <Ref select="A" />
+        <Ref select="w1" />
       </Align>
       <Align alignment="centerY">
-        <Ref select="w1"></Ref>
-        <Ref select="w2"></Ref>
+        <Ref select="w1" />
+        <Ref select="w2" />
       </Align>
 
       <Line source={[0, 0.5]} name="l4">
-        <Ref select="A"></Ref>
-        <Ref select="w1"></Ref>
+        <Ref select="A" />
+        <Ref select="w1" />
       </Line>
       <Line source={[1, 0.5]} name="l5">
-        <Ref select="A"></Ref>
-        <Ref select="w2"></Ref>
+        <Ref select="A" />
+        <Ref select="w2" />
       </Line>
       <Line source={[0.5, 0.5]} name="l6">
-        <Ref select="C"></Ref>
-        <Ref select="w2"></Ref>
+        <Ref select="C" />
+        <Ref select="w2" />
       </Line>
 
       <Distribute spacing={5} direction="horizontal">
-        <Ref select="l4"></Ref>
-        <Text name="t4">p</Text>
+        <Ref select="l4" />
+        <Ref select="t4" />
       </Distribute>
       <Distribute spacing={5} direction="horizontal">
-        <Ref select="l5"></Ref>
-        <Text name="t5">q</Text>
+        <Ref select="l5" />
+        <Ref select="t5" />
       </Distribute>
       <StackH spacing={5}>
-        <Ref select="l6"></Ref>
-        <Text name="t6">s</Text>
+        <Ref select="l6" />
+        <Ref select="t6" />
       </StackH>
       <Align alignment="centerY">
-        <Ref select="t6"></Ref>
-        <Ref select="t5"></Ref>
-        <Ref select="t4"></Ref>
+        <Ref select="t6" />
+        <Ref select="t5" />
+        <Ref select="t4" />
       </Align>
 
       <Group name="G">
-        <Ref select="A"></Ref>
-        <Ref select="B"></Ref>
-        <Ref select="C"></Ref>
+        <Ref select="A" />
+        <Ref select="B" />
+        <Ref select="C" />
       </Group>
       <Align alignment="centerX">
-        <Ref select="rect"></Ref>
-        <Ref select="G"></Ref>
+        <Ref select="rect" />
+        <Ref select="G" />
       </Align>
     </Bluefish>
   );

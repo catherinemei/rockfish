@@ -807,7 +807,7 @@ const App: Component = () => {
 
   return (
     <>
-      <Bluefish id="bluefish-planets" padding={20} aria-label="Bluefish">
+      {/* <Bluefish id="bluefish-planets" padding={20} aria-label="Bluefish">
         <Group
           aria-label="Group"
           rels={() => (
@@ -868,9 +868,9 @@ const App: Component = () => {
             Mercury
           </Text>
         </Group>
-      </Bluefish>
+      </Bluefish> */}
 
-      {/* <Pulley /> */}
+      <Pulley />
       <br />
       <TraversePriorityComponent
         nodes={planetTraversalPriority}
