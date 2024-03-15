@@ -33,10 +33,10 @@ export function PriorityNodeComponent(props: PriorityNodeComponentProps) {
       groups[relation.priorityName].push(relation);
     });
 
-    // Sort the groups based on priority rankings
+    // Sort the groups based on priority rankings using priorityLevel
     const sortedGroups = Object.entries(groups).sort((a, b) => {
-      const priorityA = props.priorityRankings[a[0]] || 0;
-      const priorityB = props.priorityRankings[b[0]] || 0;
+      const priorityA = props.priorityRankings[a[0]] || 0; // Fallback to 0 if not provided
+      const priorityB = props.priorityRankings[b[0]] || 0; // Fallback to 0 if not provided
       return priorityA - priorityB;
     });
 
@@ -97,7 +97,6 @@ export type PriorityRankingInputProps = {
 };
 
 export function PriorityRankingInput(props: PriorityRankingInputProps) {
-  console.log("these are props to ranking function", props.priorityRankings);
   const handlePriorityChange = (priorityName: string, value: string) => {
     props.setPriorityRankings({
       ...props.priorityRankings,
@@ -196,6 +195,7 @@ export function parseScenegraphToNodeMap(scenegraph: {
             childNode.relations.push({
               relatedNodeId: otherChildId,
               priorityName: nodeId,
+              priorityLevel: 2,
             });
           }
         });
@@ -209,6 +209,7 @@ export function parseScenegraphToNodeMap(scenegraph: {
         relations.push({
           relatedNodeId: node.parent,
           priorityName: "Contained by (parent)",
+          priorityLevel: 0,
         });
       }
 
@@ -218,6 +219,7 @@ export function parseScenegraphToNodeMap(scenegraph: {
           relations.push({
             relatedNodeId: childId,
             priorityName: "Contains (child)",
+            priorityLevel: 1,
           });
         }
       });
@@ -278,12 +280,13 @@ export function TraversePriorityComponent(
         setCurrentNodeId(rootNode);
         setNodeList(tempNodeList);
 
-        // Update priorityRankings based on tempNodeMap
+        // Create a map of relation type : priority level
+        // Allows for sorting of relations based on priority level
         const newPriorityRankings: Record<string, number> = {};
         tempNodeMap.forEach((node) => {
           node.relations.forEach((relation) => {
             newPriorityRankings[relation.priorityName] =
-              newPriorityRankings[relation.priorityName] || 0;
+              relation.priorityLevel || 0;
           });
         });
         setPriorityRankings(newPriorityRankings);
