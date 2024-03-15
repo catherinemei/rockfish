@@ -28,13 +28,13 @@ export const PriorityGraphVisualizer = (
       augmentedNodes.push({ ...dagreNode, id: node.id, type: "hierarchy" });
 
       node.relations.forEach((relId) => {
-        if (relId.priority === "Contains (child)") {
+        if (relId.priorityName === "Contains (child)") {
           augmentedEdges.push({
             from: node.id,
-            to: relId.id,
+            to: relId.relatedNodeId,
             type: "hierarchy",
           });
-          g.setEdge(node.id, relId.id);
+          g.setEdge(node.id, relId.relatedNodeId);
         }
       });
     });
@@ -45,10 +45,10 @@ export const PriorityGraphVisualizer = (
     const relationMap: Map<string, string[]> = new Map();
     props.priorityNode.forEach((node) => {
       node.relations.forEach((rel) => {
-        if (!relationMap.has(rel.priority)) {
-          relationMap.set(rel.priority, []);
+        if (!relationMap.has(rel.priorityName)) {
+          relationMap.set(rel.priorityName, []);
         }
-        relationMap.get(rel.priority)?.push(rel.id);
+        relationMap.get(rel.priorityName)?.push(rel.relatedNodeId);
       });
     });
 

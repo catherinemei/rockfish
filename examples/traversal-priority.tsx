@@ -9,26 +9,44 @@ export type PriorityNode = {
 };
 
 export type RelationType = {
-  id: Id; // id of node in relation with current node
-  priority: string;
+  relatedNodeId: Id; // id of node in relation with current node
+  priorityName: string;
+  priorityLevel?: number;
 };
 
 export type PriorityNodeComponentProps = {
   node: PriorityNode;
   nodeMap: Map<string, PriorityNode>;
   onRelationClick: (id: string) => void;
+  priorityRankings: Record<string, number>;
 };
 
 export function PriorityNodeComponent(props: PriorityNodeComponentProps) {
+  // For each priority node, groups relations by category
+  // Returns these groupings; each group contains all relations with the same priority
   const groupedRelations = createMemo(() => {
     const groups: Record<string, RelationType[]> = {};
     props.node.relations.forEach((relation) => {
-      if (!groups[relation.priority]) {
-        groups[relation.priority] = [];
+      if (!groups[relation.priorityName]) {
+        groups[relation.priorityName] = [];
       }
-      groups[relation.priority].push(relation);
+      groups[relation.priorityName].push(relation);
     });
-    return groups;
+
+    // Sort the groups based on priority rankings
+    const sortedGroups = Object.entries(groups).sort((a, b) => {
+      const priorityA = props.priorityRankings[a[0]] || 0;
+      const priorityB = props.priorityRankings[b[0]] || 0;
+      return priorityA - priorityB;
+    });
+
+    // Convert the sorted array back to an object
+    const sortedGroupsObject: Record<string, RelationType[]> = {};
+    sortedGroups.forEach(([priority, relations]) => {
+      sortedGroupsObject[priority] = relations;
+    });
+
+    return sortedGroupsObject;
   });
 
   return (
@@ -54,11 +72,14 @@ export function PriorityNodeComponent(props: PriorityNodeComponentProps) {
               <For each={relations}>
                 {(relation) => (
                   <button
-                    onClick={() => props.onRelationClick(relation.id)}
-                    aria-label={relation.id}
+                    onClick={() =>
+                      props.onRelationClick(relation.relatedNodeId)
+                    }
+                    aria-label={relation.relatedNodeId}
                     style={{ "margin-right": "5px", "margin-bottom": "5px" }}
                   >
-                    {props.nodeMap.get(relation.id)?.description || relation.id}
+                    {props.nodeMap.get(relation.relatedNodeId)?.description ||
+                      relation.relatedNodeId}
                   </button>
                 )}
               </For>
@@ -66,6 +87,45 @@ export function PriorityNodeComponent(props: PriorityNodeComponentProps) {
           </div>
         )}
       </For>
+    </div>
+  );
+}
+
+export type PriorityRankingInputProps = {
+  priorityRankings: Record<string, number>;
+  setPriorityRankings: (newRankings: Record<string, number>) => void;
+};
+
+export function PriorityRankingInput(props: PriorityRankingInputProps) {
+  console.log("these are props to ranking function", props.priorityRankings);
+  const handlePriorityChange = (priorityName: string, value: string) => {
+    props.setPriorityRankings({
+      ...props.priorityRankings,
+      [priorityName]: parseInt(value) || 0,
+    });
+  };
+
+  return (
+    <div>
+      <For each={Object.keys(props.priorityRankings)}>
+        {(priorityName) => (
+          <div>
+            <label>{priorityName}: </label>
+            <input
+              type="number"
+              value={props.priorityRankings[priorityName]}
+              onInput={(e) =>
+                handlePriorityChange(priorityName, e.currentTarget.value)
+              }
+            />
+          </div>
+        )}
+      </For>
+      <button
+        onClick={() => props.setPriorityRankings({ ...props.priorityRankings })}
+      >
+        Sort Relations
+      </button>
     </div>
   );
 }
@@ -134,8 +194,8 @@ export function parseScenegraphToNodeMap(scenegraph: {
         actualChildrenIds.forEach((otherChildId: string) => {
           if (childId !== otherChildId && childNode) {
             childNode.relations.push({
-              id: otherChildId,
-              priority: nodeId,
+              relatedNodeId: otherChildId,
+              priorityName: nodeId,
             });
           }
         });
@@ -146,13 +206,19 @@ export function parseScenegraphToNodeMap(scenegraph: {
 
       // Add parent if there is one
       if (node.parent) {
-        relations.push({ id: node.parent, priority: "Contained by (parent)" });
+        relations.push({
+          relatedNodeId: node.parent,
+          priorityName: "Contained by (parent)",
+        });
       }
 
       node.children.forEach((childId: string) => {
         if (!nodesWithRefChildren.get(childId)) {
           // Add each child that is not an inlined relation
-          relations.push({ id: childId, priority: "Contains (child)" });
+          relations.push({
+            relatedNodeId: childId,
+            priorityName: "Contains (child)",
+          });
         }
       });
 
@@ -184,6 +250,9 @@ export function TraversePriorityComponent(
   const [currentNodeId, setCurrentNodeId] = createSignal(props.nodes[0].id); // Root node's ID as initial state
   const [nodeMap, setNodeMap] = createSignal(new Map<string, PriorityNode>()); // Map of nodes
   const [nodeListForVisual, setNodeList] = createSignal<PriorityNode[]>([]);
+  const [priorityRankings, setPriorityRankings] = createSignal<
+    Record<string, number>
+  >({});
 
   // Watch for changes in window.bluefish and update scenegraph signal
   createEffect(() => {
@@ -208,7 +277,16 @@ export function TraversePriorityComponent(
         setNodeMap(tempNodeMap);
         setCurrentNodeId(rootNode);
         setNodeList(tempNodeList);
-        console.log(tempNodeList);
+
+        // Update priorityRankings based on tempNodeMap
+        const newPriorityRankings: Record<string, number> = {};
+        tempNodeMap.forEach((node) => {
+          node.relations.forEach((relation) => {
+            newPriorityRankings[relation.priorityName] =
+              newPriorityRankings[relation.priorityName] || 0;
+          });
+        });
+        setPriorityRankings(newPriorityRankings);
       }
     }
   });
@@ -226,6 +304,7 @@ export function TraversePriorityComponent(
           node={currentNode}
           nodeMap={nodeMap()}
           onRelationClick={onNodeClick}
+          priorityRankings={priorityRankings()}
         />
       );
     }
@@ -238,6 +317,10 @@ export function TraversePriorityComponent(
         <PriorityGraphVisualizer priorityNode={nodeListForVisual()} />
       ) : null}
       <Show when={nodeMap().has(currentNodeId())}>{renderCurrentNode()}</Show>
+      <PriorityRankingInput
+        priorityRankings={priorityRankings()}
+        setPriorityRankings={setPriorityRankings}
+      />
     </div>
   );
 }
