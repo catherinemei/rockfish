@@ -24,23 +24,33 @@ type WeightProps = {
   width: number;
   height: number;
   children: string;
+  "aria-data"?: any;
 };
 
 type PulleyCircleProps = {
   cx?: number;
   cy?: number;
   r?: number;
+  "aria-data"?: any;
 };
 
 const Weight = withBluefish((props: WeightProps) => {
   return (
-    <Align alignment="center" x={props.x} y={props.y}>
+    <Align
+      alignment="center"
+      x={props.x}
+      y={props.y}
+      aria-data={props["aria-data"] ?? ""}
+    >
       <Path
+        aria-data={"Weight " + props["aria-data"] ?? ""}
         d={`M 10,0 l ${props.width - 20},0 l 10,${
           props.height
         } l ${-props.width},0 Z`}
       />
-      <Text font-size="10">{props.children}</Text>
+      <Text font-size="10" aria-data={"Label " + props["aria-data"] ?? ""}>
+        {props.children}
+      </Text>
     </Align>
   );
 });
@@ -51,18 +61,13 @@ const PulleyCircle = withBluefish((props: PulleyCircleProps) => (
     x={maybeSub(props.cx, props.r ?? 20)}
     y={maybeSub(props.cy, props.r ?? 20)}
   >
-    <Circle
-      r={props.r ?? 20}
-      stroke="black"
-      stroke-width={3}
-      fill="none"
-    ></Circle>
-    <Circle r={5}></Circle>
+    <Circle r={props.r ?? 20} stroke="black" stroke-width={3} fill="none" />
+    <Circle r={5} />
   </Align>
 ));
 export const Pulley = () => {
   return (
-    <Bluefish>
+    <Bluefish aria-data="Bluefish Pulley">
       <Rect
         name="rect"
         height={20}
@@ -72,68 +77,92 @@ export const Pulley = () => {
         stroke-width={3}
         x={0}
         y={0}
+        aria-data="Wall"
       />
 
-      <Text name={"Atext"} x={r} y={-r}>
+      <Text name={"Atext"} x={r} y={-r} aria-data="Label A">
         A
       </Text>
-      <Text name={"Btext"} x={r} y={-r}>
+      <Text name={"Btext"} x={r} y={-r} aria-data="Label B">
         B
       </Text>
-      <Text name={"Ctext"} x={r} y={-r}>
+      <Text name={"Ctext"} x={r} y={-r} aria-data="Label C">
         C
       </Text>
-      <Text name="t4">p</Text>
-      <Text name="t5">q</Text>
-      <Text name="t6">s</Text>
+      <Text name="t4" aria-data="Label p">
+        p
+      </Text>
+      <Text name="t5" aria-data="Label q">
+        q
+      </Text>
+      <Text name="t6" aria-data="Label s">
+        s
+      </Text>
+
+      <Text name="t0" y={-10} aria-data="Label t">
+        t
+      </Text>
+      <Text name="t1" aria-data="Label x">
+        x
+      </Text>
+
+      <Text name="t2" aria-data="Label y">
+        y
+      </Text>
+
+      <Text name="t3" aria-data="Label z">
+        z
+      </Text>
 
       <PulleyCircle name="A" r={r} />
       <PulleyCircle name="B" r={r} />
       <PulleyCircle name="C" r={r} />
 
-      <Distribute direction="horizontal" spacing={-r}>
+      <Distribute
+        direction="horizontal"
+        spacing={-r}
+        aria-data="A-B Horizontal"
+      >
         <Ref select="A" />
         <Ref select="B" />
       </Distribute>
-      <Distribute direction="horizontal" spacing={0}>
+      <Distribute direction="horizontal" spacing={0} aria-data="B-C Horizontal">
         <Ref select="B" />
         <Ref select="C" />
       </Distribute>
-      <Distribute direction="vertical" spacing={40}>
+      <Distribute direction="vertical" spacing={40} aria-data="Wall-B Vertical">
         <Ref select="rect" />
         <Ref select="B" />
       </Distribute>
-      <Distribute direction="vertical" spacing={30}>
+      <Distribute direction="vertical" spacing={30} aria-data="B-A Vertical">
         <Ref select="B" />
         <Ref select="A" />
       </Distribute>
-      <Distribute direction="vertical" spacing={50}>
+      <Distribute direction="vertical" spacing={50} aria-data="B-C Vertical">
         <Ref select="B" />
         <Ref select="C" />
       </Distribute>
 
-      <Align alignment="center">
+      <Align alignment="center" aria-data="B-Btext">
         <Ref select="B" />
         <Ref select="Btext" />
       </Align>
-      <Align alignment="center">
+      <Align alignment="center" aria-data="A-Atext">
         <Ref select="A" />
         <Ref select="Atext" />
       </Align>
-      <Align alignment="center">
+      <Align alignment="center" aria-data="C-Ctext">
         <Ref select="C" />
         <Ref select="Ctext" />
       </Align>
 
-      <Line target={[0.5, 0.5]} name="l0">
+      <Line target={[0.5, 0.5]} name="l0" aria-data="Rope T">
         <Ref select="rect" />
         <Ref select="B" />
       </Line>
 
       <StackH spacing={5}>
-        <Text name="t0" y={-10}>
-          t
-        </Text>
+        <Ref select="t0" />
         <Ref select="l0" />
       </StackH>
 
@@ -152,15 +181,15 @@ export const Pulley = () => {
 
       <StackH spacing={5}>
         <Ref select="l1" />
-        <Text name="t1">x</Text>
+        <Ref select="t1" />
       </StackH>
       <Distribute spacing={5} direction="horizontal">
         <Ref select="l2" />
-        <Text name="t2">y</Text>
+        <Ref select="t2" />
       </Distribute>
       <Distribute spacing={5} direction="horizontal">
         <Ref select="l3" />
-        <Text name="t3">z</Text>
+        <Ref select="t3" />
       </Distribute>
       <Align alignment="centerY">
         <Ref select="t1" />
@@ -169,7 +198,7 @@ export const Pulley = () => {
       </Align>
 
       <StackH name="w1">
-        <Weight width={30} height={30}>
+        <Weight width={30} height={30} aria-data="W1">
           W1
         </Weight>
         // hack to offset the centerX alignment of A and w1
@@ -178,36 +207,36 @@ export const Pulley = () => {
       <StackH name="w2">
         // hack to offset the centerX alignment of A and w2
         <Rect fill="transparent" width={r + (r / 2 - 10) - w2jut / 2} />
-        <Weight width={r * 3 + w2jut} height={30}>
+        <Weight width={r * 3 + w2jut} height={30} aria-data="W2">
           W2
         </Weight>
       </StackH>
-      <Distribute spacing={50} direction="vertical">
+      <Distribute spacing={50} direction="vertical" aria-data="C-W2 Vertical">
         <Ref select="C" />
         <Ref select="w2" />
       </Distribute>
-      <Align alignment="left">
+      <Align alignment="left" aria-data="A-W2">
         <Ref select="A" />
         <Ref select="w2" />
       </Align>
-      <Align alignment="centerX">
+      <Align alignment="centerX" aria-data="A-W1">
         <Ref select="A" />
         <Ref select="w1" />
       </Align>
-      <Align alignment="centerY">
+      <Align alignment="centerY" aria-data="W1-W2">
         <Ref select="w1" />
         <Ref select="w2" />
       </Align>
 
-      <Line source={[0, 0.5]} name="l4">
+      <Line source={[0, 0.5]} name="l4" aria-data="Rope P">
         <Ref select="A" />
         <Ref select="w1" />
       </Line>
-      <Line source={[1, 0.5]} name="l5">
+      <Line source={[1, 0.5]} name="l5" aria-data="Rope Q">
         <Ref select="A" />
         <Ref select="w2" />
       </Line>
-      <Line source={[0.5, 0.5]} name="l6">
+      <Line source={[0.5, 0.5]} name="l6" aria-data="Rope S">
         <Ref select="C" />
         <Ref select="w2" />
       </Line>

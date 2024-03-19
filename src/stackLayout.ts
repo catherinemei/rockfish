@@ -19,7 +19,7 @@ export type StackArgs = {
   direction: "vertical" | "horizontal";
   total?: number;
   spacing?: number;
-  "aria-label"?: string;
+  "aria-data"?: any;
 };
 
 export const stackLayout =
@@ -169,7 +169,7 @@ export const stackLayout =
           },
         },
         customData: {
-          "aria-label": args["aria-label"],
+          "aria-data": args["aria-data"],
         },
       };
     } else if (args.direction === "horizontal") {
@@ -286,7 +286,7 @@ export const stackLayout =
           },
         },
         customData: {
-          "aria-label": args["aria-label"],
+          "aria-data": args["aria-data"],
         },
       };
     } else {

@@ -20,6 +20,7 @@ type LineProps = {
   x?: number;
   y?: number;
   children?: JSX.Element;
+  "aria-data"?: any;
 };
 
 const clamp = (num: number, min: number, max: number) =>
@@ -79,6 +80,7 @@ export const Line = withBluefish(
         fromY: any;
         toX: any;
         toY: any;
+        "aria-data"?: any;
       } = { fromX: 0, fromY: 0, toX: 0, toY: 0 };
       if (props.source && props.target) {
         customData = {
@@ -86,6 +88,7 @@ export const Line = withBluefish(
           fromY: maybeLerp(props.source[1], fromBBox.top, fromBBox.bottom),
           toX: maybeLerp(props.target[0], toBBox.left, toBBox.right),
           toY: maybeLerp(props.target[1], toBBox.top, toBBox.bottom),
+          "aria-data": props["aria-data"],
         };
       } else if (props.source) {
         const fromX = maybeLerp(props.source[0], fromBBox.left, fromBBox.right);
@@ -95,6 +98,7 @@ export const Line = withBluefish(
           fromY,
           toX: maybeClamp(fromX, toBBox.left, toBBox.right),
           toY: maybeClamp(fromY, toBBox.top, toBBox.bottom),
+          "aria-data": props["aria-data"],
         };
       } else if (props.target) {
         const toX = maybeLerp(props.target[0], toBBox.left, toBBox.right);
@@ -104,6 +108,7 @@ export const Line = withBluefish(
           fromY: maybeClamp(toY, fromBBox.top, fromBBox.bottom),
           toX,
           toY,
+          "aria-data": props["aria-data"],
         };
       } else {
         customData = {
@@ -111,6 +116,7 @@ export const Line = withBluefish(
           fromY: maybeLerp(0.5, fromBBox.top, fromBBox.bottom),
           toX: maybeLerp(0.5, toBBox.left, toBBox.right),
           toY: maybeLerp(0.5, toBBox.top, toBBox.bottom),
+          "aria-data": props["aria-data"],
         };
       }
 

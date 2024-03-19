@@ -404,68 +404,68 @@ const App: Component = () => {
   const planetTraversalPriority: PriorityNode[] = [
     {
       id: "0",
-      description: "Bluefish",
+      displayName: "Bluefish",
       relations: [
-        { relatedNodeId: "1", priorityName: "Contains (child)" },
-        { relatedNodeId: "2", priorityName: "Contains (child)" },
+        { relatedNodeId: "1", relationDisplayName: "Contains (child)" },
+        { relatedNodeId: "2", relationDisplayName: "Contains (child)" },
       ],
     },
     {
       id: "1",
-      description: "Background",
+      displayName: "Background",
       relations: [
-        { relatedNodeId: "0", priorityName: "Contained by (parent)" },
-        { relatedNodeId: "3", priorityName: "Contains (child)" },
+        { relatedNodeId: "0", relationDisplayName: "Contained by (parent)" },
+        { relatedNodeId: "3", relationDisplayName: "Contains (child)" },
       ],
     },
     {
       id: "2",
-      description: "Text",
+      displayName: "Text",
       relations: [
-        { relatedNodeId: "0", priorityName: "Contained by (parent)" },
-        { relatedNodeId: "4", priorityName: "Connected" },
-        { relatedNodeId: "4", priorityName: "Aligned" },
+        { relatedNodeId: "0", relationDisplayName: "Contained by (parent)" },
+        { relatedNodeId: "4", relationDisplayName: "Connected" },
+        { relatedNodeId: "4", relationDisplayName: "Aligned" },
       ],
     },
     {
       id: "3",
-      description: "StackH",
+      displayName: "StackH",
       relations: [
-        { relatedNodeId: "1", priorityName: "Contained by (parent)" },
-        { relatedNodeId: "4", priorityName: "Contains (child)" },
-        { relatedNodeId: "5", priorityName: "Contains (child)" },
-        { relatedNodeId: "6", priorityName: "Contains (child)" },
-        { relatedNodeId: "7", priorityName: "Contains (child)" },
+        { relatedNodeId: "1", relationDisplayName: "Contained by (parent)" },
+        { relatedNodeId: "4", relationDisplayName: "Contains (child)" },
+        { relatedNodeId: "5", relationDisplayName: "Contains (child)" },
+        { relatedNodeId: "6", relationDisplayName: "Contains (child)" },
+        { relatedNodeId: "7", relationDisplayName: "Contains (child)" },
       ],
     },
     {
       id: "4",
-      description: "Circle (mercury)",
+      displayName: "Circle (mercury)",
       relations: [
-        { relatedNodeId: "3", priorityName: "Contained by (parent)" },
-        { relatedNodeId: "2", priorityName: "Connected" },
-        { relatedNodeId: "2", priorityName: "Aligned" },
+        { relatedNodeId: "3", relationDisplayName: "Contained by (parent)" },
+        { relatedNodeId: "2", relationDisplayName: "Connected" },
+        { relatedNodeId: "2", relationDisplayName: "Aligned" },
       ],
     },
     {
       id: "5",
-      description: "Circle (venus)",
+      displayName: "Circle (venus)",
       relations: [
-        { relatedNodeId: "3", priorityName: "Contained by (parent)" },
+        { relatedNodeId: "3", relationDisplayName: "Contained by (parent)" },
       ],
     },
     {
       id: "6",
-      description: "Circle (earth)",
+      displayName: "Circle (earth)",
       relations: [
-        { relatedNodeId: "3", priorityName: "Contained by (parent)" },
+        { relatedNodeId: "3", relationDisplayName: "Contained by (parent)" },
       ],
     },
     {
       id: "7",
-      description: "Circle (mars)",
+      displayName: "Circle (mars)",
       relations: [
-        { relatedNodeId: "3", priorityName: "Contained by (parent)" },
+        { relatedNodeId: "3", relationDisplayName: "Contained by (parent)" },
       ],
     },
     // {
@@ -689,157 +689,170 @@ const App: Component = () => {
   const pulleyTraversalPriority: PriorityNode[] = [
     {
       id: "0",
-      description: "a: W1",
+      displayName: "a: W1",
       relations: [
-        { relatedNodeId: "13", priorityName: "Contains (child)" },
-        { relatedNodeId: "1", priorityName: "Hangs from" },
+        { relatedNodeId: "13", relationDisplayName: "Contains (child)" },
+        { relatedNodeId: "1", relationDisplayName: "Hangs from" },
       ],
     },
     {
       id: "1",
-      description: "b: RopeP",
+      displayName: "b: RopeP",
       relations: [
-        { relatedNodeId: "2", priorityName: "Pulley System" },
-        { relatedNodeId: "3", priorityName: "Pulley System" },
-        { relatedNodeId: "0", priorityName: "Hangs from" },
+        { relatedNodeId: "2", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "3", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "0", relationDisplayName: "Hangs from" },
       ],
     },
     {
       id: "2",
-      description: "c: RopeQ",
+      displayName: "c: RopeQ",
       relations: [
-        { relatedNodeId: "1", priorityName: "Pulley System" },
-        { relatedNodeId: "3", priorityName: "Pulley System" },
-        { relatedNodeId: "4", priorityName: "Hangs from" },
+        { relatedNodeId: "1", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "3", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "4", relationDisplayName: "Hangs from" },
       ],
     },
     {
       id: "3",
-      description: "d: PulleyA",
+      displayName: "d: PulleyA",
       relations: [
-        { relatedNodeId: "1", priorityName: "Pulley System" },
-        { relatedNodeId: "2", priorityName: "Pulley System" },
-        { relatedNodeId: "5", priorityName: "Hangs from" },
+        { relatedNodeId: "1", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "2", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "5", relationDisplayName: "Hangs from" },
       ],
     },
     {
       id: "4",
-      description: "e: W2",
+      displayName: "e: W2",
       relations: [
-        { relatedNodeId: "2", priorityName: "Hangs from" },
-        { relatedNodeId: "11", priorityName: "Hangs from" },
+        { relatedNodeId: "2", relationDisplayName: "Hangs from" },
+        { relatedNodeId: "11", relationDisplayName: "Hangs from" },
       ],
     },
     {
       id: "5",
-      description: "f: RopeX",
+      displayName: "f: RopeX",
       relations: [
-        { relatedNodeId: "6", priorityName: "Pulley System" },
-        { relatedNodeId: "7", priorityName: "Pulley System" },
-        { relatedNodeId: "3", priorityName: "Hangs from" },
+        { relatedNodeId: "6", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "7", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "3", relationDisplayName: "Hangs from" },
       ],
     },
     {
       id: "6",
-      description: "g: PulleyB",
+      displayName: "g: PulleyB",
       relations: [
-        { relatedNodeId: "5", priorityName: "Pulley System" },
-        { relatedNodeId: "7", priorityName: "Pulley System" },
-        { relatedNodeId: "10", priorityName: "Hangs from" },
+        { relatedNodeId: "5", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "7", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "10", relationDisplayName: "Hangs from" },
       ],
     },
     {
       id: "7",
-      description: "h: RopeY",
+      displayName: "h: RopeY",
       relations: [
-        { relatedNodeId: "5", priorityName: "Pulley System" },
-        { relatedNodeId: "6", priorityName: "Pulley System" },
-        { relatedNodeId: "8", priorityName: "Pulley System" },
-        { relatedNodeId: "9", priorityName: "Pulley System" },
-        { relatedNodeId: "8", priorityName: "Hangs from" },
+        { relatedNodeId: "5", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "6", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "8", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "9", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "8", relationDisplayName: "Hangs from" },
       ],
     },
     {
       id: "8",
-      description: "i: PulleyC",
+      displayName: "i: PulleyC",
       relations: [
-        { relatedNodeId: "7", priorityName: "Pulley System" },
-        { relatedNodeId: "9", priorityName: "Pulley System" },
-        { relatedNodeId: "7", priorityName: "Hangs from" },
-        { relatedNodeId: "9", priorityName: "Hangs from" },
-        { relatedNodeId: "11", priorityName: "Hangs from" },
+        { relatedNodeId: "7", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "9", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "7", relationDisplayName: "Hangs from" },
+        { relatedNodeId: "9", relationDisplayName: "Hangs from" },
+        { relatedNodeId: "11", relationDisplayName: "Hangs from" },
       ],
     },
     {
       id: "9",
-      description: "j: RopeZ",
+      displayName: "j: RopeZ",
       relations: [
-        { relatedNodeId: "7", priorityName: "Pulley System" },
-        { relatedNodeId: "8", priorityName: "Pulley System" },
-        { relatedNodeId: "8", priorityName: "Hangs from" },
-        { relatedNodeId: "12", priorityName: "Hangs from" },
+        { relatedNodeId: "7", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "8", relationDisplayName: "Pulley System" },
+        { relatedNodeId: "8", relationDisplayName: "Hangs from" },
+        { relatedNodeId: "12", relationDisplayName: "Hangs from" },
       ],
     },
     {
       id: "10",
-      description: "k: RopeT",
+      displayName: "k: RopeT",
       relations: [
-        { relatedNodeId: "6", priorityName: "Hangs from" },
-        { relatedNodeId: "12", priorityName: "Hangs from" },
+        { relatedNodeId: "6", relationDisplayName: "Hangs from" },
+        { relatedNodeId: "12", relationDisplayName: "Hangs from" },
       ],
     },
     {
       id: "11",
-      description: "l: RopeS",
+      displayName: "l: RopeS",
       relations: [
-        { relatedNodeId: "4", priorityName: "Hangs from" },
-        { relatedNodeId: "8", priorityName: "Hangs from" },
+        { relatedNodeId: "4", relationDisplayName: "Hangs from" },
+        { relatedNodeId: "8", relationDisplayName: "Hangs from" },
       ],
     },
     {
       id: "12",
-      description: "m: Wall",
+      displayName: "m: Wall",
       relations: [
-        { relatedNodeId: "9", priorityName: "Hangs from" },
-        { relatedNodeId: "10", priorityName: "Hangs from" },
+        { relatedNodeId: "9", relationDisplayName: "Hangs from" },
+        { relatedNodeId: "10", relationDisplayName: "Hangs from" },
       ],
     },
     {
       id: "13",
-      description: "W1 label: 1",
+      displayName: "W1 label: 1",
       relations: [
-        { relatedNodeId: "0", priorityName: "Contained by (parent)" },
+        { relatedNodeId: "0", relationDisplayName: "Contained by (parent)" },
       ],
     },
   ];
 
   return (
     <>
-      <Bluefish id="bluefish-planets" padding={20} aria-label="Bluefish">
+      <Bluefish
+        id="bluefish-planets"
+        padding={20}
+        aria-data={{
+          displayName: "Bluefish",
+          description: "Planets Diagram in Bluefish",
+        }}
+      >
         <Group
-          aria-label="Group"
+          aria-data={{
+            displayName: "Group",
+            description: "Four closest planets to the sun",
+          }}
           rels={() => (
             <>
-              <StackV spacing={60} aria-label="StackV">
+              <StackV spacing={60} aria-data={{ displayName: "StackV" }}>
                 <Ref select="label" />
                 <Ref select="mercury" />
               </StackV>
-              <Arrow aria-label="Arrow">
+              <Arrow aria-data={{ displayName: "Arrow" }}>
                 <Ref select="label" />
                 <Ref select="mercury" />
               </Arrow>
             </>
           )}
         >
-          <Background aria-label="Background">
-            <StackH spacing={50} aria-label="StackH">
+          <Background aria-data={{ displayName: "Background" }}>
+            <StackH spacing={50} aria-data={{ displayName: "StackH" }}>
               <Circle
                 name="mercury"
                 r={15}
                 fill={"#EBE3CF"}
                 stroke-width={3}
                 stroke={"black"}
-                aria-label="Mercury"
+                aria-data={{
+                  displayName: "Mercury",
+                  description: "First Planet",
+                }}
               />
               <Circle
                 name="venus"
@@ -847,7 +860,10 @@ const App: Component = () => {
                 fill={"#DC933C"}
                 stroke-width={3}
                 stroke={"black"}
-                aria-label="Venus"
+                aria-data={{
+                  displayName: "Venus",
+                  description: "Second Planet",
+                }}
               />
               <Circle
                 name="earth"
@@ -855,7 +871,7 @@ const App: Component = () => {
                 fill={"#179DD7"}
                 stroke-width={3}
                 stroke={"black"}
-                aria-label="Earth"
+                aria-data={{ displayName: "Earth" }}
               />
               <Circle
                 name="mars"
@@ -863,7 +879,10 @@ const App: Component = () => {
                 fill={"#F1CF8E"}
                 stroke-width={3}
                 stroke={"black"}
-                aria-label="Mars"
+                aria-data={{
+                  displayName: "Mars",
+                  description: "Fourth Planet",
+                }}
               />
             </StackH>
           </Background>
@@ -871,7 +890,10 @@ const App: Component = () => {
             name="label"
             vertical-anchor="start"
             width={500}
-            aria-label="Text Label"
+            aria-data={{
+              displayName: "Text",
+              description: "Annotation on Mercury",
+            }}
           >
             Mercury
           </Text>

@@ -1,16 +1,19 @@
 import { For, createSignal, Show, createMemo, createEffect } from "solid-js";
 import { PriorityGraphVisualizer } from "./traversal-priority-target";
+import { set } from "lodash";
 type Id = string;
 
 export type PriorityNode = {
   id: Id;
-  description: string;
+  displayName: string;
+  description?: string;
   relations: RelationType[];
 };
 
 export type RelationType = {
   relatedNodeId: Id; // id of node in relation with current node
-  priorityName: string;
+  relationDisplayName: string;
+  relationId: Id;
   priorityLevel?: number;
 };
 
@@ -19,6 +22,7 @@ export type PriorityNodeComponentProps = {
   nodeMap: Map<string, PriorityNode>;
   onRelationClick: (id: string) => void;
   priorityRankings: Record<string, number>;
+  priorityDisplayNames: Record<string, string>;
 };
 
 export function PriorityNodeComponent(props: PriorityNodeComponentProps) {
@@ -27,10 +31,10 @@ export function PriorityNodeComponent(props: PriorityNodeComponentProps) {
   const groupedRelations = createMemo(() => {
     const groups: Record<string, RelationType[]> = {};
     props.node.relations.forEach((relation) => {
-      if (!groups[relation.priorityName]) {
-        groups[relation.priorityName] = [];
+      if (!groups[relation.relationId]) {
+        groups[relation.relationId] = [];
       }
-      groups[relation.priorityName].push(relation);
+      groups[relation.relationId].push(relation);
     });
 
     // Sort the groups based on priority rankings using priorityLevel
@@ -51,9 +55,10 @@ export function PriorityNodeComponent(props: PriorityNodeComponentProps) {
 
   return (
     <div style="padding-left: 50px;">
-      <p style="font-weight:bold;">{props.node.description}</p>
+      <p style="font-weight:bold;">{props.node.displayName}</p>
+      <p style="font-style:italic;">{props.node.description}</p>
       <For each={Object.entries(groupedRelations())}>
-        {([priority, relations]) => (
+        {([priorityId, relations]) => (
           <div
             style={{
               display: "flex",
@@ -61,7 +66,7 @@ export function PriorityNodeComponent(props: PriorityNodeComponentProps) {
               "margin-bottom": "10px",
             }}
           >
-            <span>{priority}: </span>
+            <span>{props.priorityDisplayNames[priorityId]}: </span>
             <div
               style={{
                 display: "flex",
@@ -78,7 +83,7 @@ export function PriorityNodeComponent(props: PriorityNodeComponentProps) {
                     aria-label={relation.relatedNodeId}
                     style={{ "margin-right": "5px", "margin-bottom": "5px" }}
                   >
-                    {props.nodeMap.get(relation.relatedNodeId)?.description ||
+                    {props.nodeMap.get(relation.relatedNodeId)?.displayName ||
                       relation.relatedNodeId}
                   </button>
                 )}
@@ -94,6 +99,7 @@ export function PriorityNodeComponent(props: PriorityNodeComponentProps) {
 export type PriorityRankingInputProps = {
   priorityRankings: Record<string, number>;
   setPriorityRankings: (newRankings: Record<string, number>) => void;
+  priorityDisplayNames: Record<string, string>;
 };
 
 export function PriorityRankingInput(props: PriorityRankingInputProps) {
@@ -107,14 +113,14 @@ export function PriorityRankingInput(props: PriorityRankingInputProps) {
   return (
     <div>
       <For each={Object.keys(props.priorityRankings)}>
-        {(priorityName) => (
+        {(priorityId) => (
           <div>
-            <label>{priorityName}: </label>
+            <label>{props.priorityDisplayNames[priorityId]}: </label>
             <input
               type="number"
-              value={props.priorityRankings[priorityName]}
+              value={props.priorityRankings[priorityId]}
               onInput={(e) =>
-                handlePriorityChange(priorityName, e.currentTarget.value)
+                handlePriorityChange(priorityId, e.currentTarget.value)
               }
             />
           </div>
@@ -194,7 +200,9 @@ export function parseScenegraphToNodeMap(scenegraph: {
           if (childId !== otherChildId && childNode) {
             childNode.relations.push({
               relatedNodeId: otherChildId,
-              priorityName: nodeId,
+              relationDisplayName:
+                node.customData["aria-data"]?.displayName ?? nodeId,
+              relationId: nodeId,
               priorityLevel: 2,
             });
           }
@@ -208,7 +216,8 @@ export function parseScenegraphToNodeMap(scenegraph: {
       if (node.parent) {
         relations.push({
           relatedNodeId: node.parent,
-          priorityName: "Contained by (parent)",
+          relationDisplayName: "Contained by (parent)",
+          relationId: "parent",
           priorityLevel: 0,
         });
       }
@@ -218,7 +227,8 @@ export function parseScenegraphToNodeMap(scenegraph: {
           // Add each child that is not an inlined relation
           relations.push({
             relatedNodeId: childId,
-            priorityName: "Contains (child)",
+            relationDisplayName: "Contains (child)",
+            relationId: "child",
             priorityLevel: 1,
           });
         }
@@ -226,7 +236,8 @@ export function parseScenegraphToNodeMap(scenegraph: {
 
       nodeMap.set(nodeId, {
         id: nodeId,
-        description: node.customData["aria-label"] ?? nodeId,
+        displayName: node.customData["aria-data"]?.displayName ?? nodeId,
+        description: node.customData["aria-data"]?.description ?? "",
         relations: relations,
       });
     }
@@ -254,6 +265,9 @@ export function TraversePriorityComponent(
   const [nodeListForVisual, setNodeList] = createSignal<PriorityNode[]>([]);
   const [priorityRankings, setPriorityRankings] = createSignal<
     Record<string, number>
+  >({});
+  const [priorityDisplayNames, setPriorityDisplayNames] = createSignal<
+    Record<string, string>
   >({});
 
   // Watch for changes in window.bluefish and update scenegraph signal
@@ -283,13 +297,17 @@ export function TraversePriorityComponent(
         // Create a map of relation type : priority level
         // Allows for sorting of relations based on priority level
         const newPriorityRankings: Record<string, number> = {};
+        const newPriorityDisplayNames: Record<string, string> = {};
         tempNodeMap.forEach((node) => {
           node.relations.forEach((relation) => {
-            newPriorityRankings[relation.priorityName] =
+            newPriorityRankings[relation.relationId] =
               relation.priorityLevel || 0;
+            newPriorityDisplayNames[relation.relationId] =
+              relation.relationDisplayName;
           });
         });
         setPriorityRankings(newPriorityRankings);
+        setPriorityDisplayNames(newPriorityDisplayNames);
       }
     }
   });
@@ -308,6 +326,7 @@ export function TraversePriorityComponent(
           nodeMap={nodeMap()}
           onRelationClick={onNodeClick}
           priorityRankings={priorityRankings()}
+          priorityDisplayNames={priorityDisplayNames()}
         />
       );
     }
@@ -323,6 +342,7 @@ export function TraversePriorityComponent(
       <PriorityRankingInput
         priorityRankings={priorityRankings()}
         setPriorityRankings={setPriorityRankings}
+        priorityDisplayNames={priorityDisplayNames()}
       />
     </div>
   );

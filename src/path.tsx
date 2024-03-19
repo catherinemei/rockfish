@@ -22,6 +22,7 @@ type PathProps = JSX.PathSVGAttributes<SVGPathElement> & {
   x?: number;
   y?: number;
   position?: string;
+  "aria-data"?: any;
 };
 
 export const Path = withBluefish((props: PathProps) => {
@@ -64,6 +65,7 @@ export const Path = withBluefish((props: PathProps) => {
       },
       customData: {
         path: path,
+        "aria-data": props["aria-data"],
       },
     };
   };

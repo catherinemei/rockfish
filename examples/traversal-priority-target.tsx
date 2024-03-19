@@ -22,13 +22,13 @@ export const PriorityGraphVisualizer = (
     ////////////////////////////// CREATE PARENT-CHILD EDGES //////////////////////////////
     // Create visualization for parent-child edges
     props.priorityNode.forEach((node) => {
-      g.setNode(node.id, { label: node.description, width: 80, height: 20 }); // Adjust width and height as needed
+      g.setNode(node.id, { label: node.displayName, width: 80, height: 20 }); // Adjust width and height as needed
 
       const dagreNode = g.node(node.id);
       augmentedNodes.push({ ...dagreNode, id: node.id, type: "hierarchy" });
 
       node.relations.forEach((relId) => {
-        if (relId.priorityName === "Contains (child)") {
+        if (relId.relationDisplayName === "Contains (child)") {
           augmentedEdges.push({
             from: node.id,
             to: relId.relatedNodeId,
@@ -45,10 +45,10 @@ export const PriorityGraphVisualizer = (
     const relationMap: Map<string, string[]> = new Map();
     props.priorityNode.forEach((node) => {
       node.relations.forEach((rel) => {
-        if (!relationMap.has(rel.priorityName)) {
-          relationMap.set(rel.priorityName, []);
+        if (!relationMap.has(rel.relationDisplayName)) {
+          relationMap.set(rel.relationDisplayName, []);
         }
-        relationMap.get(rel.priorityName)?.push(rel.relatedNodeId);
+        relationMap.get(rel.relationDisplayName)?.push(rel.relatedNodeId);
       });
     });
 

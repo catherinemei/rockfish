@@ -13,7 +13,7 @@ export type BackgroundProps = ParentProps<{
   y?: number;
   background?: () => JSX.Element;
   padding?: number;
-  "aria-label"?: string;
+  "aria-data"?: any;
 }>;
 
 export const Background = withBluefish(
@@ -127,6 +127,9 @@ export const Background = withBluefish(
             x: maybeSub(props.x, left),
             y: maybeSub(props.y, top),
           },
+        },
+        customData: {
+          "aria-data": props["aria-data"],
         },
       };
     };
