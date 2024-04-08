@@ -1,52 +1,36 @@
-import {
-  JSX,
-  ParentProps,
-  Show,
-  createEffect,
-  mergeProps,
-  splitProps,
-  untrack,
-} from "solid-js";
+import { mergeProps, splitProps } from "solid-js";
 import Layout from "./layout";
+import { BBox, Id, Transform } from "./scenegraph";
+import { maybeSub } from "./util/maybe";
+import { PaperScope } from "paper/dist/paper-core";
 import withBluefish from "./withBluefish";
-import { BBox, Id, Transform, useScenegraph, ChildNode } from "./scenegraph";
-import { PaperScope } from "paper";
+import { JSX } from "solid-js/jsx-runtime";
 
-// TODO: should be exported by Bluefish
-export const maybeSub = (a: number | undefined, b: number | undefined) =>
-  a !== undefined && b !== undefined ? a - b : undefined;
-
-type PathProps = JSX.PathSVGAttributes<SVGPathElement> & {
+export type PathProps = JSX.PathSVGAttributes<SVGPathElement> & {
   name: Id;
   d: string;
   x?: number;
   y?: number;
-  position?: string;
-  "aria-data"?: any;
+  position?: "absolute" | "relative";
 };
 
-export const Path = withBluefish((props: PathProps) => {
-  props = mergeProps(
+export const Path = withBluefish((rawProps: PathProps) => {
+  const props = mergeProps(
     {
-      "stroke-width": "3",
+      "stroke-width": 3,
       stroke: "black",
       position: "relative",
       fill: "none",
+      d: "",
     },
-    props
+    rawProps
   );
 
   const canvas = document.createElement("canvas");
   const paperScope = new PaperScope();
   paperScope.setup(canvas);
 
-  const layout = (childIds: ChildNode[]) => {
-    childIds = Array.from(childIds);
-
-    if (props.name.endsWith("DEBUG")) {
-      debugger;
-    }
-
+  const layout = () => {
     const path = new paperScope.Path(props.d);
     const bounds = path.bounds;
 
@@ -64,42 +48,30 @@ export const Path = withBluefish((props: PathProps) => {
         height: bounds.height,
       },
       customData: {
-        path: path,
-        "aria-data": props["aria-data"],
+        path,
       },
     };
   };
 
   const paint = (paintProps: {
-    transform: Transform;
     bbox: BBox;
-    children: JSX.Element;
-    customData?: any;
+    transform: Transform;
+    customData?: { path: { pathData: string } };
   }) => {
     const [_, rest] = splitProps(props, ["name", "x", "y", "d", "position"]);
 
     return (
-      <Show
-        when={paintProps.customData}
-        fallback={<g>{paintProps.children}</g>}
+      <g
+        transform={`translate(${paintProps.transform.translate.x ?? 0}, ${
+          paintProps.transform.translate.y ?? 0
+        })`}
       >
-        <g
-          transform={`translate(${paintProps.transform.translate.x ?? 0}, ${
-            paintProps.transform.translate.y ?? 0
-          })`}
-        >
-          <path {...rest} d={paintProps.customData.path?.pathData ?? ""} />
-          {paintProps.children}
-        </g>
-      </Show>
+        <path {...rest} d={paintProps.customData?.path?.pathData ?? ""} />
+      </g>
     );
   };
 
-  return (
-    <Layout name={props.name} layout={layout} paint={paint}>
-      {props.children}
-    </Layout>
-  );
+  return <Layout name={props.name} layout={layout} paint={paint} />;
 });
 
 export default Path;
