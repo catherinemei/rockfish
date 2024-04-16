@@ -406,66 +406,138 @@ const App: Component = () => {
       id: "0",
       displayName: "Bluefish",
       relations: [
-        { relatedNodeId: "1", relationDisplayName: "Contains (child)" },
-        { relatedNodeId: "2", relationDisplayName: "Contains (child)" },
+        {
+          relatedNodeId: "1",
+          relationDisplayName: "Contains (child)",
+          relationId: "rel0",
+        },
+        {
+          relatedNodeId: "2",
+          relationDisplayName: "Contains (child)",
+          relationId: "rel1",
+        },
       ],
     },
     {
       id: "1",
       displayName: "Background",
       relations: [
-        { relatedNodeId: "0", relationDisplayName: "Contained by (parent)" },
-        { relatedNodeId: "3", relationDisplayName: "Contains (child)" },
+        {
+          relatedNodeId: "0",
+          relationDisplayName: "Contained by (parent)",
+          relationId: "rel2",
+        },
+        {
+          relatedNodeId: "3",
+          relationDisplayName: "Contains (child)",
+          relationId: "rel3",
+        },
       ],
     },
     {
       id: "2",
       displayName: "Text",
       relations: [
-        { relatedNodeId: "0", relationDisplayName: "Contained by (parent)" },
-        { relatedNodeId: "4", relationDisplayName: "Connected" },
-        { relatedNodeId: "4", relationDisplayName: "Aligned" },
+        {
+          relatedNodeId: "0",
+          relationDisplayName: "Contained by (parent)",
+          relationId: "rel4",
+        },
+        {
+          relatedNodeId: "4",
+          relationDisplayName: "Connected",
+          relationId: "rel5",
+        },
+        {
+          relatedNodeId: "4",
+          relationDisplayName: "Aligned",
+          relationId: "rel6",
+        },
       ],
     },
     {
       id: "3",
       displayName: "StackH",
       relations: [
-        { relatedNodeId: "1", relationDisplayName: "Contained by (parent)" },
-        { relatedNodeId: "4", relationDisplayName: "Contains (child)" },
-        { relatedNodeId: "5", relationDisplayName: "Contains (child)" },
-        { relatedNodeId: "6", relationDisplayName: "Contains (child)" },
-        { relatedNodeId: "7", relationDisplayName: "Contains (child)" },
+        {
+          relatedNodeId: "1",
+          relationDisplayName: "Contained by (parent)",
+          relationId: "rel7",
+        },
+        {
+          relatedNodeId: "4",
+          relationDisplayName: "Contains (child)",
+          relationId: "rel8",
+        },
+        {
+          relatedNodeId: "5",
+          relationDisplayName: "Contains (child)",
+          relationId: "rel9",
+        },
+        {
+          relatedNodeId: "6",
+          relationDisplayName: "Contains (child)",
+          relationId: "rel10",
+        },
+        {
+          relatedNodeId: "7",
+          relationDisplayName: "Contains (child)",
+          relationId: "rel11",
+        },
       ],
     },
     {
       id: "4",
       displayName: "Circle (mercury)",
       relations: [
-        { relatedNodeId: "3", relationDisplayName: "Contained by (parent)" },
-        { relatedNodeId: "2", relationDisplayName: "Connected" },
-        { relatedNodeId: "2", relationDisplayName: "Aligned" },
+        {
+          relatedNodeId: "3",
+          relationDisplayName: "Contained by (parent)",
+          relationId: "rel12",
+        },
+        {
+          relatedNodeId: "2",
+          relationDisplayName: "Connected",
+          relationId: "rel13",
+        },
+        {
+          relatedNodeId: "2",
+          relationDisplayName: "Aligned",
+          relationId: "rel14",
+        },
       ],
     },
     {
       id: "5",
       displayName: "Circle (venus)",
       relations: [
-        { relatedNodeId: "3", relationDisplayName: "Contained by (parent)" },
+        {
+          relatedNodeId: "3",
+          relationDisplayName: "Contained by (parent)",
+          relationId: "rel15",
+        },
       ],
     },
     {
       id: "6",
       displayName: "Circle (earth)",
       relations: [
-        { relatedNodeId: "3", relationDisplayName: "Contained by (parent)" },
+        {
+          relatedNodeId: "3",
+          relationDisplayName: "Contained by (parent)",
+          relationId: "rel16",
+        },
       ],
     },
     {
       id: "7",
       displayName: "Circle (mars)",
       relations: [
-        { relatedNodeId: "3", relationDisplayName: "Contained by (parent)" },
+        {
+          relatedNodeId: "3",
+          relationDisplayName: "Contained by (parent)",
+          relationId: "rel17",
+        },
       ],
     },
     // {
@@ -686,132 +758,132 @@ const App: Component = () => {
     },
   ];
 
-  const pulleyTraversalPriority: PriorityNode[] = [
-    {
-      id: "0",
-      displayName: "a: W1",
-      relations: [
-        { relatedNodeId: "13", relationDisplayName: "Contains (child)" },
-        { relatedNodeId: "1", relationDisplayName: "Hangs from" },
-      ],
-    },
-    {
-      id: "1",
-      displayName: "b: RopeP",
-      relations: [
-        { relatedNodeId: "2", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "3", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "0", relationDisplayName: "Hangs from" },
-      ],
-    },
-    {
-      id: "2",
-      displayName: "c: RopeQ",
-      relations: [
-        { relatedNodeId: "1", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "3", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "4", relationDisplayName: "Hangs from" },
-      ],
-    },
-    {
-      id: "3",
-      displayName: "d: PulleyA",
-      relations: [
-        { relatedNodeId: "1", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "2", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "5", relationDisplayName: "Hangs from" },
-      ],
-    },
-    {
-      id: "4",
-      displayName: "e: W2",
-      relations: [
-        { relatedNodeId: "2", relationDisplayName: "Hangs from" },
-        { relatedNodeId: "11", relationDisplayName: "Hangs from" },
-      ],
-    },
-    {
-      id: "5",
-      displayName: "f: RopeX",
-      relations: [
-        { relatedNodeId: "6", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "7", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "3", relationDisplayName: "Hangs from" },
-      ],
-    },
-    {
-      id: "6",
-      displayName: "g: PulleyB",
-      relations: [
-        { relatedNodeId: "5", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "7", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "10", relationDisplayName: "Hangs from" },
-      ],
-    },
-    {
-      id: "7",
-      displayName: "h: RopeY",
-      relations: [
-        { relatedNodeId: "5", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "6", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "8", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "9", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "8", relationDisplayName: "Hangs from" },
-      ],
-    },
-    {
-      id: "8",
-      displayName: "i: PulleyC",
-      relations: [
-        { relatedNodeId: "7", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "9", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "7", relationDisplayName: "Hangs from" },
-        { relatedNodeId: "9", relationDisplayName: "Hangs from" },
-        { relatedNodeId: "11", relationDisplayName: "Hangs from" },
-      ],
-    },
-    {
-      id: "9",
-      displayName: "j: RopeZ",
-      relations: [
-        { relatedNodeId: "7", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "8", relationDisplayName: "Pulley System" },
-        { relatedNodeId: "8", relationDisplayName: "Hangs from" },
-        { relatedNodeId: "12", relationDisplayName: "Hangs from" },
-      ],
-    },
-    {
-      id: "10",
-      displayName: "k: RopeT",
-      relations: [
-        { relatedNodeId: "6", relationDisplayName: "Hangs from" },
-        { relatedNodeId: "12", relationDisplayName: "Hangs from" },
-      ],
-    },
-    {
-      id: "11",
-      displayName: "l: RopeS",
-      relations: [
-        { relatedNodeId: "4", relationDisplayName: "Hangs from" },
-        { relatedNodeId: "8", relationDisplayName: "Hangs from" },
-      ],
-    },
-    {
-      id: "12",
-      displayName: "m: Wall",
-      relations: [
-        { relatedNodeId: "9", relationDisplayName: "Hangs from" },
-        { relatedNodeId: "10", relationDisplayName: "Hangs from" },
-      ],
-    },
-    {
-      id: "13",
-      displayName: "W1 label: 1",
-      relations: [
-        { relatedNodeId: "0", relationDisplayName: "Contained by (parent)" },
-      ],
-    },
-  ];
+  // const pulleyTraversalPriority: PriorityNode[] = [
+  //   {
+  //     id: "0",
+  //     displayName: "a: W1",
+  //     relations: [
+  //       { relatedNodeId: "13", relationDisplayName: "Contains (child)" },
+  //       { relatedNodeId: "1", relationDisplayName: "Hangs from" },
+  //     ],
+  //   },
+  //   {
+  //     id: "1",
+  //     displayName: "b: RopeP",
+  //     relations: [
+  //       { relatedNodeId: "2", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "3", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "0", relationDisplayName: "Hangs from" },
+  //     ],
+  //   },
+  //   {
+  //     id: "2",
+  //     displayName: "c: RopeQ",
+  //     relations: [
+  //       { relatedNodeId: "1", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "3", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "4", relationDisplayName: "Hangs from" },
+  //     ],
+  //   },
+  //   {
+  //     id: "3",
+  //     displayName: "d: PulleyA",
+  //     relations: [
+  //       { relatedNodeId: "1", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "2", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "5", relationDisplayName: "Hangs from" },
+  //     ],
+  //   },
+  //   {
+  //     id: "4",
+  //     displayName: "e: W2",
+  //     relations: [
+  //       { relatedNodeId: "2", relationDisplayName: "Hangs from" },
+  //       { relatedNodeId: "11", relationDisplayName: "Hangs from" },
+  //     ],
+  //   },
+  //   {
+  //     id: "5",
+  //     displayName: "f: RopeX",
+  //     relations: [
+  //       { relatedNodeId: "6", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "7", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "3", relationDisplayName: "Hangs from" },
+  //     ],
+  //   },
+  //   {
+  //     id: "6",
+  //     displayName: "g: PulleyB",
+  //     relations: [
+  //       { relatedNodeId: "5", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "7", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "10", relationDisplayName: "Hangs from" },
+  //     ],
+  //   },
+  //   {
+  //     id: "7",
+  //     displayName: "h: RopeY",
+  //     relations: [
+  //       { relatedNodeId: "5", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "6", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "8", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "9", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "8", relationDisplayName: "Hangs from" },
+  //     ],
+  //   },
+  //   {
+  //     id: "8",
+  //     displayName: "i: PulleyC",
+  //     relations: [
+  //       { relatedNodeId: "7", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "9", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "7", relationDisplayName: "Hangs from" },
+  //       { relatedNodeId: "9", relationDisplayName: "Hangs from" },
+  //       { relatedNodeId: "11", relationDisplayName: "Hangs from" },
+  //     ],
+  //   },
+  //   {
+  //     id: "9",
+  //     displayName: "j: RopeZ",
+  //     relations: [
+  //       { relatedNodeId: "7", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "8", relationDisplayName: "Pulley System" },
+  //       { relatedNodeId: "8", relationDisplayName: "Hangs from" },
+  //       { relatedNodeId: "12", relationDisplayName: "Hangs from" },
+  //     ],
+  //   },
+  //   {
+  //     id: "10",
+  //     displayName: "k: RopeT",
+  //     relations: [
+  //       { relatedNodeId: "6", relationDisplayName: "Hangs from" },
+  //       { relatedNodeId: "12", relationDisplayName: "Hangs from" },
+  //     ],
+  //   },
+  //   {
+  //     id: "11",
+  //     displayName: "l: RopeS",
+  //     relations: [
+  //       { relatedNodeId: "4", relationDisplayName: "Hangs from" },
+  //       { relatedNodeId: "8", relationDisplayName: "Hangs from" },
+  //     ],
+  //   },
+  //   {
+  //     id: "12",
+  //     displayName: "m: Wall",
+  //     relations: [
+  //       { relatedNodeId: "9", relationDisplayName: "Hangs from" },
+  //       { relatedNodeId: "10", relationDisplayName: "Hangs from" },
+  //     ],
+  //   },
+  //   {
+  //     id: "13",
+  //     displayName: "W1 label: 1",
+  //     relations: [
+  //       { relatedNodeId: "0", relationDisplayName: "Contained by (parent)" },
+  //     ],
+  //   },
+  // ];
 
   return (
     <>
