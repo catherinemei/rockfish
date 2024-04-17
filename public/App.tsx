@@ -961,6 +961,7 @@ const App: Component = () => {
           <Text
             name="label"
             vertical-anchor="start"
+            aria-hidden
             width={500}
             aria-data={{
               displayName: "Text",

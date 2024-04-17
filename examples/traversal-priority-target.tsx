@@ -28,7 +28,7 @@ export const PriorityGraphVisualizer = (
       augmentedNodes.push({ ...dagreNode, id: node.id, type: "hierarchy" });
 
       node.relations.forEach((relId) => {
-        if (relId.relationDisplayName === "Contains (child)") {
+        if (relId.relationDisplayName === "Child") {
           augmentedEdges.push({
             from: node.id,
             to: relId.relatedNodeId,
@@ -55,10 +55,7 @@ export const PriorityGraphVisualizer = (
     // Go through each type of relation and create relation edges
     // Skip hierarchy edges and parent edges [denoted "Contained by (parent)"]
     relationMap.forEach((relMembers, relPriority) => {
-      if (
-        relPriority === "Contains (child)" ||
-        relPriority === "Contained by (parent)"
-      ) {
+      if (relPriority === "Child" || relPriority === "Parent") {
         return;
       }
       g.setNode(relPriority, {
@@ -149,6 +146,7 @@ export const PriorityGraphVisualizer = (
       width={layout().svgWidth}
       height={layout().svgHeight}
       style={{ "padding-left": "10px" }}
+      aria-hidden={true}
     >
       <For each={layout().nodes}>
         {(node) => (

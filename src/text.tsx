@@ -107,6 +107,7 @@ export const Text = withBluefish(
               <For each={wordsByLines()}>
                 {(line, index) => (
                   <tspan
+                    aria-hidden={props["aria-hidden"]}
                     x={props.x}
                     dy={index() === 0 ? startDy() : props["line-height"]}
                     cap-height={props["cap-height"]}

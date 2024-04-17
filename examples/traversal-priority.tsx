@@ -1,6 +1,5 @@
 import { For, createSignal, Show, createMemo, createEffect } from "solid-js";
 import { PriorityGraphVisualizer } from "./traversal-priority-target";
-import { set } from "lodash";
 type Id = string;
 
 export type PriorityNode = {
@@ -54,9 +53,16 @@ export function PriorityNodeComponent(props: PriorityNodeComponentProps) {
   });
 
   return (
-    <div style="padding-left: 50px;">
-      <p style="font-weight:bold;">{props.node.displayName}</p>
-      <p style="font-style:italic;">{props.node.description}</p>
+    <div
+      style="padding-left: 50px;"
+      aria-label={`You are on the ${props.node.displayName} node; ${props.node.description}. Enter this node to access the relations of this node`}
+    >
+      <p style="font-weight:bold;" aria-hidden={true}>
+        {props.node.displayName}
+      </p>
+      <p style="font-style:italic;" aria-hidden={true}>
+        {props.node.description}
+      </p>
       <For each={Object.entries(groupedRelations())}>
         {([priorityId, relations]) => (
           <div
@@ -65,8 +71,11 @@ export function PriorityNodeComponent(props: PriorityNodeComponentProps) {
               "align-items": "center",
               "margin-bottom": "10px",
             }}
+            aria-label={`You are on a ${props.priorityDisplayNames[priorityId]} relation. Enter the group to access members of this relation`}
           >
-            <span>{props.priorityDisplayNames[priorityId]}: </span>
+            <span aria-hidden={true}>
+              {props.priorityDisplayNames[priorityId]}
+            </span>
             <div
               style={{
                 display: "flex",
@@ -80,7 +89,17 @@ export function PriorityNodeComponent(props: PriorityNodeComponentProps) {
                     onClick={() =>
                       props.onRelationClick(relation.relatedNodeId)
                     }
-                    aria-label={relation.relatedNodeId}
+                    aria-label={`${
+                      props.nodeMap.get(relation.relatedNodeId)?.displayName ||
+                      relation.relatedNodeId
+                    }. Navigate to the ${
+                      props.nodeMap.get(relation.relatedNodeId)?.displayName ||
+                      relation.relatedNodeId
+                    } node, which is related to the current ${
+                      props.node.displayName
+                    } node through a ${
+                      props.priorityDisplayNames[priorityId]
+                    } relation`}
                     style={{ "margin-right": "5px", "margin-bottom": "5px" }}
                   >
                     {props.nodeMap.get(relation.relatedNodeId)?.displayName ||
@@ -111,12 +130,15 @@ export function PriorityRankingInput(props: PriorityRankingInputProps) {
   };
 
   return (
-    <div>
+    <div aria-hidden>
       <For each={Object.keys(props.priorityRankings)}>
         {(priorityId) => (
-          <div>
-            <label>{props.priorityDisplayNames[priorityId]}: </label>
+          <div aria-hidden>
+            <label aria-hidden>
+              {props.priorityDisplayNames[priorityId]}:{" "}
+            </label>
             <input
+              aria-hidden
               type="number"
               value={props.priorityRankings[priorityId]}
               onInput={(e) =>
@@ -126,11 +148,6 @@ export function PriorityRankingInput(props: PriorityRankingInputProps) {
           </div>
         )}
       </For>
-      <button
-        onClick={() => props.setPriorityRankings({ ...props.priorityRankings })}
-      >
-        Sort Relations
-      </button>
     </div>
   );
 }
@@ -216,7 +233,7 @@ export function parseScenegraphToNodeMap(scenegraph: {
       if (node.parent) {
         relations.push({
           relatedNodeId: node.parent,
-          relationDisplayName: "Contained by (parent)",
+          relationDisplayName: "Parent",
           relationId: "parent",
           priorityLevel: 0,
         });
@@ -227,7 +244,7 @@ export function parseScenegraphToNodeMap(scenegraph: {
           // Add each child that is not an inlined relation
           relations.push({
             relatedNodeId: childId,
-            relationDisplayName: "Contains (child)",
+            relationDisplayName: "Child",
             relationId: "child",
             priorityLevel: 1,
           });
@@ -339,11 +356,11 @@ export function TraversePriorityComponent(
         <PriorityGraphVisualizer priorityNode={nodeListForVisual()} />
       ) : null}
       <Show when={nodeMap().has(currentNodeId())}>{renderCurrentNode()}</Show>
-      <PriorityRankingInput
+      {/* <PriorityRankingInput
         priorityRankings={priorityRankings()}
         setPriorityRankings={setPriorityRankings}
         priorityDisplayNames={priorityDisplayNames()}
-      />
+      /> */}
     </div>
   );
 }
