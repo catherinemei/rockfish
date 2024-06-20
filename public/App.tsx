@@ -12,751 +12,757 @@ import Arrow from "../src/arrow";
 import Text from "../src/text";
 import { StackV } from "../src/stackv";
 import Group from "../src/group";
-import {
-  ObjectNode,
-  RelationNode,
-  TraverseObjRelComponent,
-} from "../examples/traversal-rel-obj";
-import {
-  PriorityNode,
-  TraversePriorityComponent,
-} from "../examples/traversal-priority";
+// import {
+//   ObjectNode,
+//   RelationNode,
+//   TraverseObjRelComponent,
+// } from "../examples/traversal-rel-obj";
+// import {
+//   PriorityNode,
+//   TraversePriorityComponent,
+// } from "../examples/traversal-priority";
 import { Pulley } from "../src/pulley";
+import {
+  RelationNode,
+  Hypergraph,
+  TraversalOutputProps,
+  TraversalOutputComponent,
+} from "../examples/priority-traversal";
 
 const arr = Array.from({ length: 1000 }, (_, i) => i + 1);
 
 const App: Component = () => {
-  const planetsTraversalNoAnnotation: Node[] = [
-    {
-      id: "0",
-      parents: [],
-      children: ["1"],
-      description: "Root SVG",
-    },
-    {
-      id: "1",
-      parents: ["0"],
-      children: ["2"],
-      description: "Background",
-    },
-    {
-      id: "2",
-      parents: ["1"],
-      children: ["5", "6", "7", "8"],
-      description: "StackH",
-    },
-    {
-      id: "5",
-      parents: ["2"],
-      children: [],
-      description: "Circle (mercury)",
-    },
-    {
-      id: "6",
-      parents: ["2"],
-      children: [],
-      description: "Circle (venus)",
-    },
-    {
-      id: "7",
-      parents: ["2"],
-      children: [],
-      description: "Circle (earth)",
-    },
-    {
-      id: "8",
-      parents: ["2"],
-      children: [],
-      description: "Circle (mars)",
-    },
-  ];
+  // const planetsTraversalNoAnnotation: Node[] = [
+  //   {
+  //     id: "0",
+  //     parents: [],
+  //     children: ["1"],
+  //     description: "Root SVG",
+  //   },
+  //   {
+  //     id: "1",
+  //     parents: ["0"],
+  //     children: ["2"],
+  //     description: "Background",
+  //   },
+  //   {
+  //     id: "2",
+  //     parents: ["1"],
+  //     children: ["5", "6", "7", "8"],
+  //     description: "StackH",
+  //   },
+  //   {
+  //     id: "5",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (mercury)",
+  //   },
+  //   {
+  //     id: "6",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (venus)",
+  //   },
+  //   {
+  //     id: "7",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (earth)",
+  //   },
+  //   {
+  //     id: "8",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (mars)",
+  //   },
+  // ];
 
-  const planetsTraversal: Node[] = [
-    {
-      id: "0",
-      parents: [],
-      children: ["1", "3", "4"],
-      description: "Root SVG",
-    },
-    {
-      id: "1",
-      parents: ["0"],
-      children: ["2"],
-      description: "Background",
-    },
-    {
-      id: "2",
-      parents: ["1"],
-      children: ["5", "6", "7", "8"],
-      description: "StackH",
-    },
-    {
-      id: "3",
-      parents: ["0"],
-      children: ["5", "9"],
-      description: "StackV",
-    },
-    {
-      id: "4",
-      parents: ["0"],
-      children: ["5", "9"],
-      description: "Arrow",
-    },
-    {
-      id: "5",
-      parents: ["2", "3", "4"],
-      children: [],
-      description: "Circle (mercury)",
-    },
-    {
-      id: "6",
-      parents: ["2"],
-      children: [],
-      description: "Circle (venus)",
-    },
-    {
-      id: "7",
-      parents: ["2"],
-      children: [],
-      description: "Circle (earth)",
-    },
-    {
-      id: "8",
-      parents: ["2"],
-      children: [],
-      description: "Circle (mars)",
-    },
-    {
-      id: "9",
-      parents: ["3", "4"],
-      children: [],
-      description: "Text (label)",
-    },
-  ];
+  // const planetsTraversal: Node[] = [
+  //   {
+  //     id: "0",
+  //     parents: [],
+  //     children: ["1", "3", "4"],
+  //     description: "Root SVG",
+  //   },
+  //   {
+  //     id: "1",
+  //     parents: ["0"],
+  //     children: ["2"],
+  //     description: "Background",
+  //   },
+  //   {
+  //     id: "2",
+  //     parents: ["1"],
+  //     children: ["5", "6", "7", "8"],
+  //     description: "StackH",
+  //   },
+  //   {
+  //     id: "3",
+  //     parents: ["0"],
+  //     children: ["5", "9"],
+  //     description: "StackV",
+  //   },
+  //   {
+  //     id: "4",
+  //     parents: ["0"],
+  //     children: ["5", "9"],
+  //     description: "Arrow",
+  //   },
+  //   {
+  //     id: "5",
+  //     parents: ["2", "3", "4"],
+  //     children: [],
+  //     description: "Circle (mercury)",
+  //   },
+  //   {
+  //     id: "6",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (venus)",
+  //   },
+  //   {
+  //     id: "7",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (earth)",
+  //   },
+  //   {
+  //     id: "8",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (mars)",
+  //   },
+  //   {
+  //     id: "9",
+  //     parents: ["3", "4"],
+  //     children: [],
+  //     description: "Text (label)",
+  //   },
+  // ];
 
-  const planetsTraversal2: Node[] = [
-    {
-      id: "0",
-      parents: [],
-      children: ["2", "3", "4"],
-      description: "Root SVG",
-    },
-    {
-      id: "2",
-      parents: ["0"],
-      children: ["5", "6", "7", "8"],
-      description: "Modifier",
-    },
-    {
-      id: "3",
-      parents: ["0"],
-      children: ["5", "9"],
-      description: "StackV",
-    },
-    {
-      id: "4",
-      parents: ["0"],
-      children: ["5", "9"],
-      description: "Arrow",
-    },
-    {
-      id: "5",
-      parents: ["2", "3", "4"],
-      children: [],
-      description: "Circle (mercury)",
-    },
-    {
-      id: "6",
-      parents: ["2"],
-      children: [],
-      description: "Circle (venus)",
-    },
-    {
-      id: "7",
-      parents: ["2"],
-      children: [],
-      description: "Circle (earth)",
-    },
-    {
-      id: "8",
-      parents: ["2"],
-      children: [],
-      description: "Circle (mars)",
-    },
-    {
-      id: "9",
-      parents: ["3", "4"],
-      children: [],
-      description: "Text (label)",
-    },
-  ];
+  // const planetsTraversal2: Node[] = [
+  //   {
+  //     id: "0",
+  //     parents: [],
+  //     children: ["2", "3", "4"],
+  //     description: "Root SVG",
+  //   },
+  //   {
+  //     id: "2",
+  //     parents: ["0"],
+  //     children: ["5", "6", "7", "8"],
+  //     description: "Modifier",
+  //   },
+  //   {
+  //     id: "3",
+  //     parents: ["0"],
+  //     children: ["5", "9"],
+  //     description: "StackV",
+  //   },
+  //   {
+  //     id: "4",
+  //     parents: ["0"],
+  //     children: ["5", "9"],
+  //     description: "Arrow",
+  //   },
+  //   {
+  //     id: "5",
+  //     parents: ["2", "3", "4"],
+  //     children: [],
+  //     description: "Circle (mercury)",
+  //   },
+  //   {
+  //     id: "6",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (venus)",
+  //   },
+  //   {
+  //     id: "7",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (earth)",
+  //   },
+  //   {
+  //     id: "8",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (mars)",
+  //   },
+  //   {
+  //     id: "9",
+  //     parents: ["3", "4"],
+  //     children: [],
+  //     description: "Text (label)",
+  //   },
+  // ];
 
-  const planetsTraversal3: Node[] = [
-    {
-      id: "0",
-      parents: [],
-      children: ["2", "3"],
-      description: "Root SVG",
-    },
-    {
-      id: "2",
-      parents: ["0"],
-      children: ["5", "6", "7", "8"],
-      description: "Modifier",
-    },
-    {
-      id: "3",
-      parents: ["0"],
-      children: ["5", "9"],
-      description: "Annotation",
-    },
-    {
-      id: "5",
-      parents: ["2", "3"],
-      children: [],
-      description: "Circle (mercury)",
-    },
-    {
-      id: "6",
-      parents: ["2"],
-      children: [],
-      description: "Circle (venus)",
-    },
-    {
-      id: "7",
-      parents: ["2"],
-      children: [],
-      description: "Circle (earth)",
-    },
-    {
-      id: "8",
-      parents: ["2"],
-      children: [],
-      description: "Circle (mars)",
-    },
-    {
-      id: "9",
-      parents: ["3"],
-      children: [],
-      description: "Text (label)",
-    },
-  ];
+  // const planetsTraversal3: Node[] = [
+  //   {
+  //     id: "0",
+  //     parents: [],
+  //     children: ["2", "3"],
+  //     description: "Root SVG",
+  //   },
+  //   {
+  //     id: "2",
+  //     parents: ["0"],
+  //     children: ["5", "6", "7", "8"],
+  //     description: "Modifier",
+  //   },
+  //   {
+  //     id: "3",
+  //     parents: ["0"],
+  //     children: ["5", "9"],
+  //     description: "Annotation",
+  //   },
+  //   {
+  //     id: "5",
+  //     parents: ["2", "3"],
+  //     children: [],
+  //     description: "Circle (mercury)",
+  //   },
+  //   {
+  //     id: "6",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (venus)",
+  //   },
+  //   {
+  //     id: "7",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (earth)",
+  //   },
+  //   {
+  //     id: "8",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (mars)",
+  //   },
+  //   {
+  //     id: "9",
+  //     parents: ["3"],
+  //     children: [],
+  //     description: "Text (label)",
+  //   },
+  // ];
 
-  const planetsTraversal4: Node[] = [
-    {
-      id: "0",
-      parents: [],
-      children: ["2", "5"],
-      description: "Root SVG",
-    },
-    {
-      id: "2",
-      parents: ["0"],
-      children: ["5", "6", "7", "8"],
-      description: "Modifier",
-    },
-    {
-      id: "5",
-      parents: ["2", "3"],
-      children: ["9"],
-      description: "Circle (mercury)",
-    },
-    {
-      id: "6",
-      parents: ["2"],
-      children: [],
-      description: "Circle (venus)",
-    },
-    {
-      id: "7",
-      parents: ["2"],
-      children: [],
-      description: "Circle (earth)",
-    },
-    {
-      id: "8",
-      parents: ["2"],
-      children: [],
-      description: "Circle (mars)",
-    },
-    {
-      id: "9",
-      parents: ["5"],
-      children: [],
-      description: "Text (label)",
-    },
-  ];
+  // const planetsTraversal4: Node[] = [
+  //   {
+  //     id: "0",
+  //     parents: [],
+  //     children: ["2", "5"],
+  //     description: "Root SVG",
+  //   },
+  //   {
+  //     id: "2",
+  //     parents: ["0"],
+  //     children: ["5", "6", "7", "8"],
+  //     description: "Modifier",
+  //   },
+  //   {
+  //     id: "5",
+  //     parents: ["2", "3"],
+  //     children: ["9"],
+  //     description: "Circle (mercury)",
+  //   },
+  //   {
+  //     id: "6",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (venus)",
+  //   },
+  //   {
+  //     id: "7",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (earth)",
+  //   },
+  //   {
+  //     id: "8",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (mars)",
+  //   },
+  //   {
+  //     id: "9",
+  //     parents: ["5"],
+  //     children: [],
+  //     description: "Text (label)",
+  //   },
+  // ];
 
-  const planetsTraversal5: Node[] = [
-    {
-      id: "0",
-      parents: [],
-      children: ["2", "5"],
-      description: "Root SVG",
-    },
-    {
-      id: "2",
-      parents: ["0"],
-      children: ["5", "6", "7", "8"],
-      description: "Modifier",
-    },
-    {
-      id: "5",
-      parents: ["2", "3", "9"],
-      children: [],
-      description: "Circle (mercury)",
-    },
-    {
-      id: "6",
-      parents: ["2"],
-      children: [],
-      description: "Circle (venus)",
-    },
-    {
-      id: "7",
-      parents: ["2"],
-      children: [],
-      description: "Circle (earth)",
-    },
-    {
-      id: "8",
-      parents: ["2"],
-      children: [],
-      description: "Circle (mars)",
-    },
-    {
-      id: "9",
-      parents: [],
-      children: ["5"],
-      description: "Text (label)",
-    },
-  ];
+  // const planetsTraversal5: Node[] = [
+  //   {
+  //     id: "0",
+  //     parents: [],
+  //     children: ["2", "5"],
+  //     description: "Root SVG",
+  //   },
+  //   {
+  //     id: "2",
+  //     parents: ["0"],
+  //     children: ["5", "6", "7", "8"],
+  //     description: "Modifier",
+  //   },
+  //   {
+  //     id: "5",
+  //     parents: ["2", "3", "9"],
+  //     children: [],
+  //     description: "Circle (mercury)",
+  //   },
+  //   {
+  //     id: "6",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (venus)",
+  //   },
+  //   {
+  //     id: "7",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (earth)",
+  //   },
+  //   {
+  //     id: "8",
+  //     parents: ["2"],
+  //     children: [],
+  //     description: "Circle (mars)",
+  //   },
+  //   {
+  //     id: "9",
+  //     parents: [],
+  //     children: ["5"],
+  //     description: "Text (label)",
+  //   },
+  // ];
 
-  const planetTraversalRelObject: (ObjectNode | RelationNode)[] = [
-    {
-      id: "0",
-      description: "Bluefish",
-      parent: "",
-      children: ["1", "2"],
-      relations: [],
-    },
-    {
-      id: "1",
-      description: "Background",
-      parent: "0",
-      children: ["3"],
-      relations: [],
-    },
-    {
-      id: "2",
-      description: "Text",
-      parent: "0",
-      children: [],
-      relations: ["8", "9"],
-    },
-    {
-      id: "3",
-      description: "StackH",
-      parent: "1",
-      children: ["4", "5", "6", "7"],
-      relations: [],
-    },
-    {
-      id: "4",
-      description: "Circle (mercury)",
-      parent: "3",
-      children: [],
-      relations: ["8", "9"],
-    },
-    {
-      id: "5",
-      description: "Circle (venus)",
-      parent: "3",
-      children: [],
-      relations: [],
-    },
-    {
-      id: "6",
-      description: "Circle (earth)",
-      parent: "3",
-      children: [],
-      relations: [],
-    },
-    {
-      id: "7",
-      description: "Circle (mars)",
-      parent: "3",
-      children: [],
-      relations: [],
-    },
-    {
-      id: "8",
-      description: "Arrow",
-      members: ["2", "4"],
-    },
-    {
-      id: "9",
-      description: "StackV",
-      members: ["2", "4"],
-    },
-  ];
+  // const planetTraversalRelObject: (ObjectNode | RelationNode)[] = [
+  //   {
+  //     id: "0",
+  //     description: "Bluefish",
+  //     parent: "",
+  //     children: ["1", "2"],
+  //     relations: [],
+  //   },
+  //   {
+  //     id: "1",
+  //     description: "Background",
+  //     parent: "0",
+  //     children: ["3"],
+  //     relations: [],
+  //   },
+  //   {
+  //     id: "2",
+  //     description: "Text",
+  //     parent: "0",
+  //     children: [],
+  //     relations: ["8", "9"],
+  //   },
+  //   {
+  //     id: "3",
+  //     description: "StackH",
+  //     parent: "1",
+  //     children: ["4", "5", "6", "7"],
+  //     relations: [],
+  //   },
+  //   {
+  //     id: "4",
+  //     description: "Circle (mercury)",
+  //     parent: "3",
+  //     children: [],
+  //     relations: ["8", "9"],
+  //   },
+  //   {
+  //     id: "5",
+  //     description: "Circle (venus)",
+  //     parent: "3",
+  //     children: [],
+  //     relations: [],
+  //   },
+  //   {
+  //     id: "6",
+  //     description: "Circle (earth)",
+  //     parent: "3",
+  //     children: [],
+  //     relations: [],
+  //   },
+  //   {
+  //     id: "7",
+  //     description: "Circle (mars)",
+  //     parent: "3",
+  //     children: [],
+  //     relations: [],
+  //   },
+  //   {
+  //     id: "8",
+  //     description: "Arrow",
+  //     members: ["2", "4"],
+  //   },
+  //   {
+  //     id: "9",
+  //     description: "StackV",
+  //     members: ["2", "4"],
+  //   },
+  // ];
 
-  const planetTraversalPriority: PriorityNode[] = [
-    {
-      id: "0",
-      displayName: "Bluefish",
-      relations: [
-        {
-          relatedNodeId: "1",
-          relationDisplayName: "Contains (child)",
-          relationId: "rel0",
-        },
-        {
-          relatedNodeId: "2",
-          relationDisplayName: "Contains (child)",
-          relationId: "rel1",
-        },
-      ],
-    },
-    {
-      id: "1",
-      displayName: "Background",
-      relations: [
-        {
-          relatedNodeId: "0",
-          relationDisplayName: "Contained by (parent)",
-          relationId: "rel2",
-        },
-        {
-          relatedNodeId: "3",
-          relationDisplayName: "Contains (child)",
-          relationId: "rel3",
-        },
-      ],
-    },
-    {
-      id: "2",
-      displayName: "Text",
-      relations: [
-        {
-          relatedNodeId: "0",
-          relationDisplayName: "Contained by (parent)",
-          relationId: "rel4",
-        },
-        {
-          relatedNodeId: "4",
-          relationDisplayName: "Connected",
-          relationId: "rel5",
-        },
-        {
-          relatedNodeId: "4",
-          relationDisplayName: "Aligned",
-          relationId: "rel6",
-        },
-      ],
-    },
-    {
-      id: "3",
-      displayName: "StackH",
-      relations: [
-        {
-          relatedNodeId: "1",
-          relationDisplayName: "Contained by (parent)",
-          relationId: "rel7",
-        },
-        {
-          relatedNodeId: "4",
-          relationDisplayName: "Contains (child)",
-          relationId: "rel8",
-        },
-        {
-          relatedNodeId: "5",
-          relationDisplayName: "Contains (child)",
-          relationId: "rel9",
-        },
-        {
-          relatedNodeId: "6",
-          relationDisplayName: "Contains (child)",
-          relationId: "rel10",
-        },
-        {
-          relatedNodeId: "7",
-          relationDisplayName: "Contains (child)",
-          relationId: "rel11",
-        },
-      ],
-    },
-    {
-      id: "4",
-      displayName: "Circle (mercury)",
-      relations: [
-        {
-          relatedNodeId: "3",
-          relationDisplayName: "Contained by (parent)",
-          relationId: "rel12",
-        },
-        {
-          relatedNodeId: "2",
-          relationDisplayName: "Connected",
-          relationId: "rel13",
-        },
-        {
-          relatedNodeId: "2",
-          relationDisplayName: "Aligned",
-          relationId: "rel14",
-        },
-      ],
-    },
-    {
-      id: "5",
-      displayName: "Circle (venus)",
-      relations: [
-        {
-          relatedNodeId: "3",
-          relationDisplayName: "Contained by (parent)",
-          relationId: "rel15",
-        },
-      ],
-    },
-    {
-      id: "6",
-      displayName: "Circle (earth)",
-      relations: [
-        {
-          relatedNodeId: "3",
-          relationDisplayName: "Contained by (parent)",
-          relationId: "rel16",
-        },
-      ],
-    },
-    {
-      id: "7",
-      displayName: "Circle (mars)",
-      relations: [
-        {
-          relatedNodeId: "3",
-          relationDisplayName: "Contained by (parent)",
-          relationId: "rel17",
-        },
-      ],
-    },
-    // {
-    //   id: "8",
-    //   description: "Arrow",
-    //   relations: [
-    //     { id: "2", priority: "related" },
-    //     { id: "4", priority: "related" },
-    //   ],
-    // },
-    // {
-    //   id: "9",
-    //   description: "StackV",
-    //   relations: [
-    //     { id: "2", priority: "related" },
-    //     { id: "4", priority: "related" },
-    //   ],
-    // },
-  ];
+  // const planetTraversalPriority: PriorityNode[] = [
+  //   {
+  //     id: "0",
+  //     displayName: "Bluefish",
+  //     relations: [
+  //       {
+  //         relatedNodeId: "1",
+  //         relationDisplayName: "Contains (child)",
+  //         relationId: "rel0",
+  //       },
+  //       {
+  //         relatedNodeId: "2",
+  //         relationDisplayName: "Contains (child)",
+  //         relationId: "rel1",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: "1",
+  //     displayName: "Background",
+  //     relations: [
+  //       {
+  //         relatedNodeId: "0",
+  //         relationDisplayName: "Contained by (parent)",
+  //         relationId: "rel2",
+  //       },
+  //       {
+  //         relatedNodeId: "3",
+  //         relationDisplayName: "Contains (child)",
+  //         relationId: "rel3",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: "2",
+  //     displayName: "Text",
+  //     relations: [
+  //       {
+  //         relatedNodeId: "0",
+  //         relationDisplayName: "Contained by (parent)",
+  //         relationId: "rel4",
+  //       },
+  //       {
+  //         relatedNodeId: "4",
+  //         relationDisplayName: "Connected",
+  //         relationId: "rel5",
+  //       },
+  //       {
+  //         relatedNodeId: "4",
+  //         relationDisplayName: "Aligned",
+  //         relationId: "rel6",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: "3",
+  //     displayName: "StackH",
+  //     relations: [
+  //       {
+  //         relatedNodeId: "1",
+  //         relationDisplayName: "Contained by (parent)",
+  //         relationId: "rel7",
+  //       },
+  //       {
+  //         relatedNodeId: "4",
+  //         relationDisplayName: "Contains (child)",
+  //         relationId: "rel8",
+  //       },
+  //       {
+  //         relatedNodeId: "5",
+  //         relationDisplayName: "Contains (child)",
+  //         relationId: "rel9",
+  //       },
+  //       {
+  //         relatedNodeId: "6",
+  //         relationDisplayName: "Contains (child)",
+  //         relationId: "rel10",
+  //       },
+  //       {
+  //         relatedNodeId: "7",
+  //         relationDisplayName: "Contains (child)",
+  //         relationId: "rel11",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: "4",
+  //     displayName: "Circle (mercury)",
+  //     relations: [
+  //       {
+  //         relatedNodeId: "3",
+  //         relationDisplayName: "Contained by (parent)",
+  //         relationId: "rel12",
+  //       },
+  //       {
+  //         relatedNodeId: "2",
+  //         relationDisplayName: "Connected",
+  //         relationId: "rel13",
+  //       },
+  //       {
+  //         relatedNodeId: "2",
+  //         relationDisplayName: "Aligned",
+  //         relationId: "rel14",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: "5",
+  //     displayName: "Circle (venus)",
+  //     relations: [
+  //       {
+  //         relatedNodeId: "3",
+  //         relationDisplayName: "Contained by (parent)",
+  //         relationId: "rel15",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: "6",
+  //     displayName: "Circle (earth)",
+  //     relations: [
+  //       {
+  //         relatedNodeId: "3",
+  //         relationDisplayName: "Contained by (parent)",
+  //         relationId: "rel16",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: "7",
+  //     displayName: "Circle (mars)",
+  //     relations: [
+  //       {
+  //         relatedNodeId: "3",
+  //         relationDisplayName: "Contained by (parent)",
+  //         relationId: "rel17",
+  //       },
+  //     ],
+  //   },
+  // {
+  //   id: "8",
+  //   description: "Arrow",
+  //   relations: [
+  //     { id: "2", priority: "related" },
+  //     { id: "4", priority: "related" },
+  //   ],
+  // },
+  // {
+  //   id: "9",
+  //   description: "StackV",
+  //   relations: [
+  //     { id: "2", priority: "related" },
+  //     { id: "4", priority: "related" },
+  //   ],
+  // },
+  // ];
 
-  const pulleyTraversal: (ObjectNode | RelationNode)[] = [
-    // {
-    //   id: "root",
-    //   description: "Bluefish",
-    //   parent: "",
-    //   children: [
-    //     "0",
-    //     "1",
-    //     "2",
-    //     "3",
-    //     "4",
-    //     "5",
-    //     "6",
-    //     "7",
-    //     "8",
-    //     "9",
-    //     "10",
-    //     "11",
-    //     "12",
-    //   ],
-    //   relations: [],
-    // },
-    {
-      id: "0",
-      description: "a: W1",
-      parent: "root",
-      children: ["13"],
-      relations: ["17"],
-    },
-    {
-      id: "1",
-      description: "b: RopeP",
-      parent: "root",
-      children: [],
-      relations: ["14", "17"],
-    },
-    {
-      id: "2",
-      description: "c: RopeQ",
-      parent: "root",
-      children: [],
-      relations: ["14", "18"],
-    },
-    {
-      id: "3",
-      description: "d: PulleyA",
-      parent: "root",
-      children: [],
-      relations: ["14", "19"],
-    },
-    {
-      id: "4",
-      description: "e: W2",
-      parent: "root",
-      children: [],
-      relations: ["18", "20"],
-    },
-    {
-      id: "5",
-      description: "f: RopeX",
-      parent: "root",
-      children: [],
-      relations: ["15", "19"],
-    },
-    {
-      id: "6",
-      description: "g: PulleyB",
-      parent: "root",
-      children: [],
-      relations: ["15", "21"],
-    },
-    {
-      id: "7",
-      description: "h: RopeY",
-      parent: "root",
-      children: [],
-      relations: ["15", "16", "22"],
-    },
-    {
-      id: "8",
-      description: "i: PulleyC",
-      parent: "root",
-      children: [],
-      relations: ["16", "22", "23", "24"],
-    },
-    {
-      id: "9",
-      description: "j: RopeZ",
-      parent: "root",
-      children: [],
-      relations: ["16", "23", "25"],
-    },
-    {
-      id: "10",
-      description: "k: RopeT",
-      parent: "root",
-      children: [],
-      relations: ["21", "26"],
-    },
-    {
-      id: "11",
-      description: "l: RopeS",
-      parent: "root",
-      children: [],
-      relations: ["20", "24"],
-    },
-    {
-      id: "12",
-      description: "m: Wall",
-      parent: "root",
-      children: [],
-      relations: ["25", "26"],
-    },
-    {
-      id: "13",
-      description: "W1 label: 1",
-      parent: "0",
-      children: [],
-      relations: [],
-    },
-    {
-      id: "14",
-      description: "Pulley-system A",
-      // description: "Pulley-system at PulleyA (d)",
-      members: ["1", "2", "3"],
-    },
-    {
-      id: "15",
-      description: "Pulley-system B",
-      // description: "Pulley-system at PulleyB (g)",
-      members: ["5", "6", "7"],
-    },
-    {
-      id: "16",
-      description: "Pulley-system C",
-      // description: "Pulley-system at PulleyC (i)",
-      members: ["7", "8", "9"],
-    },
-    {
-      id: "17",
-      description: "W1 hangs from RopeP",
-      // description: "Weight W1 (a) hangs from RopeP (b)",
-      members: ["0", "1"],
-    },
-    {
-      id: "18",
-      description: "W2 hangs from RopeQ",
-      // description: "Weight W2 (e) hangs from RopeQ (c)",
-      members: ["4", "2"],
-    },
-    {
-      id: "19",
-      description: "PulleyA hangs from RopeX",
-      // description: "PulleyA (d) hangs from RopeX (f)",
-      members: ["3", "5"],
-    },
-    {
-      id: "20",
-      description: "W2 hangs from RopeS",
-      // description: "Weight W2 (e) hangs from RopeS (l)",
-      members: ["4", "11"],
-    },
-    {
-      id: "21",
-      description: "PulleyB hangs from RopeT",
-      // description: "PulleyB (g) hangs from RopeT (k)",
-      members: ["6", "10"],
-    },
-    {
-      id: "22",
-      description: "PulleyC hangs from RopeY",
-      // description: "PulleyC (i) hangs from RopeY (h)",
-      members: ["8", "7"],
-    },
-    {
-      id: "23",
-      description: "PulleyC hangs from RopeZ",
-      // description: "PulleyC (i) hangs from RopeZ (j)",
-      members: ["8", "9"],
-    },
-    {
-      id: "24",
-      description: "RopeS hangs from PulleyC",
-      // description: "RopeS (l) hangs from PulleyC (i)",
-      members: ["11", "8"],
-    },
-    {
-      id: "25",
-      description: "RopeZ hangs from Wall",
-      // description: "RopeZ (j) hangs from Wall (m)",
-      members: ["9", "12"],
-    },
-    {
-      id: "26",
-      description: "RopeT hangs from Wall",
-      // description: "RopeT (k) hangs from Wall (m)",
-      members: ["10", "12"],
-    },
-  ];
+  // const pulleyTraversal: (ObjectNode | RelationNode)[] = [
+  //   // {
+  //   //   id: "root",
+  //   //   description: "Bluefish",
+  //   //   parent: "",
+  //   //   children: [
+  //   //     "0",
+  //   //     "1",
+  //   //     "2",
+  //   //     "3",
+  //   //     "4",
+  //   //     "5",
+  //   //     "6",
+  //   //     "7",
+  //   //     "8",
+  //   //     "9",
+  //   //     "10",
+  //   //     "11",
+  //   //     "12",
+  //   //   ],
+  //   //   relations: [],
+  //   // },
+  //   {
+  //     id: "0",
+  //     description: "a: W1",
+  //     parent: "root",
+  //     children: ["13"],
+  //     relations: ["17"],
+  //   },
+  //   {
+  //     id: "1",
+  //     description: "b: RopeP",
+  //     parent: "root",
+  //     children: [],
+  //     relations: ["14", "17"],
+  //   },
+  //   {
+  //     id: "2",
+  //     description: "c: RopeQ",
+  //     parent: "root",
+  //     children: [],
+  //     relations: ["14", "18"],
+  //   },
+  //   {
+  //     id: "3",
+  //     description: "d: PulleyA",
+  //     parent: "root",
+  //     children: [],
+  //     relations: ["14", "19"],
+  //   },
+  //   {
+  //     id: "4",
+  //     description: "e: W2",
+  //     parent: "root",
+  //     children: [],
+  //     relations: ["18", "20"],
+  //   },
+  //   {
+  //     id: "5",
+  //     description: "f: RopeX",
+  //     parent: "root",
+  //     children: [],
+  //     relations: ["15", "19"],
+  //   },
+  //   {
+  //     id: "6",
+  //     description: "g: PulleyB",
+  //     parent: "root",
+  //     children: [],
+  //     relations: ["15", "21"],
+  //   },
+  //   {
+  //     id: "7",
+  //     description: "h: RopeY",
+  //     parent: "root",
+  //     children: [],
+  //     relations: ["15", "16", "22"],
+  //   },
+  //   {
+  //     id: "8",
+  //     description: "i: PulleyC",
+  //     parent: "root",
+  //     children: [],
+  //     relations: ["16", "22", "23", "24"],
+  //   },
+  //   {
+  //     id: "9",
+  //     description: "j: RopeZ",
+  //     parent: "root",
+  //     children: [],
+  //     relations: ["16", "23", "25"],
+  //   },
+  //   {
+  //     id: "10",
+  //     description: "k: RopeT",
+  //     parent: "root",
+  //     children: [],
+  //     relations: ["21", "26"],
+  //   },
+  //   {
+  //     id: "11",
+  //     description: "l: RopeS",
+  //     parent: "root",
+  //     children: [],
+  //     relations: ["20", "24"],
+  //   },
+  //   {
+  //     id: "12",
+  //     description: "m: Wall",
+  //     parent: "root",
+  //     children: [],
+  //     relations: ["25", "26"],
+  //   },
+  //   {
+  //     id: "13",
+  //     description: "W1 label: 1",
+  //     parent: "0",
+  //     children: [],
+  //     relations: [],
+  //   },
+  //   {
+  //     id: "14",
+  //     description: "Pulley-system A",
+  //     // description: "Pulley-system at PulleyA (d)",
+  //     members: ["1", "2", "3"],
+  //   },
+  //   {
+  //     id: "15",
+  //     description: "Pulley-system B",
+  //     // description: "Pulley-system at PulleyB (g)",
+  //     members: ["5", "6", "7"],
+  //   },
+  //   {
+  //     id: "16",
+  //     description: "Pulley-system C",
+  //     // description: "Pulley-system at PulleyC (i)",
+  //     members: ["7", "8", "9"],
+  //   },
+  //   {
+  //     id: "17",
+  //     description: "W1 hangs from RopeP",
+  //     // description: "Weight W1 (a) hangs from RopeP (b)",
+  //     members: ["0", "1"],
+  //   },
+  //   {
+  //     id: "18",
+  //     description: "W2 hangs from RopeQ",
+  //     // description: "Weight W2 (e) hangs from RopeQ (c)",
+  //     members: ["4", "2"],
+  //   },
+  //   {
+  //     id: "19",
+  //     description: "PulleyA hangs from RopeX",
+  //     // description: "PulleyA (d) hangs from RopeX (f)",
+  //     members: ["3", "5"],
+  //   },
+  //   {
+  //     id: "20",
+  //     description: "W2 hangs from RopeS",
+  //     // description: "Weight W2 (e) hangs from RopeS (l)",
+  //     members: ["4", "11"],
+  //   },
+  //   {
+  //     id: "21",
+  //     description: "PulleyB hangs from RopeT",
+  //     // description: "PulleyB (g) hangs from RopeT (k)",
+  //     members: ["6", "10"],
+  //   },
+  //   {
+  //     id: "22",
+  //     description: "PulleyC hangs from RopeY",
+  //     // description: "PulleyC (i) hangs from RopeY (h)",
+  //     members: ["8", "7"],
+  //   },
+  //   {
+  //     id: "23",
+  //     description: "PulleyC hangs from RopeZ",
+  //     // description: "PulleyC (i) hangs from RopeZ (j)",
+  //     members: ["8", "9"],
+  //   },
+  //   {
+  //     id: "24",
+  //     description: "RopeS hangs from PulleyC",
+  //     // description: "RopeS (l) hangs from PulleyC (i)",
+  //     members: ["11", "8"],
+  //   },
+  //   {
+  //     id: "25",
+  //     description: "RopeZ hangs from Wall",
+  //     // description: "RopeZ (j) hangs from Wall (m)",
+  //     members: ["9", "12"],
+  //   },
+  //   {
+  //     id: "26",
+  //     description: "RopeT hangs from Wall",
+  //     // description: "RopeT (k) hangs from Wall (m)",
+  //     members: ["10", "12"],
+  //   },
+  // ];
 
   // const pulleyTraversalPriority: PriorityNode[] = [
   //   {
@@ -885,9 +891,77 @@ const App: Component = () => {
   //   },
   // ];
 
+  // id: Id;
+  // displayName: string;
+  // description?: string;
+  // parents: Id[];
+  // children: Id[];
+  // priority: number;
+
+  const planetsHypergraph: Hypergraph = {
+    "0": {
+      id: "0",
+      displayName: "Bluefish",
+      description: "Planets Diagram in Bluefish",
+      parents: [],
+      children: ["1"],
+      priority: 0,
+    },
+    "1": {
+      id: "1",
+      displayName: "Background",
+      description:
+        "Rectangular bounding box containing a row of the four closest planets to the sun. Mercury is on the left of the row.",
+      parents: ["0"],
+      children: ["2", "3", "4", "5"],
+      priority: 1,
+    },
+    "2": {
+      id: "2",
+      displayName: "Mercury",
+      description: "Circle representing Mercury, the closest planet to the sun",
+      parents: ["1", "6"],
+      children: [],
+      priority: 2,
+    },
+    "3": {
+      id: "3",
+      displayName: "Venus",
+      description: "Circle representing Venus, the second planet from the sun",
+      parents: ["1"],
+      children: [],
+      priority: 2,
+    },
+    "4": {
+      id: "4",
+      displayName: "Earth",
+      description: "Circle representing Earth, the third planet from the sun",
+      parents: ["1"],
+      children: [],
+      priority: 2,
+    },
+    "5": {
+      id: "5",
+      displayName: "Mars",
+      description: "Circle representing Mars, the fourth planet from the sun",
+      parents: ["1"],
+      children: [],
+      priority: 2,
+    },
+    "6": {
+      id: "6",
+      displayName: "Text Annotation",
+      description:
+        "Text annotation on the Mercury node. Text label says Mercury",
+      parents: ["0"],
+      children: ["2"],
+      priority: 2,
+    },
+  };
+
   return (
     <>
-      <Bluefish
+      {/* <Bluefish
         id="bluefish-planets"
         padding={20}
         aria-data={{
@@ -971,13 +1045,13 @@ const App: Component = () => {
             Mercury
           </Text>
         </Group>
-      </Bluefish>
+      </Bluefish> */}
 
       {/* <Pulley /> */}
       <br />
-      <TraversePriorityComponent
-        nodes={planetTraversalPriority}
-        visualizeGraph
+      <TraversalOutputComponent
+        nodeGraph={planetsHypergraph}
+        showHypergraph={false}
       />
     </>
   );
