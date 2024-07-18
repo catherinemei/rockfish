@@ -1,4 +1,5 @@
-import { For, createSignal, Show, createMemo, createEffect } from "solid-js";
+import { For, createSignal, Show, createMemo, onMount } from "solid-js";
+import * as d3 from "d3";
 import dagre from "dagre";
 
 type Id = string;
@@ -82,39 +83,63 @@ export function HypergraphNodeComponent(props: HypergraphNodeProps) {
   );
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>{props.node.displayName}</h2>
-      <p>{props.node.description}</p>
-      <p>Node ID: {props.node.id}</p>
-      <p>Node Priority: {props.node.priority}</p>
-      <div>
-        <span style={{ "font-weight": "bold" }}>Parents </span>
+    <div
+      style={{ padding: "20px" }}
+      aria-label={`${props.node.displayName} node with ${props.node.parents.length} parent and ${props.node.children.length} children nodes; ${props.node.description}.`}
+    >
+      <h2 aria-hidden={true}>{props.node.displayName}</h2>
+      <p aria-hidden={true}>{props.node.description}</p>
+      {/* <p>Node ID: {props.node.id}</p> */}
+      {/* <p>Node Priority: {props.node.priority}</p> */}
+      <div
+        aria-label={`${props.node.displayName} node contains ${props.node.parents.length} parent relations.`}
+      >
+        <span style={{ "font-weight": "bold" }} aria-hidden={true}>
+          Parents{" "}
+        </span>
         <For
           each={sortedParents()}
-          fallback={<span style={{ color: "grey" }}> None</span>}
+          fallback={
+            <span style={{ color: "grey" }} aria-hidden={true}>
+              {" "}
+              None
+            </span>
+          }
         >
           {(parent) => (
             <button
               onClick={() => props.onNodeClick(parent.id)}
               style={{ "margin-right": "5px" }}
+              aria-label={parent.description}
             >
-              {parent.displayName}
+              <span aria-hidden={true}>{parent.displayName}</span>
             </button>
           )}
         </For>
       </div>
-      <div style={{ "margin-top": "10px" }}>
-        <span style={{ "font-weight": "bold" }}>Children </span>
+      <div
+        style={{ "margin-top": "10px" }}
+        aria-label={`${props.node.displayName} node contains ${props.node.children.length} child relations.`}
+      >
+        <span style={{ "font-weight": "bold" }} aria-hidden={true}>
+          Children{" "}
+        </span>
         <For
           each={sortedChildren()}
-          fallback={<span style={{ color: "grey" }}> None</span>}
+          fallback={
+            <span style={{ color: "grey" }} aria-hidden={true}>
+              {" "}
+              None
+            </span>
+          }
         >
           {(child) => (
             <button
               onClick={() => props.onNodeClick(child.id)}
               style={{ "margin-right": "5px" }}
+              aria-label={child.description}
             >
-              {child.displayName}
+              <span aria-hidden={true}>{child.displayName}</span>
             </button>
           )}
         </For>
@@ -125,41 +150,98 @@ export function HypergraphNodeComponent(props: HypergraphNodeProps) {
 
 /**
  * Component to visualize the traversal structure
- * Uses dagre to place nodes
  */
 export type VisualizerProps = {
   nodeGraph: Hypergraph;
 };
 
 export function VisualizerComponent(props: VisualizerProps) {
-  // This function would be implemented to render the graph using dagre
-  // Placeholder for visualization logic
+  let svgRef: SVGSVGElement;
 
-  createEffect(() => {
-    const graph = new dagre.graphlib.Graph();
-    graph.setGraph({});
-    graph.setDefaultEdgeLabel(() => ({}));
+  onMount(() => {
+    const width = 3000;
+    const height = 300;
+    const padding = 20;
 
-    Object.values(props.nodeGraph).forEach((node) => {
-      graph.setNode(node.id, {
-        label: node.displayName,
-        width: 100,
-        height: 50,
-      });
-      node.children.forEach((childId) => {
-        graph.setEdge(node.id, childId);
-      });
+    const svg = d3
+      .select(svgRef)
+      .attr("width", width + 2 * padding)
+      .attr("height", height + 2 * padding)
+      .append("g")
+      .attr("transform", `translate(${padding},${padding})`);
+
+    // Convert the hypergraph into a format suitable for Dagre
+    const nodes = Object.values(props.nodeGraph);
+    const links = [];
+
+    for (const node of nodes) {
+      for (const childId of node.children) {
+        links.push({ source: node.id, target: childId });
+      }
+    }
+
+    const g = new dagre.graphlib.Graph();
+    g.setGraph({});
+    g.setDefaultEdgeLabel(() => ({}));
+
+    nodes.forEach((node) => {
+      g.setNode(node.id, { label: node.displayName, width: 100, height: 40 });
     });
 
-    dagre.layout(graph);
+    links.forEach((link) => {
+      g.setEdge(link.source, link.target);
+    });
 
-    // render graph in DOM using your preferred method
-    // e.g., using d3 or directly manipulating the DOM
-  }, [props.nodeGraph]);
+    dagre.layout(g);
 
-  return (
-    <div id="graph-container">
-      {/* Placeholder for actual graph rendering */}
-    </div>
-  );
+    const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+    const link = svg
+      .selectAll(".link")
+      .data(g.edges())
+      .enter()
+      .append("line")
+      .attr("class", "link")
+      .attr("stroke-width", "2px")
+      .attr("aria-hidden", "true")
+      .attr("x1", (d: dagre.Edge) => g.node(d.v).x)
+      .attr("y1", (d: dagre.Edge) => g.node(d.v).y)
+      .attr("x2", (d: dagre.Edge) => g.node(d.w).x)
+      .attr("y2", (d: dagre.Edge) => g.node(d.w).y)
+      .attr("stroke", (d: dagre.Edge) => {
+        const parent = g.node(d.v);
+        return colorScale(parent.label);
+      });
+
+    const node = svg
+      .selectAll(".node")
+      .data(g.nodes())
+      .enter()
+      .append("g")
+      .attr("class", "node")
+      .attr("aria-hidden", "true")
+      .attr(
+        "transform",
+        (d: string) => `translate(${g.node(d).x},${g.node(d).y})`
+      );
+
+    node
+      .append("rect")
+      .attr("width", 100)
+      .attr("height", 40)
+      .attr("x", -50)
+      .attr("y", -20)
+      .attr("aria-hidden", "true")
+      .style("fill", "lightblue");
+
+    node
+      .append("text")
+      .attr("dy", ".35em")
+      .attr("text-anchor", "middle")
+      .attr("aria-hidden", "true")
+      .style("font-size", "12px")
+      .text((d: string) => g.node(d).label);
+  });
+
+  return <svg aria-hidden ref={(el) => (svgRef = el)}></svg>;
 }
