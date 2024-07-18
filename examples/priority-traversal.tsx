@@ -32,8 +32,31 @@ export function TraversalOutputComponent(props: TraversalOutputProps) {
     props.nodeGraph[0].id
   );
 
-  const handleNodeClick = (id: string) => {
-    setCurrentNodeId(id);
+  const handleNodeClick = (oldId: string, newId: string) => {
+    setCurrentNodeId(newId);
+
+    // Focus on the new node with some timeout
+    setTimeout(() => {
+      const newNode = document.getElementById(newId);
+      const oldNode = document.getElementById(oldId);
+
+      if (oldNode) {
+        oldNode.removeAttribute("tabindex");
+      }
+
+      if (newNode) {
+        if (!newNode.hasAttribute("tabindex")) {
+          newNode.setAttribute("tabindex", "-1");
+        }
+
+        newNode.setAttribute("role", "menu");
+        newNode.focus();
+
+        setTimeout(() => {
+          newNode.removeAttribute("role");
+        }, 50);
+      }
+    }, 0);
   };
 
   const currentNode = createMemo(() => {
@@ -66,7 +89,7 @@ export function TraversalOutputComponent(props: TraversalOutputProps) {
 export type HypergraphNodeProps = {
   node: RelationNode;
   nodeGraph: Hypergraph;
-  onNodeClick: (id: string) => void;
+  onNodeClick: (curId: string, newId: string) => void;
 };
 
 export function HypergraphNodeComponent(props: HypergraphNodeProps) {
@@ -84,6 +107,7 @@ export function HypergraphNodeComponent(props: HypergraphNodeProps) {
 
   return (
     <div
+      id={props.node.id}
       style={{ padding: "20px" }}
       aria-label={`${props.node.displayName} node with ${props.node.parents.length} parent and ${props.node.children.length} children nodes; ${props.node.description}.`}
     >
@@ -91,9 +115,7 @@ export function HypergraphNodeComponent(props: HypergraphNodeProps) {
       <p aria-hidden={true}>{props.node.description}</p>
       {/* <p>Node ID: {props.node.id}</p> */}
       {/* <p>Node Priority: {props.node.priority}</p> */}
-      <div
-        aria-label={`${props.node.displayName} node contains ${props.node.parents.length} parent relations.`}
-      >
+      <div aria-label={`Parent relations: ${props.node.parents.length}.`}>
         <span style={{ "font-weight": "bold" }} aria-hidden={true}>
           Parents{" "}
         </span>
@@ -108,7 +130,7 @@ export function HypergraphNodeComponent(props: HypergraphNodeProps) {
         >
           {(parent) => (
             <button
-              onClick={() => props.onNodeClick(parent.id)}
+              onClick={() => props.onNodeClick(props.node.id, parent.id)}
               style={{ "margin-right": "5px" }}
               aria-label={parent.description}
             >
@@ -119,7 +141,7 @@ export function HypergraphNodeComponent(props: HypergraphNodeProps) {
       </div>
       <div
         style={{ "margin-top": "10px" }}
-        aria-label={`${props.node.displayName} node contains ${props.node.children.length} child relations.`}
+        aria-label={`Child relations: ${props.node.children.length}.`}
       >
         <span style={{ "font-weight": "bold" }} aria-hidden={true}>
           Children{" "}
@@ -135,7 +157,7 @@ export function HypergraphNodeComponent(props: HypergraphNodeProps) {
         >
           {(child) => (
             <button
-              onClick={() => props.onNodeClick(child.id)}
+              onClick={() => props.onNodeClick(props.node.id, child.id)}
               style={{ "margin-right": "5px" }}
               aria-label={child.description}
             >

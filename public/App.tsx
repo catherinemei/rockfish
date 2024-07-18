@@ -1458,7 +1458,7 @@ const App: Component = () => {
         // nodeGraph={planetsHypergraph}
         nodeGraph={stackedBarChartHypergraph}
         // nodeGraph={pulleyHypergraph}
-        showHypergraph={true}
+        showHypergraph={false}
       />
     </>
   );
