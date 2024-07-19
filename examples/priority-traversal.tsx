@@ -1,4 +1,11 @@
-import { For, createSignal, Show, createMemo, onMount } from "solid-js";
+import {
+  For,
+  createSignal,
+  Show,
+  createMemo,
+  onMount,
+  onCleanup,
+} from "solid-js";
 import * as d3 from "d3";
 import dagre from "dagre";
 
@@ -32,7 +39,11 @@ export function TraversalOutputComponent(props: TraversalOutputProps) {
     props.nodeGraph[0].id
   );
 
+  // Keeps track of traversal history for undo
+  const [history, setHistory] = createSignal<string[]>([]);
+
   const handleNodeClick = (oldId: string, newId: string) => {
+    setHistory((prev) => [...prev, oldId]);
     setCurrentNodeId(newId);
 
     // Moves screen reader focus
@@ -48,6 +59,42 @@ export function TraversalOutputComponent(props: TraversalOutputProps) {
     }, 0);
   };
 
+  const handleKeyPress = (event: KeyboardEvent) => {
+    if (event.key === "Backspace") {
+      setHistory((prev) => {
+        const newHistory = [...prev];
+        const previousNodeId = newHistory.pop();
+
+        if (previousNodeId) {
+          // used to announce undo action
+          const undoMessage = document.getElementById("hidden-focus");
+          if (undoMessage) {
+            undoMessage.focus();
+          }
+
+          setCurrentNodeId(previousNodeId);
+
+          // reset focus to previous node after announcement
+          setTimeout(() => {
+            const newNode = document.getElementById(previousNodeId);
+            if (newNode) {
+              newNode.focus();
+            }
+          }, 600);
+        }
+        return newHistory;
+      });
+    }
+  };
+
+  onMount(() => {
+    window.addEventListener("keydown", handleKeyPress);
+  });
+
+  onCleanup(() => {
+    window.removeEventListener("keydown", handleKeyPress);
+  });
+
   const currentNode = createMemo(() => {
     if (currentNodeId() !== null) {
       return props.nodeGraph[currentNodeId() as string];
@@ -57,6 +104,13 @@ export function TraversalOutputComponent(props: TraversalOutputProps) {
 
   return (
     <div>
+      <button
+        id="hidden-focus"
+        style={{ position: "absolute", left: "-1000px" }}
+        aria-hidden="true"
+      >
+        Pressing Undo
+      </button>
       <Show when={props.showHypergraph}>
         <VisualizerComponent nodeGraph={props.nodeGraph} />
       </Show>
