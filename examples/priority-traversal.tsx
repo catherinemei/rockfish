@@ -80,7 +80,7 @@ export function TraversalOutputComponent(props: TraversalOutputProps) {
             if (newNode) {
               newNode.focus();
             }
-          }, 600);
+          }, 700);
         }
         return newHistory;
       });
@@ -106,11 +106,22 @@ export function TraversalOutputComponent(props: TraversalOutputProps) {
     <div>
       <button
         id="hidden-focus"
-        style={{ position: "absolute", left: "-1000px" }}
+        style={{
+          position: "absolute",
+          width: "1px",
+          height: "1px",
+          margin: "-1px",
+          padding: "0",
+          border: "0",
+          clip: "rect(0, 0, 0, 0)",
+          overflow: "hidden",
+          "white-space": "nowrap",
+        }}
         aria-hidden="true"
       >
         Pressing Undo
       </button>
+
       <Show when={props.showHypergraph}>
         <VisualizerComponent nodeGraph={props.nodeGraph} />
       </Show>
