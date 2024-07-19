@@ -35,26 +35,15 @@ export function TraversalOutputComponent(props: TraversalOutputProps) {
   const handleNodeClick = (oldId: string, newId: string) => {
     setCurrentNodeId(newId);
 
-    // Focus on the new node with some timeout
+    // Moves screen reader focus
     setTimeout(() => {
       const newNode = document.getElementById(newId);
-      const oldNode = document.getElementById(oldId);
-
-      if (oldNode) {
-        oldNode.removeAttribute("tabindex");
-      }
 
       if (newNode) {
         if (!newNode.hasAttribute("tabindex")) {
-          newNode.setAttribute("tabindex", "-1");
+          newNode.setAttribute("tabindex", "0");
         }
-
-        newNode.setAttribute("role", "menu");
         newNode.focus();
-
-        setTimeout(() => {
-          newNode.removeAttribute("role");
-        }, 50);
       }
     }, 0);
   };
@@ -106,16 +95,18 @@ export function HypergraphNodeComponent(props: HypergraphNodeProps) {
   );
 
   return (
-    <div
-      id={props.node.id}
-      style={{ padding: "20px" }}
-      aria-label={`${props.node.displayName} node with ${props.node.parents.length} parent and ${props.node.children.length} children nodes; ${props.node.description}.`}
-    >
-      <h2 aria-hidden={true}>{props.node.displayName}</h2>
-      <p aria-hidden={true}>{props.node.description}</p>
-      {/* <p>Node ID: {props.node.id}</p> */}
-      {/* <p>Node Priority: {props.node.priority}</p> */}
-      <div aria-label={`Parent relations: ${props.node.parents.length}.`}>
+    <div style={{ padding: "20px" }}>
+      <div
+        id={props.node.id}
+        aria-label={`${props.node.displayName} node with ${props.node.parents.length} parent and ${props.node.children.length} children nodes; ${props.node.description}.`}
+      >
+        <h2 aria-hidden={true}>{props.node.displayName}</h2>
+        <p aria-hidden={true}>{props.node.description}</p>
+      </div>
+      <div
+        aria-label={`Parent relations: ${props.node.parents.length}.`}
+        tabindex="0"
+      >
         <span style={{ "font-weight": "bold" }} aria-hidden={true}>
           Parents{" "}
         </span>
@@ -142,6 +133,7 @@ export function HypergraphNodeComponent(props: HypergraphNodeProps) {
       <div
         style={{ "margin-top": "10px" }}
         aria-label={`Child relations: ${props.node.children.length}.`}
+        tabindex="0"
       >
         <span style={{ "font-weight": "bold" }} aria-hidden={true}>
           Children{" "}
