@@ -2,902 +2,22 @@
 
 import { createSignal, type Component, For } from "solid-js";
 
-import { TraversalComponent, Node } from "../examples/traversal";
-import { Bluefish } from "../src/bluefish";
-import Background from "../src/background";
-import { StackH } from "../src/stackh";
-import Circle from "../src/circle";
-import Ref from "../src/ref";
-import Arrow from "../src/arrow";
-import Text from "../src/text";
-import { StackV } from "../src/stackv";
-import Group from "../src/group";
-// import {
-//   ObjectNode,
-//   RelationNode,
-//   TraverseObjRelComponent,
-// } from "../examples/traversal-rel-obj";
-// import {
-//   PriorityNode,
-//   TraversePriorityComponent,
-// } from "../examples/traversal-priority";
+// import { Bluefish } from "../src/bluefish";
+// import Background from "../src/background";
+// import { StackH } from "../src/stackh";
+// import Circle from "../src/circle";
+// import Ref from "../src/ref";
+// import Arrow from "../src/arrow";
+// import Text from "../src/text";
+// import { StackV } from "../src/stackv";
+// import Group from "../src/group";
 import { Pulley } from "../src/pulley";
-import {
-  RelationNode,
-  Hypergraph,
-  TraversalOutputProps,
-  TraversalOutputComponent,
-} from "../examples/priority-traversal";
+import { TraversalOutputComponent } from "../benthic/priority-traversal";
+import { Hypergraph } from "../benthic/priority-traversal-types";
 
 const arr = Array.from({ length: 1000 }, (_, i) => i + 1);
 
 const App: Component = () => {
-  // const planetsTraversalNoAnnotation: Node[] = [
-  //   {
-  //     id: "0",
-  //     parents: [],
-  //     children: ["1"],
-  //     description: "Root SVG",
-  //   },
-  //   {
-  //     id: "1",
-  //     parents: ["0"],
-  //     children: ["2"],
-  //     description: "Background",
-  //   },
-  //   {
-  //     id: "2",
-  //     parents: ["1"],
-  //     children: ["5", "6", "7", "8"],
-  //     description: "StackH",
-  //   },
-  //   {
-  //     id: "5",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (mercury)",
-  //   },
-  //   {
-  //     id: "6",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (venus)",
-  //   },
-  //   {
-  //     id: "7",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (earth)",
-  //   },
-  //   {
-  //     id: "8",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (mars)",
-  //   },
-  // ];
-
-  // const planetsTraversal: Node[] = [
-  //   {
-  //     id: "0",
-  //     parents: [],
-  //     children: ["1", "3", "4"],
-  //     description: "Root SVG",
-  //   },
-  //   {
-  //     id: "1",
-  //     parents: ["0"],
-  //     children: ["2"],
-  //     description: "Background",
-  //   },
-  //   {
-  //     id: "2",
-  //     parents: ["1"],
-  //     children: ["5", "6", "7", "8"],
-  //     description: "StackH",
-  //   },
-  //   {
-  //     id: "3",
-  //     parents: ["0"],
-  //     children: ["5", "9"],
-  //     description: "StackV",
-  //   },
-  //   {
-  //     id: "4",
-  //     parents: ["0"],
-  //     children: ["5", "9"],
-  //     description: "Arrow",
-  //   },
-  //   {
-  //     id: "5",
-  //     parents: ["2", "3", "4"],
-  //     children: [],
-  //     description: "Circle (mercury)",
-  //   },
-  //   {
-  //     id: "6",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (venus)",
-  //   },
-  //   {
-  //     id: "7",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (earth)",
-  //   },
-  //   {
-  //     id: "8",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (mars)",
-  //   },
-  //   {
-  //     id: "9",
-  //     parents: ["3", "4"],
-  //     children: [],
-  //     description: "Text (label)",
-  //   },
-  // ];
-
-  // const planetsTraversal2: Node[] = [
-  //   {
-  //     id: "0",
-  //     parents: [],
-  //     children: ["2", "3", "4"],
-  //     description: "Root SVG",
-  //   },
-  //   {
-  //     id: "2",
-  //     parents: ["0"],
-  //     children: ["5", "6", "7", "8"],
-  //     description: "Modifier",
-  //   },
-  //   {
-  //     id: "3",
-  //     parents: ["0"],
-  //     children: ["5", "9"],
-  //     description: "StackV",
-  //   },
-  //   {
-  //     id: "4",
-  //     parents: ["0"],
-  //     children: ["5", "9"],
-  //     description: "Arrow",
-  //   },
-  //   {
-  //     id: "5",
-  //     parents: ["2", "3", "4"],
-  //     children: [],
-  //     description: "Circle (mercury)",
-  //   },
-  //   {
-  //     id: "6",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (venus)",
-  //   },
-  //   {
-  //     id: "7",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (earth)",
-  //   },
-  //   {
-  //     id: "8",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (mars)",
-  //   },
-  //   {
-  //     id: "9",
-  //     parents: ["3", "4"],
-  //     children: [],
-  //     description: "Text (label)",
-  //   },
-  // ];
-
-  // const planetsTraversal3: Node[] = [
-  //   {
-  //     id: "0",
-  //     parents: [],
-  //     children: ["2", "3"],
-  //     description: "Root SVG",
-  //   },
-  //   {
-  //     id: "2",
-  //     parents: ["0"],
-  //     children: ["5", "6", "7", "8"],
-  //     description: "Modifier",
-  //   },
-  //   {
-  //     id: "3",
-  //     parents: ["0"],
-  //     children: ["5", "9"],
-  //     description: "Annotation",
-  //   },
-  //   {
-  //     id: "5",
-  //     parents: ["2", "3"],
-  //     children: [],
-  //     description: "Circle (mercury)",
-  //   },
-  //   {
-  //     id: "6",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (venus)",
-  //   },
-  //   {
-  //     id: "7",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (earth)",
-  //   },
-  //   {
-  //     id: "8",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (mars)",
-  //   },
-  //   {
-  //     id: "9",
-  //     parents: ["3"],
-  //     children: [],
-  //     description: "Text (label)",
-  //   },
-  // ];
-
-  // const planetsTraversal4: Node[] = [
-  //   {
-  //     id: "0",
-  //     parents: [],
-  //     children: ["2", "5"],
-  //     description: "Root SVG",
-  //   },
-  //   {
-  //     id: "2",
-  //     parents: ["0"],
-  //     children: ["5", "6", "7", "8"],
-  //     description: "Modifier",
-  //   },
-  //   {
-  //     id: "5",
-  //     parents: ["2", "3"],
-  //     children: ["9"],
-  //     description: "Circle (mercury)",
-  //   },
-  //   {
-  //     id: "6",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (venus)",
-  //   },
-  //   {
-  //     id: "7",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (earth)",
-  //   },
-  //   {
-  //     id: "8",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (mars)",
-  //   },
-  //   {
-  //     id: "9",
-  //     parents: ["5"],
-  //     children: [],
-  //     description: "Text (label)",
-  //   },
-  // ];
-
-  // const planetsTraversal5: Node[] = [
-  //   {
-  //     id: "0",
-  //     parents: [],
-  //     children: ["2", "5"],
-  //     description: "Root SVG",
-  //   },
-  //   {
-  //     id: "2",
-  //     parents: ["0"],
-  //     children: ["5", "6", "7", "8"],
-  //     description: "Modifier",
-  //   },
-  //   {
-  //     id: "5",
-  //     parents: ["2", "3", "9"],
-  //     children: [],
-  //     description: "Circle (mercury)",
-  //   },
-  //   {
-  //     id: "6",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (venus)",
-  //   },
-  //   {
-  //     id: "7",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (earth)",
-  //   },
-  //   {
-  //     id: "8",
-  //     parents: ["2"],
-  //     children: [],
-  //     description: "Circle (mars)",
-  //   },
-  //   {
-  //     id: "9",
-  //     parents: [],
-  //     children: ["5"],
-  //     description: "Text (label)",
-  //   },
-  // ];
-
-  // const planetTraversalRelObject: (ObjectNode | RelationNode)[] = [
-  //   {
-  //     id: "0",
-  //     description: "Bluefish",
-  //     parent: "",
-  //     children: ["1", "2"],
-  //     relations: [],
-  //   },
-  //   {
-  //     id: "1",
-  //     description: "Background",
-  //     parent: "0",
-  //     children: ["3"],
-  //     relations: [],
-  //   },
-  //   {
-  //     id: "2",
-  //     description: "Text",
-  //     parent: "0",
-  //     children: [],
-  //     relations: ["8", "9"],
-  //   },
-  //   {
-  //     id: "3",
-  //     description: "StackH",
-  //     parent: "1",
-  //     children: ["4", "5", "6", "7"],
-  //     relations: [],
-  //   },
-  //   {
-  //     id: "4",
-  //     description: "Circle (mercury)",
-  //     parent: "3",
-  //     children: [],
-  //     relations: ["8", "9"],
-  //   },
-  //   {
-  //     id: "5",
-  //     description: "Circle (venus)",
-  //     parent: "3",
-  //     children: [],
-  //     relations: [],
-  //   },
-  //   {
-  //     id: "6",
-  //     description: "Circle (earth)",
-  //     parent: "3",
-  //     children: [],
-  //     relations: [],
-  //   },
-  //   {
-  //     id: "7",
-  //     description: "Circle (mars)",
-  //     parent: "3",
-  //     children: [],
-  //     relations: [],
-  //   },
-  //   {
-  //     id: "8",
-  //     description: "Arrow",
-  //     members: ["2", "4"],
-  //   },
-  //   {
-  //     id: "9",
-  //     description: "StackV",
-  //     members: ["2", "4"],
-  //   },
-  // ];
-
-  // const planetTraversalPriority: PriorityNode[] = [
-  //   {
-  //     id: "0",
-  //     displayName: "Bluefish",
-  //     relations: [
-  //       {
-  //         relatedNodeId: "1",
-  //         relationDisplayName: "Contains (child)",
-  //         relationId: "rel0",
-  //       },
-  //       {
-  //         relatedNodeId: "2",
-  //         relationDisplayName: "Contains (child)",
-  //         relationId: "rel1",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: "1",
-  //     displayName: "Background",
-  //     relations: [
-  //       {
-  //         relatedNodeId: "0",
-  //         relationDisplayName: "Contained by (parent)",
-  //         relationId: "rel2",
-  //       },
-  //       {
-  //         relatedNodeId: "3",
-  //         relationDisplayName: "Contains (child)",
-  //         relationId: "rel3",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: "2",
-  //     displayName: "Text",
-  //     relations: [
-  //       {
-  //         relatedNodeId: "0",
-  //         relationDisplayName: "Contained by (parent)",
-  //         relationId: "rel4",
-  //       },
-  //       {
-  //         relatedNodeId: "4",
-  //         relationDisplayName: "Connected",
-  //         relationId: "rel5",
-  //       },
-  //       {
-  //         relatedNodeId: "4",
-  //         relationDisplayName: "Aligned",
-  //         relationId: "rel6",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: "3",
-  //     displayName: "StackH",
-  //     relations: [
-  //       {
-  //         relatedNodeId: "1",
-  //         relationDisplayName: "Contained by (parent)",
-  //         relationId: "rel7",
-  //       },
-  //       {
-  //         relatedNodeId: "4",
-  //         relationDisplayName: "Contains (child)",
-  //         relationId: "rel8",
-  //       },
-  //       {
-  //         relatedNodeId: "5",
-  //         relationDisplayName: "Contains (child)",
-  //         relationId: "rel9",
-  //       },
-  //       {
-  //         relatedNodeId: "6",
-  //         relationDisplayName: "Contains (child)",
-  //         relationId: "rel10",
-  //       },
-  //       {
-  //         relatedNodeId: "7",
-  //         relationDisplayName: "Contains (child)",
-  //         relationId: "rel11",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: "4",
-  //     displayName: "Circle (mercury)",
-  //     relations: [
-  //       {
-  //         relatedNodeId: "3",
-  //         relationDisplayName: "Contained by (parent)",
-  //         relationId: "rel12",
-  //       },
-  //       {
-  //         relatedNodeId: "2",
-  //         relationDisplayName: "Connected",
-  //         relationId: "rel13",
-  //       },
-  //       {
-  //         relatedNodeId: "2",
-  //         relationDisplayName: "Aligned",
-  //         relationId: "rel14",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: "5",
-  //     displayName: "Circle (venus)",
-  //     relations: [
-  //       {
-  //         relatedNodeId: "3",
-  //         relationDisplayName: "Contained by (parent)",
-  //         relationId: "rel15",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: "6",
-  //     displayName: "Circle (earth)",
-  //     relations: [
-  //       {
-  //         relatedNodeId: "3",
-  //         relationDisplayName: "Contained by (parent)",
-  //         relationId: "rel16",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: "7",
-  //     displayName: "Circle (mars)",
-  //     relations: [
-  //       {
-  //         relatedNodeId: "3",
-  //         relationDisplayName: "Contained by (parent)",
-  //         relationId: "rel17",
-  //       },
-  //     ],
-  //   },
-  // {
-  //   id: "8",
-  //   description: "Arrow",
-  //   relations: [
-  //     { id: "2", priority: "related" },
-  //     { id: "4", priority: "related" },
-  //   ],
-  // },
-  // {
-  //   id: "9",
-  //   description: "StackV",
-  //   relations: [
-  //     { id: "2", priority: "related" },
-  //     { id: "4", priority: "related" },
-  //   ],
-  // },
-  // ];
-
-  // const pulleyTraversal: (ObjectNode | RelationNode)[] = [
-  //   // {
-  //   //   id: "root",
-  //   //   description: "Bluefish",
-  //   //   parent: "",
-  //   //   children: [
-  //   //     "0",
-  //   //     "1",
-  //   //     "2",
-  //   //     "3",
-  //   //     "4",
-  //   //     "5",
-  //   //     "6",
-  //   //     "7",
-  //   //     "8",
-  //   //     "9",
-  //   //     "10",
-  //   //     "11",
-  //   //     "12",
-  //   //   ],
-  //   //   relations: [],
-  //   // },
-  //   {
-  //     id: "0",
-  //     description: "a: W1",
-  //     parent: "root",
-  //     children: ["13"],
-  //     relations: ["17"],
-  //   },
-  //   {
-  //     id: "1",
-  //     description: "b: RopeP",
-  //     parent: "root",
-  //     children: [],
-  //     relations: ["14", "17"],
-  //   },
-  //   {
-  //     id: "2",
-  //     description: "c: RopeQ",
-  //     parent: "root",
-  //     children: [],
-  //     relations: ["14", "18"],
-  //   },
-  //   {
-  //     id: "3",
-  //     description: "d: PulleyA",
-  //     parent: "root",
-  //     children: [],
-  //     relations: ["14", "19"],
-  //   },
-  //   {
-  //     id: "4",
-  //     description: "e: W2",
-  //     parent: "root",
-  //     children: [],
-  //     relations: ["18", "20"],
-  //   },
-  //   {
-  //     id: "5",
-  //     description: "f: RopeX",
-  //     parent: "root",
-  //     children: [],
-  //     relations: ["15", "19"],
-  //   },
-  //   {
-  //     id: "6",
-  //     description: "g: PulleyB",
-  //     parent: "root",
-  //     children: [],
-  //     relations: ["15", "21"],
-  //   },
-  //   {
-  //     id: "7",
-  //     description: "h: RopeY",
-  //     parent: "root",
-  //     children: [],
-  //     relations: ["15", "16", "22"],
-  //   },
-  //   {
-  //     id: "8",
-  //     description: "i: PulleyC",
-  //     parent: "root",
-  //     children: [],
-  //     relations: ["16", "22", "23", "24"],
-  //   },
-  //   {
-  //     id: "9",
-  //     description: "j: RopeZ",
-  //     parent: "root",
-  //     children: [],
-  //     relations: ["16", "23", "25"],
-  //   },
-  //   {
-  //     id: "10",
-  //     description: "k: RopeT",
-  //     parent: "root",
-  //     children: [],
-  //     relations: ["21", "26"],
-  //   },
-  //   {
-  //     id: "11",
-  //     description: "l: RopeS",
-  //     parent: "root",
-  //     children: [],
-  //     relations: ["20", "24"],
-  //   },
-  //   {
-  //     id: "12",
-  //     description: "m: Wall",
-  //     parent: "root",
-  //     children: [],
-  //     relations: ["25", "26"],
-  //   },
-  //   {
-  //     id: "13",
-  //     description: "W1 label: 1",
-  //     parent: "0",
-  //     children: [],
-  //     relations: [],
-  //   },
-  //   {
-  //     id: "14",
-  //     description: "Pulley-system A",
-  //     // description: "Pulley-system at PulleyA (d)",
-  //     members: ["1", "2", "3"],
-  //   },
-  //   {
-  //     id: "15",
-  //     description: "Pulley-system B",
-  //     // description: "Pulley-system at PulleyB (g)",
-  //     members: ["5", "6", "7"],
-  //   },
-  //   {
-  //     id: "16",
-  //     description: "Pulley-system C",
-  //     // description: "Pulley-system at PulleyC (i)",
-  //     members: ["7", "8", "9"],
-  //   },
-  //   {
-  //     id: "17",
-  //     description: "W1 hangs from RopeP",
-  //     // description: "Weight W1 (a) hangs from RopeP (b)",
-  //     members: ["0", "1"],
-  //   },
-  //   {
-  //     id: "18",
-  //     description: "W2 hangs from RopeQ",
-  //     // description: "Weight W2 (e) hangs from RopeQ (c)",
-  //     members: ["4", "2"],
-  //   },
-  //   {
-  //     id: "19",
-  //     description: "PulleyA hangs from RopeX",
-  //     // description: "PulleyA (d) hangs from RopeX (f)",
-  //     members: ["3", "5"],
-  //   },
-  //   {
-  //     id: "20",
-  //     description: "W2 hangs from RopeS",
-  //     // description: "Weight W2 (e) hangs from RopeS (l)",
-  //     members: ["4", "11"],
-  //   },
-  //   {
-  //     id: "21",
-  //     description: "PulleyB hangs from RopeT",
-  //     // description: "PulleyB (g) hangs from RopeT (k)",
-  //     members: ["6", "10"],
-  //   },
-  //   {
-  //     id: "22",
-  //     description: "PulleyC hangs from RopeY",
-  //     // description: "PulleyC (i) hangs from RopeY (h)",
-  //     members: ["8", "7"],
-  //   },
-  //   {
-  //     id: "23",
-  //     description: "PulleyC hangs from RopeZ",
-  //     // description: "PulleyC (i) hangs from RopeZ (j)",
-  //     members: ["8", "9"],
-  //   },
-  //   {
-  //     id: "24",
-  //     description: "RopeS hangs from PulleyC",
-  //     // description: "RopeS (l) hangs from PulleyC (i)",
-  //     members: ["11", "8"],
-  //   },
-  //   {
-  //     id: "25",
-  //     description: "RopeZ hangs from Wall",
-  //     // description: "RopeZ (j) hangs from Wall (m)",
-  //     members: ["9", "12"],
-  //   },
-  //   {
-  //     id: "26",
-  //     description: "RopeT hangs from Wall",
-  //     // description: "RopeT (k) hangs from Wall (m)",
-  //     members: ["10", "12"],
-  //   },
-  // ];
-
-  // const pulleyTraversalPriority: PriorityNode[] = [
-  //   {
-  //     id: "0",
-  //     displayName: "a: W1",
-  //     relations: [
-  //       { relatedNodeId: "13", relationDisplayName: "Contains (child)" },
-  //       { relatedNodeId: "1", relationDisplayName: "Hangs from" },
-  //     ],
-  //   },
-  //   {
-  //     id: "1",
-  //     displayName: "b: RopeP",
-  //     relations: [
-  //       { relatedNodeId: "2", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "3", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "0", relationDisplayName: "Hangs from" },
-  //     ],
-  //   },
-  //   {
-  //     id: "2",
-  //     displayName: "c: RopeQ",
-  //     relations: [
-  //       { relatedNodeId: "1", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "3", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "4", relationDisplayName: "Hangs from" },
-  //     ],
-  //   },
-  //   {
-  //     id: "3",
-  //     displayName: "d: PulleyA",
-  //     relations: [
-  //       { relatedNodeId: "1", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "2", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "5", relationDisplayName: "Hangs from" },
-  //     ],
-  //   },
-  //   {
-  //     id: "4",
-  //     displayName: "e: W2",
-  //     relations: [
-  //       { relatedNodeId: "2", relationDisplayName: "Hangs from" },
-  //       { relatedNodeId: "11", relationDisplayName: "Hangs from" },
-  //     ],
-  //   },
-  //   {
-  //     id: "5",
-  //     displayName: "f: RopeX",
-  //     relations: [
-  //       { relatedNodeId: "6", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "7", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "3", relationDisplayName: "Hangs from" },
-  //     ],
-  //   },
-  //   {
-  //     id: "6",
-  //     displayName: "g: PulleyB",
-  //     relations: [
-  //       { relatedNodeId: "5", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "7", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "10", relationDisplayName: "Hangs from" },
-  //     ],
-  //   },
-  //   {
-  //     id: "7",
-  //     displayName: "h: RopeY",
-  //     relations: [
-  //       { relatedNodeId: "5", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "6", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "8", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "9", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "8", relationDisplayName: "Hangs from" },
-  //     ],
-  //   },
-  //   {
-  //     id: "8",
-  //     displayName: "i: PulleyC",
-  //     relations: [
-  //       { relatedNodeId: "7", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "9", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "7", relationDisplayName: "Hangs from" },
-  //       { relatedNodeId: "9", relationDisplayName: "Hangs from" },
-  //       { relatedNodeId: "11", relationDisplayName: "Hangs from" },
-  //     ],
-  //   },
-  //   {
-  //     id: "9",
-  //     displayName: "j: RopeZ",
-  //     relations: [
-  //       { relatedNodeId: "7", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "8", relationDisplayName: "Pulley System" },
-  //       { relatedNodeId: "8", relationDisplayName: "Hangs from" },
-  //       { relatedNodeId: "12", relationDisplayName: "Hangs from" },
-  //     ],
-  //   },
-  //   {
-  //     id: "10",
-  //     displayName: "k: RopeT",
-  //     relations: [
-  //       { relatedNodeId: "6", relationDisplayName: "Hangs from" },
-  //       { relatedNodeId: "12", relationDisplayName: "Hangs from" },
-  //     ],
-  //   },
-  //   {
-  //     id: "11",
-  //     displayName: "l: RopeS",
-  //     relations: [
-  //       { relatedNodeId: "4", relationDisplayName: "Hangs from" },
-  //       { relatedNodeId: "8", relationDisplayName: "Hangs from" },
-  //     ],
-  //   },
-  //   {
-  //     id: "12",
-  //     displayName: "m: Wall",
-  //     relations: [
-  //       { relatedNodeId: "9", relationDisplayName: "Hangs from" },
-  //       { relatedNodeId: "10", relationDisplayName: "Hangs from" },
-  //     ],
-  //   },
-  //   {
-  //     id: "13",
-  //     displayName: "W1 label: 1",
-  //     relations: [
-  //       { relatedNodeId: "0", relationDisplayName: "Contained by (parent)" },
-  //     ],
-  //   },
-  // ];
-
-  // id: Id;
-  // displayName: string;
-  // description?: string;
-  // parents: Id[];
-  // children: Id[];
-  // priority: number;
-
   const planetsHypergraph: Hypergraph = {
     "0": {
       id: "0",
@@ -965,6 +85,9 @@ const App: Component = () => {
       displayName: "Stacked Bar Chart",
       description:
         "Major Trophies for some English teams. Stacked bar chart. With axes team and sum trophies.",
+      descriptionTokens: {
+        label: "Stacked Bar Chart",
+      },
       parents: [],
       children: ["1", "2", "22"],
       priority: 0,
@@ -973,6 +96,9 @@ const App: Component = () => {
       id: "1",
       displayName: "X-axis",
       description: "X Axis. Arsenal, Chelsea, Liverpool, Manchester United.",
+      descriptionTokens: {
+        label: "X-axis",
+      },
       parents: ["0"],
       children: ["3", "4", "5", "6"],
       priority: 1,
@@ -981,6 +107,9 @@ const App: Component = () => {
       id: "2",
       displayName: "Legend",
       description: "Legend. Contest included: BPL, FA Cup, CL.",
+      descriptionTokens: {
+        label: "Legend",
+      },
       parents: ["0"],
       children: ["7", "8", "9"],
       priority: 2,
@@ -990,6 +119,9 @@ const App: Component = () => {
       displayName: "Arsenal",
       description:
         "Team: Arsenal. Total trophies: 17. Contains: 3 contests. Bar representing the number of trophies won by Arsenal.",
+      descriptionTokens: {
+        label: "Arsenal",
+      },
       parents: ["1"],
       children: ["10", "11", "12"],
       priority: 2,
@@ -999,6 +131,9 @@ const App: Component = () => {
       displayName: "Chelsea",
       description:
         "Team: Chelsea. Total trophies: 15. Contains: 3 contests. Bar representing the number of trophies won by Chelsea.",
+      descriptionTokens: {
+        label: "Chelsea",
+      },
       parents: ["1"],
       children: ["13", "14", "15"],
       priority: 2,
@@ -1008,6 +143,9 @@ const App: Component = () => {
       displayName: "Liverpool",
       description:
         "Team: Liverpool. Total trophies: 15. Contains: 3 contests. Bar representing the number of trophies won by Liverpool",
+      descriptionTokens: {
+        label: "Liverpool",
+      },
       parents: ["1"],
       children: ["16", "17", "18"],
       priority: 2,
@@ -1017,15 +155,21 @@ const App: Component = () => {
       displayName: "Manchester",
       description:
         "Team: Manchester United. Total trophies: 28. Contains: 3 contests. Bar representing the number of trophies won by Manchester United.",
+      descriptionTokens: {
+        label: "Manchester United",
+      },
       parents: ["1"],
       children: ["19", "20", "21"],
       priority: 2,
     },
     "7": {
       id: "7",
-      displayName: "BLP",
+      displayName: "BPL",
       description:
-        "Contest: BLP. Total trophies: 22. Contains: 4 teams. Legend grouping for the BLP competition.",
+        "Contest: BPL. Total trophies: 22. Contains: 4 teams. Legend grouping for the BPL competition.",
+      descriptionTokens: {
+        label: "BPL",
+      },
       parents: ["2"],
       children: ["10", "13", "16", "19"],
       priority: 3,
@@ -1035,6 +179,9 @@ const App: Component = () => {
       displayName: "FA Cup",
       description:
         "Contest: FA Cup. Total trophies: 42. Contains: 4 teams. Legend grouping for the FA Cup competition.",
+      descriptionTokens: {
+        label: "FA Cup",
+      },
       parents: ["2"],
       children: ["11", "14", "17", "20"],
       priority: 3,
@@ -1044,14 +191,20 @@ const App: Component = () => {
       displayName: "CL",
       description:
         "Contest: CL. Total trophies: 11. Contains: 4 teams. Legend grouping for the CL competition.",
+      descriptionTokens: {
+        label: "CL",
+      },
       parents: ["2"],
       children: ["12", "15", "18", "21"],
       priority: 3,
     },
     "10": {
       id: "10",
-      displayName: "Arsenal BLP",
+      displayName: "Arsenal BPL",
       description: "Team: Arsenal. Contest: BPL. Trophies: 3. Data point.",
+      descriptionTokens: {
+        label: "Arsenal BPL",
+      },
       parents: ["3", "7"],
       children: [],
       priority: 4,
@@ -1060,6 +213,9 @@ const App: Component = () => {
       id: "11",
       displayName: "Arsenal FA Cup",
       description: "Team: Arsenal. Contest: FA Cup. Trophies: 14. Data point.",
+      descriptionTokens: {
+        label: "Arsenal FA Cup",
+      },
       parents: ["3", "8"],
       children: [],
       priority: 4,
@@ -1068,14 +224,20 @@ const App: Component = () => {
       id: "12",
       displayName: "Arsenal CL",
       description: "Team: Arsenal. Contest: CL. Trophies: 0. Data point.",
+      descriptionTokens: {
+        label: "Arsenal CL",
+      },
       parents: ["3", "9"],
       children: [],
       priority: 4,
     },
     "13": {
       id: "13",
-      displayName: "Chelsea BLP",
+      displayName: "Chelsea BPL",
       description: "Team: Chelsea. Contest: BPL. Trophies: 5. Data point.",
+      descriptionTokens: {
+        label: "Chelsea BPL",
+      },
       parents: ["4", "7"],
       children: [],
       priority: 4,
@@ -1084,6 +246,9 @@ const App: Component = () => {
       id: "14",
       displayName: "Chelsea FA Cup",
       description: "Team: Chelsea. Contest: FA Cup. Trophies: 8. Data point.",
+      descriptionTokens: {
+        label: "Chelsea FA Cup",
+      },
       parents: ["4", "8"],
       children: [],
       priority: 4,
@@ -1092,14 +257,20 @@ const App: Component = () => {
       id: "15",
       displayName: "Chelsea CL",
       description: "Team: Chelsea. Contest: CL. Trophies: 2. Data point.",
+      descriptionTokens: {
+        label: "Chelsea CL",
+      },
       parents: ["4", "9"],
       children: [],
       priority: 4,
     },
     "16": {
       id: "16",
-      displayName: "Liverpool BLP",
+      displayName: "Liverpool BPL",
       description: "Team: Liverpool. Contest: BPL. Trophies: 1. Data point.",
+      descriptionTokens: {
+        label: "Liverpool BPL",
+      },
       parents: ["5", "7"],
       children: [],
       priority: 4,
@@ -1108,6 +279,9 @@ const App: Component = () => {
       id: "17",
       displayName: "Liverpool FA Cup",
       description: "Team: Liverpool. Contest: FA Cup. Trophies: 8. Data point.",
+      descriptionTokens: {
+        label: "Liverpool FA Cup",
+      },
       parents: ["5", "8"],
       children: [],
       priority: 4,
@@ -1116,15 +290,21 @@ const App: Component = () => {
       id: "18",
       displayName: "Liverpool CL",
       description: "Team: Liverpool. Contest: CL. Trophies: 6. Data point.",
+      descriptionTokens: {
+        label: "Liverpool CL",
+      },
       parents: ["5", "9"],
       children: [],
       priority: 4,
     },
     "19": {
       id: "19",
-      displayName: "Manchester BLP",
+      displayName: "Manchester BPL",
       description:
-        "Team: Manchester United. Contest: BLP. Trophies: 13. Data point.",
+        "Team: Manchester United. Contest: BPL. Trophies: 13. Data point.",
+      descriptionTokens: {
+        label: "Manchester United BPL",
+      },
       parents: ["6", "7"],
       children: [],
       priority: 4,
@@ -1134,6 +314,9 @@ const App: Component = () => {
       displayName: "Manchester FA Cup",
       description:
         "Team: Manchester United. Contest: FA Cup. Trophies: 12. Data point.",
+      descriptionTokens: {
+        label: "Manchester United FA Cup",
+      },
       parents: ["6", "8"],
       children: [],
       priority: 4,
@@ -1143,6 +326,9 @@ const App: Component = () => {
       displayName: "Manchester United CL",
       description:
         "Team: Manchester United. Contest: CL. Trophies: 3. Data point.",
+      descriptionTokens: {
+        label: "Manchester United CL",
+      },
       parents: ["6", "9"],
       children: [],
       priority: 4,
@@ -1152,6 +338,9 @@ const App: Component = () => {
       displayName: "Y-axis",
       description:
         "Y-axis. Label: count trophies. Values range from 0 to 30 on a numerical scale.",
+      descriptionTokens: {
+        label: "Y-axis",
+      },
       parents: ["0"],
       children: [],
       priority: 2,

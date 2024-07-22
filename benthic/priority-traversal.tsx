@@ -8,32 +8,18 @@ import {
 } from "solid-js";
 import * as d3 from "d3";
 import dagre from "dagre";
-
-type Id = string;
-
-export type RelationNode = {
-  id: Id;
-  displayName: string;
-  description?: string;
-  parents: Id[];
-  children: Id[];
-  priority: number;
-};
-
-export type Hypergraph = {
-  [id: Id]: RelationNode;
-};
+import {
+  RelationNode,
+  TraversalOutputProps,
+  HypergraphNodeProps,
+  VisualizerProps,
+} from "../benthic/priority-traversal-types";
 
 /**
  * Component to output the traversal structure to the DOM
  * Contains both the visualization for the traversal structure (optional) and
  * also screen reader output for traversal structure
  */
-
-export type TraversalOutputProps = {
-  nodeGraph: Hypergraph;
-  showHypergraph?: boolean;
-};
 export function TraversalOutputComponent(props: TraversalOutputProps) {
   const [currentNodeId, setCurrentNodeId] = createSignal<string | null>(
     props.nodeGraph[0].id
@@ -140,11 +126,6 @@ export function TraversalOutputComponent(props: TraversalOutputProps) {
  * Component to output a single node in the hypergraph
  * Screen reader output for single node in traversal structure
  */
-export type HypergraphNodeProps = {
-  node: RelationNode;
-  nodeGraph: Hypergraph;
-  onNodeClick: (curId: string, newId: string) => void;
-};
 
 export function HypergraphNodeComponent(props: HypergraphNodeProps) {
   const sortedParents = createMemo(() =>
@@ -159,14 +140,28 @@ export function HypergraphNodeComponent(props: HypergraphNodeProps) {
       .sort((a, b) => a.priority - b.priority)
   );
 
+  const generateAriaLabel = createMemo(() => {
+    // collect name of all children nodes
+    const allChildren = sortedChildren();
+    const childrenNames = allChildren
+      .map((childNode) => childNode.descriptionTokens?.label)
+      .join(", ");
+
+    const nodeDescription =
+      childrenNames.length > 0 ? "contains " + childrenNames : "";
+    return `${props.node.displayName} node with ${props.node.parents.length} parent and ${props.node.children.length} children nodes; ${nodeDescription}`;
+  });
+
   return (
     <div style={{ padding: "20px" }}>
       <div
         id={props.node.id}
-        aria-label={`${props.node.displayName} node with ${props.node.parents.length} parent and ${props.node.children.length} children nodes; ${props.node.description}.`}
+        // aria-label={`${props.node.displayName} node with ${props.node.parents.length} parent and ${props.node.children.length} children nodes; ${props.node.description}.`}
+        aria-label={generateAriaLabel()}
       >
         <h2 aria-hidden={true}>{props.node.displayName}</h2>
         <p aria-hidden={true}>{props.node.description}</p>
+        <p aria-hidden={true}>{generateAriaLabel()}</p>
       </div>
       <div
         aria-label={`Parent relations: ${props.node.parents.length}.`}
@@ -230,9 +225,6 @@ export function HypergraphNodeComponent(props: HypergraphNodeProps) {
 /**
  * Component to visualize the traversal structure
  */
-export type VisualizerProps = {
-  nodeGraph: Hypergraph;
-};
 
 export function VisualizerComponent(props: VisualizerProps) {
   let svgRef: SVGSVGElement;

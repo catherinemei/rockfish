@@ -1,3 +1,5 @@
 node_modules
 dist
 /public/App.tsx
+examples/.DS_Store
+.DS_Store
