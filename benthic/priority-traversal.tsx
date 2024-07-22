@@ -140,6 +140,18 @@ export function HypergraphNodeComponent(props: HypergraphNodeProps) {
       .sort((a, b) => a.priority - b.priority)
   );
 
+  const collectChildrenNames = createMemo(() => {
+    return sortedChildren()
+      .map((childNode) => childNode.descriptionTokens?.label)
+      .join(", ");
+  });
+
+  const collectParentNames = createMemo(() => {
+    return sortedParents()
+      .map((parentNode) => parentNode.descriptionTokens?.label)
+      .join(", ");
+  });
+
   const generateAriaLabel = createMemo(() => {
     // collect name of all children nodes
     const allChildren = sortedChildren();
@@ -164,7 +176,9 @@ export function HypergraphNodeComponent(props: HypergraphNodeProps) {
         <p aria-hidden={true}>{generateAriaLabel()}</p>
       </div>
       <div
-        aria-label={`Parent relations: ${props.node.parents.length}.`}
+        aria-label={`${
+          props.node.parents.length
+        } parent relations; ${collectParentNames()}`}
         tabindex="0"
       >
         <span style={{ "font-weight": "bold" }} aria-hidden={true}>
@@ -192,7 +206,9 @@ export function HypergraphNodeComponent(props: HypergraphNodeProps) {
       </div>
       <div
         style={{ "margin-top": "10px" }}
-        aria-label={`Child relations: ${props.node.children.length}.`}
+        aria-label={`${
+          props.node.children.length
+        } child relations; ${collectChildrenNames()}`}
         tabindex="0"
       >
         <span style={{ "font-weight": "bold" }} aria-hidden={true}>
