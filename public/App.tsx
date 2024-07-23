@@ -695,6 +695,160 @@ const App: Component = () => {
     },
   };
 
+  // Topology data structure for diagram in bottom right hand corner (contains all subsets)
+  const topologyHypergraph: Hypergraph = {
+    "0": {
+      id: "0",
+      displayName: "Topology Diagram",
+      description:
+        "A topology diagram illustrating every subset of a three-element set X containing A, B, C.",
+      descriptionTokens: {
+        label: "Topology Diagram",
+        longDescription:
+          "A topology diagram illustrating every subset of a three-element set X containing A, B, C.",
+      },
+      parents: [],
+      children: ["1", "2", "3", "4", "5", "6", "7", "8"],
+      priority: 0,
+    },
+    "1": {
+      id: "1",
+      displayName: "Empty Set",
+      description: "Empty set in the topology diagram.",
+      descriptionTokens: {
+        label: "Empty Set",
+      },
+      parents: ["0"],
+      children: [],
+      priority: 4,
+    },
+    "2": {
+      id: "2",
+      displayName: "Subset A",
+      description: "Subset containing element A in the topology diagram.",
+      descriptionTokens: {
+        label: "Subset A",
+        longDescription: "Subset containing element A in the topology diagram.",
+      },
+      parents: ["0"],
+      children: ["9"],
+      priority: 3,
+    },
+    "3": {
+      id: "3",
+      displayName: "Subset B",
+      description: "Subset containing element B in the topology diagram.",
+      descriptionTokens: {
+        label: "Subset B",
+        longDescription: "Subset containing element B in the topology diagram.",
+      },
+      parents: ["0"],
+      children: ["10"],
+      priority: 3,
+    },
+    "4": {
+      id: "4",
+      displayName: "Subset C",
+      description: "Subset containing element C in the topology diagram.",
+      descriptionTokens: {
+        label: "Subset C",
+        longDescription: "Subset containing element C in the topology diagram.",
+      },
+      parents: ["0"],
+      children: ["11"],
+      priority: 3,
+    },
+    "5": {
+      id: "5",
+      displayName: "Subset AB",
+      description:
+        "Subset containing elements A and B in the topology diagram.",
+      descriptionTokens: {
+        label: "Subset AB",
+        longDescription:
+          "Subset containing elements A and B in the topology diagram.",
+      },
+      parents: ["0"],
+      children: ["9", "10"],
+      priority: 2,
+    },
+    "6": {
+      id: "6",
+      displayName: "Subset AC",
+      description:
+        "Subset containing elements A and C in the topology diagram.",
+      descriptionTokens: {
+        label: "Subset AC",
+        longDescription:
+          "Subset containing elements A and C in the topology diagram.",
+      },
+      parents: ["0"],
+      children: ["9", "11"],
+      priority: 2,
+    },
+    "7": {
+      id: "7",
+      displayName: "Subset BC",
+      description:
+        "Subset containing elements B and C in the topology diagram.",
+      descriptionTokens: {
+        label: "Subset BC",
+        longDescription:
+          "Subset containing elements B and C in the topology diagram.",
+      },
+      parents: ["0"],
+      children: ["10", "11"],
+      priority: 2,
+    },
+    "8": {
+      id: "8",
+      displayName: "Subset ABC",
+      description:
+        "Subset containing elements A, B, and C in the topology diagram.",
+      descriptionTokens: {
+        label: "Subset ABC",
+        longDescription:
+          "Subset containing elements A, B, and C in the topology diagram.",
+      },
+      parents: ["0"],
+      children: ["9", "10", "11"],
+      priority: 1,
+    },
+    "9": {
+      id: "9",
+      displayName: "Element A",
+      description: "Element A in the topology diagram.",
+      descriptionTokens: {
+        label: "Element A",
+      },
+      parents: ["2", "5", "6", "8"],
+      children: [],
+      priority: 4,
+    },
+    "10": {
+      id: "10",
+      displayName: "Element B",
+      description: "Element B in the topology diagram.",
+      descriptionTokens: {
+        label: "Element B",
+      },
+      parents: ["3", "5", "7", "8"],
+      children: [],
+      priority: 4,
+    },
+    "11": {
+      id: "11",
+      displayName: "Element C",
+      description: "Element C in the topology diagram.",
+      descriptionTokens: {
+        label: "Element C",
+      },
+      parents: ["4", "6", "7", "8"],
+      children: [],
+      priority: 4,
+    },
+  };
+
   return (
     <>
       {/* <Bluefish
@@ -787,9 +941,10 @@ const App: Component = () => {
       <br />
       <TraversalOutputComponent
         // nodeGraph={planetsHypergraph}
-        nodeGraph={stackedBarChartHypergraph}
+        // nodeGraph={stackedBarChartHypergraph}
+        nodeGraph={topologyHypergraph}
         // nodeGraph={pulleyHypergraph}
-        showHypergraph={false}
+        showHypergraph={true}
       />
     </>
   );
