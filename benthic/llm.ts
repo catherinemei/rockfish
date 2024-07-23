@@ -9,8 +9,12 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-export async function llmDescription(descriptionTokens: any): Promise<string> {
-  if (descriptionTokens.length === 0) {
+export async function llmDescription(
+  curNodeInfo: any,
+  parentInfo: any,
+  childrenInfo: any
+): Promise<string> {
+  if (curNodeInfo.length === 0) {
     return "";
   } else {
     const chat = await openai.chat.completions.create({
@@ -24,31 +28,49 @@ export async function llmDescription(descriptionTokens: any): Promise<string> {
         },
         {
           role: "user",
-          content: `The provided data is information on a component of a visualization. The information provided to you will be in the following format:
-          
-            {
-                "label": "string",
-                "color": "string",
-                "objectType": "string",
-                "role": "string",
-                "textDescription": "string"
+          content: `The data provided contains information about a component of a visualization, its parent components, and its children components. The information provided to you will be in the following format:
+
+          current node: {
+                label: string;
+                shortDescription?: string;
+                longDescription?: string;
+                objectType?: string; // shape, text, image, etc
             }
 
-            A description of each of the fields is as follows:
+          parent node: [{
+              label: string;
+              shortDescription?: string;
+              longDescription?: string;
+              objectType?: string; // shape, text, image, etc
+            }]
 
-            - label: The label of the component.
-            - color: The color of the component.
-            - objectType: The type of the object (e.g., shape, text, image).
-            - role: The role of the object (e.g., main concept, sub-concept, connector).
-            - textDescription: A text description of the component.
+          children node: [{
+              label: string;
+              shortDescription?: string;
+              longDescription?: string;
+              objectType?: string; // shape, text, image, etc
+            }]
+            
+            The description information for the current node, all of the current node's parents, and all of the current node's children are provided separately, and the information for the parent and children nodes is in array format.
+
+            A definition for each of the fields is as follows:
+
+            - label: one word description or name of the component.
+            - shortDescription: 4-5 word string that provides a brief summary of the component.
+            - longDescription: sentence or phrase that provides additional information about the component.
+            - objectType: string that specifies the type of content in the component, such as shape, text, or image.
             
             You should provide a text description that summarizes all of the information provided in a clear and concise manner. Remember, the text description you provide will be used as the aria label for this component of the visualization.`,
         },
         {
           role: "user",
-          content: `Here is the data provided by the user: ${JSON.stringify(
-            descriptionTokens
-          )}`,
+          content: `Here is the information for the current node: ${JSON.stringify(
+            curNodeInfo
+          )}. The information for the parent nodes is: ${JSON.stringify(
+            parentInfo
+          )} and the information for the children nodes is: ${JSON.stringify(
+            childrenInfo
+          )}.`,
         },
       ],
     });

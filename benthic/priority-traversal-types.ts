@@ -5,7 +5,8 @@ export type Description = {
   color?: string;
   objectType?: string; // shape, text, image, etc
   role?: string; // main concept, sub-concept, connector, etc
-  textDescription?: string;
+  longDescription?: string;
+  shortDescription?: string;
 };
 
 export type RelationNode = {
