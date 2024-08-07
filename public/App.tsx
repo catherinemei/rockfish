@@ -1,19 +1,11 @@
 // import "solid-devtools";
 
 import { createSignal, type Component, For } from "solid-js";
-
-// import { Bluefish } from "../src/bluefish";
-// import Background from "../src/background";
-// import { StackH } from "../src/stackh";
-// import Circle from "../src/circle";
-// import Ref from "../src/ref";
-// import Arrow from "../src/arrow";
-// import Text from "../src/text";
-// import { StackV } from "../src/stackv";
-// import Group from "../src/group";
 import { Pulley } from "../src/pulley";
 import { TraversalOutputComponent } from "../benthic/priority-traversal";
 import { Hypergraph } from "../benthic/priority-traversal-types";
+import { TraverseObjRelComponent } from "../benthic/obj-rel-traversal";
+import { NodeMap } from "../benthic/obj-rel-traversal-types";
 
 const arr = Array.from({ length: 1000 }, (_, i) => i + 1);
 
@@ -849,103 +841,107 @@ const App: Component = () => {
     },
   };
 
+  const planetsNodeMap: NodeMap = {
+    "0": {
+      id: "0",
+      displayName: "Planets Diagram",
+      nodeType: "object",
+      description: "Planets Diagram in Bluefish",
+      parentId: "",
+      children: ["1", "6"],
+      relations: [],
+    },
+    "1": {
+      id: "1",
+      displayName: "Background",
+      nodeType: "object",
+      description:
+        "Rectangular bounding box containing a row of the four closest planets to the sun. Mercury is at the left of the row.",
+      parentId: "0",
+      children: ["2", "3", "4", "5"],
+      relations: [],
+    },
+
+    "2": {
+      id: "2",
+      displayName: "Mercury",
+      nodeType: "object",
+      description: "Circle representing Mercury, the closest planet to the sun",
+      parentId: "1",
+      children: [],
+      relations: ["7", "8"],
+    },
+
+    "3": {
+      id: "3",
+      displayName: "Venus",
+      nodeType: "object",
+      description: "Circle representing Venus, the second planet from the sun",
+      parentId: "1",
+      children: [],
+      relations: ["8"],
+    },
+
+    "4": {
+      id: "4",
+      displayName: "Earth",
+      nodeType: "object",
+      description: "Circle representing Earth, the third planet from the sun",
+      parentId: "1",
+      children: [],
+      relations: ["8"],
+    },
+
+    "5": {
+      id: "5",
+      displayName: "Mars",
+      nodeType: "object",
+      description: "Circle representing Mars, the fourth planet from the sun",
+      parentId: "1",
+      children: [],
+      relations: ["8"],
+    },
+
+    "6": {
+      id: "6",
+      displayName: "Text Annotation",
+      nodeType: "object",
+      description:
+        "Text annotation on the Mercury node. Text label says Mercury",
+      parentId: "0",
+      children: [],
+      relations: ["7"],
+    },
+    "7": {
+      id: "7",
+      displayName: "Arrow",
+      nodeType: "relation",
+      description: "Arrow mark relating text and Mercury node",
+      members: ["2", "6"],
+    },
+    "8": {
+      id: "8",
+      displayName: "Row",
+      nodeType: "relation",
+      description: "Row of circles representing planets",
+      members: ["2", "3", "4", "5"],
+    },
+  };
+
   return (
     <>
-      {/* <Bluefish
-        id="bluefish-planets"
-        padding={20}
-        aria-data={{
-          displayName: "Bluefish",
-          description: "Planets Diagram in Bluefish",
-        }}
-      >
-        <Group
-          aria-data={{
-            displayName: "Group",
-            description: "Four closest planets to the sun",
-          }}
-          rels={() => (
-            <>
-              <StackV spacing={60} aria-data={{ displayName: "StackV" }}>
-                <Ref select="label" />
-                <Ref select="mercury" />
-              </StackV>
-              <Arrow aria-data={{ displayName: "Arrow" }}>
-                <Ref select="label" />
-                <Ref select="mercury" />
-              </Arrow>
-            </>
-          )}
-        >
-          <Background aria-data={{ displayName: "Background" }}>
-            <StackH spacing={50} aria-data={{ displayName: "StackH" }}>
-              <Circle
-                name="mercury"
-                r={15}
-                fill={"#EBE3CF"}
-                stroke-width={3}
-                stroke={"black"}
-                aria-data={{
-                  displayName: "Mercury",
-                  description: "First Planet",
-                }}
-              />
-              <Circle
-                name="venus"
-                r={36}
-                fill={"#DC933C"}
-                stroke-width={3}
-                stroke={"black"}
-                aria-data={{
-                  displayName: "Venus",
-                  description: "Second Planet",
-                }}
-              />
-              <Circle
-                name="earth"
-                r={38}
-                fill={"#179DD7"}
-                stroke-width={3}
-                stroke={"black"}
-                aria-data={{ displayName: "Earth" }}
-              />
-              <Circle
-                name="mars"
-                r={21}
-                fill={"#F1CF8E"}
-                stroke-width={3}
-                stroke={"black"}
-                aria-data={{
-                  displayName: "Mars",
-                  description: "Fourth Planet",
-                }}
-              />
-            </StackH>
-          </Background>
-          <Text
-            name="label"
-            vertical-anchor="start"
-            aria-hidden
-            width={500}
-            aria-data={{
-              displayName: "Text",
-              description: "Annotation on Mercury",
-            }}
-          >
-            Mercury
-          </Text>
-        </Group>
-      </Bluefish> */}
-
-      {/* <Pulley /> */}
-      <br />
+      {/* 
       <TraversalOutputComponent
         // nodeGraph={planetsHypergraph}
-        // nodeGraph={stackedBarChartHypergraph}
-        nodeGraph={topologyHypergraph}
+        nodeGraph={stackedBarChartHypergraph}
+        // nodeGraph={topologyHypergraph}
         // nodeGraph={pulleyHypergraph}
         showHypergraph={true}
       />
+      */}
+
+      <br />
+      <TraverseObjRelComponent nodeGraph={planetsNodeMap} showGraph={false} />
     </>
   );
 };
