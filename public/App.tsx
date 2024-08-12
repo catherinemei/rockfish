@@ -928,20 +928,237 @@ const App: Component = () => {
     },
   };
 
+  const stackedBarChartNodeMap: NodeMap = {
+    "0": {
+      id: "0",
+      displayName: "Stacked Bar Chart",
+      nodeType: "object",
+      description:
+        "Major Trophies for some English teams. Stacked bar chart. With axes team and sum trophies.",
+      parentId: "",
+      children: ["1", "22"],
+      relations: ["2"],
+    },
+    "1": {
+      id: "1",
+      displayName: "X-axis",
+      nodeType: "object",
+      description: "X Axis. Arsenal, Chelsea, Liverpool, Manchester United.",
+      parentId: "0",
+      children: ["3", "4", "5", "6"],
+      relations: [],
+    },
+    "2": {
+      id: "2",
+      displayName: "Legend",
+      nodeType: "relation",
+      description: "Legend. Contest included: BPL, FA Cup, CL.",
+      members: ["7", "8", "9"],
+    },
+    "3": {
+      id: "3",
+      displayName: "Arsenal",
+      nodeType: "object",
+      description:
+        "Team: Arsenal. Total trophies: 17. Contains: 3 contests. Bar representing the number of trophies won by Arsenal.",
+      parentId: "1",
+      children: ["10", "11", "12"],
+      relations: ["7", "8", "9"],
+    },
+    "4": {
+      id: "4",
+      displayName: "Chelsea",
+      nodeType: "object",
+      description:
+        "Team: Chelsea. Total trophies: 15. Contains: 3 contests. Bar representing the number of trophies won by Chelsea.",
+      parentId: "1",
+      children: ["13", "14", "15"],
+      relations: ["7", "8", "9"],
+    },
+    "5": {
+      id: "5",
+      displayName: "Liverpool",
+      nodeType: "object",
+      description:
+        "Team: Liverpool. Total trophies: 15. Contains: 3 contests. Bar representing the number of trophies won by Liverpool",
+      parentId: "1",
+      children: ["16", "17", "18"],
+      relations: ["7", "8", "9"],
+    },
+    "6": {
+      id: "6",
+      displayName: "Manchester United",
+      nodeType: "object",
+      description:
+        "Team: Manchester United. Total trophies: 28. Contains: 3 contests. Bar representing the number of trophies won by Manchester United.",
+      parentId: "1",
+      children: ["19", "20", "21"],
+      relations: ["7", "8", "9"],
+    },
+    "7": {
+      id: "7",
+      displayName: "BPL",
+      nodeType: "relation",
+      description:
+        "Contest: BPL. Total trophies: 22. Contains: 4 teams. Legend grouping for the BPL competition.",
+      members: ["10", "13", "16", "19"],
+    },
+    "8": {
+      id: "8",
+      displayName: "FA Cup",
+      nodeType: "relation",
+      description:
+        "Contest: FA Cup. Total trophies: 42. Contains: 4 teams. Legend grouping for the FA Cup competition.",
+      members: ["11", "14", "17", "20"],
+    },
+    "9": {
+      id: "9",
+      displayName: "CL",
+      nodeType: "relation",
+      description:
+        "Contest: CL. Total trophies: 11. Contains: 4 teams. Legend grouping for the CL competition.",
+      members: ["12", "15", "18", "21"],
+    },
+    "10": {
+      id: "10",
+      displayName: "Arsenal BPL",
+      nodeType: "object",
+      description: "Team: Arsenal. Contest: BPL. Trophies: 3. Data point.",
+      parentId: "3",
+      children: [],
+      relations: ["7"],
+    },
+    "11": {
+      id: "11",
+      displayName: "Arsenal FA Cup",
+      nodeType: "object",
+      description: "Team: Arsenal. Contest: FA Cup. Trophies: 14. Data point.",
+      parentId: "3",
+      children: [],
+      relations: ["8"],
+    },
+    "12": {
+      id: "12",
+      displayName: "Arsenal CL",
+      nodeType: "object",
+      description: "Team: Arsenal. Contest: CL. Trophies: 0. Data point.",
+      parentId: "3",
+      children: [],
+      relations: ["9"],
+    },
+    "13": {
+      id: "13",
+      displayName: "Chelsea BPL",
+      nodeType: "object",
+      description: "Team: Chelsea. Contest: BPL. Trophies: 5. Data point.",
+      parentId: "4",
+      children: [],
+      relations: ["7"],
+    },
+    "14": {
+      id: "14",
+      displayName: "Chelsea FA Cup",
+      nodeType: "object",
+      description: "Team: Chelsea. Contest: FA Cup. Trophies: 8. Data point.",
+      parentId: "4",
+      children: [],
+      relations: ["8"],
+    },
+    "15": {
+      id: "15",
+      displayName: "Chelsea CL",
+      nodeType: "object",
+      description: "Team: Chelsea. Contest: CL. Trophies: 2. Data point.",
+      parentId: "4",
+      children: [],
+      relations: ["9"],
+    },
+    "16": {
+      id: "16",
+      displayName: "Liverpool BPL",
+      nodeType: "object",
+      description: "Team: Liverpool. Contest: BPL. Trophies: 1. Data point.",
+      parentId: "5",
+      children: [],
+      relations: ["7"],
+    },
+    "17": {
+      id: "17",
+      displayName: "Liverpool FA Cup",
+      nodeType: "object",
+      description: "Team: Liverpool. Contest: FA Cup. Trophies: 8. Data point.",
+      parentId: "5",
+      children: [],
+      relations: ["8"],
+    },
+    "18": {
+      id: "18",
+      displayName: "Liverpool CL",
+      nodeType: "object",
+      description: "Team: Liverpool. Contest: CL. Trophies: 6. Data point.",
+      parentId: "5",
+      children: [],
+      relations: ["9"],
+    },
+    "19": {
+      id: "19",
+      displayName: "Manchester United BPL",
+      nodeType: "object",
+      description:
+        "Team: Manchester United. Contest: BPL. Trophies: 13. Data point.",
+      parentId: "6",
+      children: [],
+      relations: ["7"],
+    },
+    "20": {
+      id: "20",
+      displayName: "Manchester United FA Cup",
+      nodeType: "object",
+      description:
+        "Team: Manchester United. Contest: FA Cup. Trophies: 12. Data point.",
+      parentId: "6",
+      children: [],
+      relations: ["8"],
+    },
+    "21": {
+      id: "21",
+      displayName: "Manchester United CL",
+      nodeType: "object",
+      description:
+        "Team: Manchester United. Contest: CL. Trophies: 3. Data point.",
+      parentId: "6",
+      children: [],
+      relations: ["9"],
+    },
+    "22": {
+      id: "22",
+      displayName: "Y-axis",
+      nodeType: "object",
+      description:
+        "Y-axis. Label: count trophies. Values range from 0 to 30 on a numerical scale.",
+      parentId: "0",
+      children: [],
+      relations: [],
+    },
+  };
+
   return (
     <>
-      {/* 
+      {/*
       <TraversalOutputComponent
         // nodeGraph={planetsHypergraph}
         nodeGraph={stackedBarChartHypergraph}
         // nodeGraph={topologyHypergraph}
         // nodeGraph={pulleyHypergraph}
-        showHypergraph={true}
+        showHypergraph={false}
       />
       */}
 
       <br />
-      <TraverseObjRelComponent nodeGraph={planetsNodeMap} showGraph={false} />
+      <TraverseObjRelComponent
+        nodeGraph={stackedBarChartNodeMap}
+        showGraph={false}
+      />
     </>
   );
 };

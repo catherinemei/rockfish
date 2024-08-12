@@ -10,6 +10,8 @@ import {
   Id,
   ObjectNode,
   RelationNode,
+  ObjectComponentProps,
+  RelationComponentProps,
   ObjectRelationNodeComponentProps,
   TraverseObjRelComponentProps,
 } from "./obj-rel-traversal-types";
@@ -17,6 +19,9 @@ import {
 export function ObjectRelationNodeComponent(
   props: ObjectRelationNodeComponentProps
 ) {
+  const objectNode = props.node as ObjectNode;
+  const relationNode = props.node as RelationNode;
+
   const renderRelationButtonForObjectNode = (relationId: Id) => {
     const relationNode = props.nodeMap[relationId] as RelationNode;
 
@@ -53,10 +58,7 @@ export function ObjectRelationNodeComponent(
 
   return (
     <div style={{ padding: "20px" }}>
-      <div
-        id={props.node.id}
-        aria-label={`${props.node.displayName} ${props.node.nodeType} node`}
-      >
+      <div id={props.node.id} aria-label={`${props.node.displayName} node`}>
         <h2 aria-hidden={true}>{props.node.displayName}</h2>
         <p aria-hidden={true}>{props.node.description}</p>
       </div>
@@ -185,6 +187,194 @@ export function ObjectRelationNodeComponent(
   );
 }
 
+export function ObjectNodeComponent(props: ObjectComponentProps) {
+  console.log("rendering object node");
+  const renderRelationButton = (relationId: Id) => {
+    const relationNode = props.nodeMap[relationId] as RelationNode;
+
+    // Inline binary relation with only 2 members
+    if (relationNode.members.length === 2) {
+      // Find the other member in the relation
+      const relatedMemberId: Id =
+        relationNode.members.find((member) => member !== props.objectNode.id) ||
+        "";
+      return (
+        <button
+          onClick={() =>
+            props.onButtonClick(props.objectNode.id, relatedMemberId)
+          }
+          style={{ "margin-right": "5px" }}
+          aria-label={`${relationNode.displayName} connects to ${props.nodeMap[relatedMemberId].displayName}`}
+        >
+          <span aria-hidden={true}>
+            {relationNode.displayName} connects to{" "}
+            {props.nodeMap[relatedMemberId].displayName}
+          </span>
+        </button>
+      );
+    } else {
+      // Render a button for the relation itself
+      return (
+        <button
+          onClick={() => props.onButtonClick(props.objectNode.id, relationId)}
+          style={{ "margin-right": "5px" }}
+          aria-label={`${relationNode.displayName}; ${relationNode.description}`}
+        >
+          <span aria-hidden={true}>{relationNode.displayName}</span>
+        </button>
+      );
+    }
+  };
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <div
+        id={props.objectNode.id}
+        aria-label={`${props.objectNode.displayName} node with ${props.objectNode.children.length} children and ${props.objectNode.relations.length} relations`}
+      >
+        <h2 aria-hidden={true}>{props.objectNode.displayName}</h2>
+        <p aria-hidden={true}>{props.objectNode.description}</p>
+      </div>
+
+      {/* Parent */}
+      <div aria-label={"Parent"} tabindex="0">
+        <Show
+          when={props.nodeMap[props.objectNode.parentId]}
+          fallback={
+            <>
+              <span aria-hidden={true} style={{ "font-weight": "bold" }}>
+                Parent:{" "}
+              </span>
+              <span aria-hidden={true} style={{ color: "grey" }}>
+                {" "}
+                None
+              </span>
+            </>
+          }
+        >
+          <span aria-hidden={true} style={{ "font-weight": "bold" }}>
+            Parent:{" "}
+          </span>
+          <button
+            onClick={() =>
+              props.onButtonClick(
+                props.objectNode.id,
+                props.objectNode.parentId
+              )
+            }
+            style={{ "margin-right": "5px" }}
+            aria-label={`${
+              props.nodeMap[props.objectNode.parentId].displayName
+            }; ${props.nodeMap[props.objectNode.parentId].description}`}
+          >
+            <span aria-hidden={true}>
+              {props.nodeMap[props.objectNode.parentId].displayName}
+            </span>
+          </button>
+        </Show>
+      </div>
+
+      {/* Children */}
+      <div
+        style={{ "margin-top": "10px" }}
+        aria-label={`${props.objectNode.children.length} children`}
+        tabindex="0"
+      >
+        <span aria-hidden={true} style={{ "font-weight": "bold" }}>
+          Children:{" "}
+        </span>
+        <For
+          each={props.objectNode.children}
+          fallback={
+            <span style={{ color: "grey" }} aria-hidden={true}>
+              {" "}
+              None
+            </span>
+          }
+        >
+          {(childId) => (
+            <button
+              onClick={() => props.onButtonClick(props.objectNode.id, childId)}
+              style={{ "margin-right": "5px", "margin-bottom": "5px" }}
+              aria-label={`${props.nodeMap[childId].displayName}; ${props.nodeMap[childId].description}`}
+            >
+              <span aria-hidden={true}>
+                {props.nodeMap[childId].displayName}
+              </span>
+            </button>
+          )}
+        </For>
+      </div>
+
+      {/* Relations */}
+      <div
+        style={{ "margin-top": "10px" }}
+        aria-label={`${props.objectNode.relations.length} relations`}
+        tabindex="0"
+      >
+        <span aria-hidden={true} style={{ "font-weight": "bold" }}>
+          Relations:{" "}
+        </span>
+        <For
+          each={props.objectNode.relations}
+          fallback={
+            <span style={{ color: "grey" }} aria-hidden={true}>
+              {" "}
+              None
+            </span>
+          }
+        >
+          {(relationId) => renderRelationButton(relationId)}
+        </For>
+      </div>
+    </div>
+  );
+}
+
+export function RelationNodeComponent(props: RelationComponentProps) {
+  console.log("rendering relation node");
+  return (
+    <div style={{ padding: "20px" }}>
+      <div
+        id={props.relationNode.id}
+        aria-label={`${props.relationNode.displayName} relation with ${props.relationNode.members.length} members; ${props.relationNode.description}`}
+      >
+        <h2 aria-hidden={true}>{props.relationNode.displayName}</h2>
+        <p aria-hidden={true}>{props.relationNode.description}</p>
+      </div>
+      <div aria-label={`${props.relationNode.members.length} members`}>
+        <span aria-hidden={true} style={{ "font-weight": "bold" }}>
+          Members:{" "}
+        </span>
+
+        <For
+          each={props.relationNode.members}
+          fallback={
+            <span style={{ color: "grey" }} aria-hidden={true}>
+              {" "}
+              None
+            </span>
+          }
+        >
+          {(memberId) => (
+            <button
+              onClick={() =>
+                props.onButtonClick(props.relationNode.id, memberId)
+              }
+              style={{ "margin-right": "5px" }}
+              aria-label={`${props.nodeMap[memberId].displayName}`}
+            >
+              <span aria-hidden={true}>
+                {props.nodeMap[memberId].displayName}
+              </span>
+            </button>
+          )}
+        </For>
+      </div>
+    </div>
+  );
+}
+
 export function TraverseObjRelComponent(props: TraverseObjRelComponentProps) {
   const [currentNodeId, setCurrentNodeId] = createSignal<string>(
     props.nodeGraph[0].id
@@ -193,7 +383,7 @@ export function TraverseObjRelComponent(props: TraverseObjRelComponentProps) {
   // Keeps track of traversal history for undo
   const [history, setHistory] = createSignal<string[]>([]);
 
-  const handleNodeClick = (oldId: string, newId: string) => {
+  const handleNodeClick = (oldId: Id, newId: Id) => {
     setHistory((prev) => [...prev, oldId]);
     setCurrentNodeId(newId);
 
@@ -212,6 +402,7 @@ export function TraverseObjRelComponent(props: TraverseObjRelComponentProps) {
 
   const handleKeyPress = (event: KeyboardEvent) => {
     if (event.key === "Backspace") {
+      console.log("Backspace pressed", history());
       setHistory((prev) => {
         const newHistory = [...prev];
         const previousNodeId = newHistory.pop();
@@ -223,12 +414,11 @@ export function TraverseObjRelComponent(props: TraverseObjRelComponentProps) {
             undoMessage.focus();
           }
 
-          setCurrentNodeId(previousNodeId);
-
           // reset focus to previous node after announcement
           setTimeout(() => {
             const newNode = document.getElementById(previousNodeId);
             if (newNode) {
+              console.log("found it", newNode.id);
               newNode.focus();
             }
           }, 700);
