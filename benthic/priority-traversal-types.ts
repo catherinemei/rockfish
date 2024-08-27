@@ -23,9 +23,30 @@ export type Hypergraph = {
   [id: Id]: RelationNode;
 };
 
+export type HypergraphWithSibling = {
+  [id: Id]: RelationNodeWithSiblings;
+};
+
+export type RelationNodeWithSiblings = {
+  id: Id;
+  displayName: string;
+  description?: string;
+  descriptionTokens?: Description;
+  parents: Id[];
+  siblings: Id[];
+  children: Id[];
+  priority: number;
+};
+
 export type TraversalOutputProps = {
   nodeGraph: Hypergraph;
   showHypergraph?: boolean;
+};
+
+export type HypergraphNodeWithSiblingsProps = {
+  node: RelationNodeWithSiblings;
+  nodeGraph: HypergraphWithSibling;
+  onNodeClick: (curId: string, newId: string) => void;
 };
 
 export type HypergraphNodeProps = {

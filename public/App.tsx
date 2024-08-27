@@ -3,6 +3,8 @@
 import { createSignal, type Component, For } from "solid-js";
 import { Pulley } from "../src/pulley";
 import { TraversalOutputComponent } from "../benthic/priority-traversal";
+import { TraversalOutputComponentKeyboardOnly } from "../benthic/old/priority-traversal-keyboard";
+import { TraversalOutputComponentKeyboardFlat } from "../benthic/priority-traversal-flat-keyboard";
 import { Hypergraph } from "../benthic/priority-traversal-types";
 import { TraverseObjRelComponent } from "../benthic/obj-rel-traversal";
 import { NodeMap } from "../benthic/obj-rel-traversal-types";
@@ -1144,21 +1146,27 @@ const App: Component = () => {
 
   return (
     <>
-      {/*
-      <TraversalOutputComponent
+      <TraversalOutputComponentKeyboardFlat
         // nodeGraph={planetsHypergraph}
         nodeGraph={stackedBarChartHypergraph}
         // nodeGraph={topologyHypergraph}
         // nodeGraph={pulleyHypergraph}
         showHypergraph={false}
       />
-      */}
+
+      {/* <TraversalOutputComponentKeyboardOnly
+        // nodeGraph={planetsHypergraph}
+        nodeGraph={stackedBarChartHypergraph}
+        // nodeGraph={topologyHypergraph}
+        // nodeGraph={pulleyHypergraph}
+        showHypergraph={false}
+      /> */}
 
       <br />
-      <TraverseObjRelComponent
+      {/* <TraverseObjRelComponent
         nodeGraph={stackedBarChartNodeMap}
         showGraph={false}
-      />
+      /> */}
     </>
   );
 };
