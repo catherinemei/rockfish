@@ -7,43 +7,37 @@ import {
   onCleanup,
 } from "solid-js";
 import {
-  RelationNodeWithSiblings,
   TraversalOutputProps,
-  VisualizerProps,
-  HypergraphWithSibling,
-  HypergraphNodeWithSiblingsProps,
+  HypergraphNodeProps,
 } from "./priority-traversal-types";
-import {
-  addSiblingsToHypergraph,
-  findNodesOnSameLevel,
-} from "./priority-traversal-flat-keyboard-utils";
 
 /**
  * Component to output the traversal structure to the DOM
  * Contains both the visualization for the traversal structure (optional) and
  * also screen reader output for traversal structure
  */
-export function TraversalOutputComponentKeyboardFlat(
+export function TraversalOutputComponentKeyboardParentFocus(
   props: TraversalOutputProps
 ) {
   const [currentNodeId, setCurrentNodeId] = createSignal<string | null>(
     props.nodeGraph[0].id
   );
 
-  const [hypergraphWithSiblings, setHypergraphWithSiblings] =
-    createSignal<HypergraphWithSibling>(
-      addSiblingsToHypergraph(props.nodeGraph)
-    );
-
   // Keeps track of traversal history for undo
-  const [history, setHistory] = createSignal<string[]>([]);
+  const [history, setHistory] = createSignal<string[]>(["0"]);
 
   const currentNode = createMemo(() => {
     if (currentNodeId() !== null) {
-      return hypergraphWithSiblings()[currentNodeId() as string];
+      return props.nodeGraph[currentNodeId()!];
     }
-    return hypergraphWithSiblings()[0]; // Default to the first node if none is selected
+    return props.nodeGraph[0]; // Default to the first node if none is selected
   });
+
+  const calculateParentIndex = () => {
+    const parents = props.nodeGraph[currentNodeId()!].parents;
+    const previousNodeId = history()[history().length - 1];
+    return parents.indexOf(previousNodeId);
+  };
 
   const handleNodeClick = (oldId: string, newId: string) => {
     setHistory((prev) => [...prev, oldId]);
@@ -66,18 +60,32 @@ export function TraversalOutputComponentKeyboardFlat(
     // if (event.key === "Shift") {
     //   const handleArrowKey = (arrowEvent: KeyboardEvent) => {
     //     if (arrowEvent.key === "ArrowUp") {
-    //       const parentSection = document.getElementById(`parents-group`);
-    //       if (parentSection) {
-    //         parentSection.focus();
+    //       // Navigate up through the parent focus using history
+    //       const historyList = history();
+    //       if (historyList.length > 1) {
+    //         const curNodeId = historyList.pop();
+    //         const previousNodeId = historyList[historyList.length - 1];
+    //         if (previousNodeId) {
+    //           setHistory([...historyList]); // Update history without the last node
+    //           setCurrentNodeId(previousNodeId);
+    //           const previousNodeElement = document.getElementById(
+    //             `info-${previousNodeId}`
+    //           );
+    //           if (previousNodeElement) {
+    //             previousNodeElement.focus();
+    //           }
+    //         }
     //       }
     //       arrowEvent.preventDefault();
     //     } else if (arrowEvent.key === "ArrowDown") {
     //       // Directly navigate to first child if children exist
     //       // If not, then select entire group and announce that no children exist
 
-    //       const firstChildId = currentNode().children[0];
+    //       const firstChildId = props.nodeGraph[currentNodeId()!].children[0];
 
     //       if (firstChildId) {
+    //         // update history list with traversed children node
+    //         setHistory((prev) => [...prev, firstChildId]);
     //         setCurrentNodeId(firstChildId);
     //         const newSection = document.getElementById(`info-${firstChildId}`);
     //         if (newSection) {
@@ -97,19 +105,37 @@ export function TraversalOutputComponentKeyboardFlat(
     // }
 
     if (event.key === "u") {
-      const parentSection = document.getElementById(`parents-group`);
-      if (parentSection) {
-        parentSection.focus();
+      // Navigate up through the parent focus using history
+      const historyList = history();
+      if (historyList.length > 1) {
+        const curNodeId = historyList.pop();
+        const previousNodeId = historyList[historyList.length - 1];
+        if (previousNodeId) {
+          setHistory([...historyList]); // Update history without the last node
+          setCurrentNodeId(previousNodeId);
+
+          const previousNodeElement = document.getElementById(
+            `info-${previousNodeId}`
+          );
+
+          if (previousNodeElement) {
+            previousNodeElement.focus();
+          }
+        }
       }
       event.preventDefault();
     } else if (event.key === "d") {
       // Directly navigate to first child if children exist
       // If not, then select entire group and announce that no children exist
 
-      const firstChildId = currentNode().children[0];
+      const firstChildId = props.nodeGraph[currentNodeId()!].children[0];
 
       if (firstChildId) {
+        // update history list with traversed children node
+        setHistory((prev) => [...prev, firstChildId]);
+
         setCurrentNodeId(firstChildId);
+
         const newSection = document.getElementById(`info-${firstChildId}`);
         if (newSection) {
           newSection.focus();
@@ -124,6 +150,23 @@ export function TraversalOutputComponentKeyboardFlat(
     } else if (event.key === "t") {
       const titleSection = document.getElementById(`home`);
       titleSection?.focus();
+    } else if (event.key === "s") {
+      const parents = props.nodeGraph[currentNodeId()!].parents;
+      if (parents.length > 0) {
+        // Get the current parent index from history, and cycle to the next parent
+        let parentIndex = calculateParentIndex();
+        let nextIndex = (parentIndex + 1) % parents.length;
+
+        const nextParentId = parents[nextIndex];
+        setHistory((prev) => [...prev, currentNodeId() as string]);
+        setCurrentNodeId(nextParentId);
+
+        const parentSection = document.getElementById(`info-${nextParentId}`);
+        if (parentSection) {
+          parentSection.focus();
+        }
+      }
+      event.preventDefault();
     } else if (event.key === "Backspace") {
       setHistory((prev) => {
         const newHistory = [...prev];
@@ -156,10 +199,6 @@ export function TraversalOutputComponentKeyboardFlat(
     ) {
       const focusedElement = document.activeElement as HTMLElement;
       const focusedElementId = focusedElement?.id;
-      const focusableGroupIds = ["parents", "children"];
-      const currentGroupId = focusableGroupIds.find((groupId) =>
-        focusedElementId.startsWith(groupId)
-      );
 
       if (focusedElementId.startsWith("info-") || focusedElementId === "home") {
         const buttonsInGroup = Array.from(
@@ -187,32 +226,7 @@ export function TraversalOutputComponentKeyboardFlat(
         }
         buttonsInGroup[newIndex]?.focus();
         event.preventDefault();
-      } else if (currentGroupId) {
-        const buttonsInGroup = Array.from(
-          document.querySelectorAll(`#${currentGroupId}-group button`)
-        ) as HTMLElement[];
-        const currentIndex = buttonsInGroup.indexOf(focusedElement);
-        if (
-          (event.key === "ArrowLeft" || event.key === "ArrowUp") &&
-          currentIndex > 0
-        ) {
-          buttonsInGroup[currentIndex - 1].focus();
-          event.preventDefault();
-        } else if (
-          (event.key === "ArrowRight" || event.key === "ArrowDown") &&
-          currentIndex < buttonsInGroup.length - 1
-        ) {
-          buttonsInGroup[currentIndex + 1].focus();
-          event.preventDefault();
-        } else {
-          event.preventDefault();
-        }
-      }
-    } else if (event.key === "Enter") {
-      const focusedElement = document.activeElement as HTMLElement;
-
-      if (focusedElement && focusedElement.tagName === "BUTTON") {
-        focusedElement.click();
+      } else {
         event.preventDefault();
       }
     }
@@ -245,11 +259,11 @@ export function TraversalOutputComponentKeyboardFlat(
       >
         Pressing Undo
       </button>
-
       <Show when={currentNodeId()}>
         <HypergraphNodeComponentKeyboardOnly
-          node={currentNode() as RelationNodeWithSiblings}
-          nodeGraph={hypergraphWithSiblings()}
+          history={history()}
+          node={currentNode()}
+          nodeGraph={props.nodeGraph}
           onNodeClick={handleNodeClick}
         />
       </Show>
@@ -262,8 +276,20 @@ export function TraversalOutputComponentKeyboardFlat(
  * Screen reader output for single node in traversal structure
  */
 export function HypergraphNodeComponentKeyboardOnly(
-  props: HypergraphNodeWithSiblingsProps
+  props: HypergraphNodeProps
 ) {
+  // based on the parent node in focus, siblings are the child nodes of that parent
+  // history can be found as props.history
+  function findSiblings(currentId: string) {
+    if (!props.history || props.history.length < 2) {
+      return [currentId];
+    } else {
+      const parentFocus = props.history[props.history.length - 2];
+      const siblings = props.nodeGraph[parentFocus].children;
+      return siblings;
+    }
+  }
+
   const sortedParents = createMemo(() =>
     props.node.parents
       .map((parentId) => props.nodeGraph[parentId])
@@ -289,10 +315,7 @@ export function HypergraphNodeComponentKeyboardOnly(
   });
 
   const sortAdjacents = createMemo(() => {
-    const adjacentNodeIds = findNodesOnSameLevel(
-      props.node.id,
-      props.nodeGraph
-    );
+    const adjacentNodeIds = findSiblings(props.node.id);
 
     const adjacentNodes = Array.from(adjacentNodeIds)
       .map((nodeId) => props.nodeGraph[nodeId])
@@ -378,9 +401,6 @@ export function HypergraphNodeComponentKeyboardOnly(
             <button
               onClick={() => props.onNodeClick(props.node.id, parent.id)}
               style={{ "margin-right": "5px" }}
-              aria-label={`Parent ${idx() + 1} of ${sortedParents().length}; ${
-                parent.displayName
-              }`}
               id={`parents-${props.node.id}-${idx()}`}
             >
               <span aria-hidden={true}>{parent.displayName}</span>
@@ -416,9 +436,6 @@ export function HypergraphNodeComponentKeyboardOnly(
             <button
               onClick={() => props.onNodeClick(props.node.id, child.id)}
               style={{ "margin-right": "5px" }}
-              aria-label={`Child ${idx() + 1} of ${sortedChildren().length}; ${
-                child.displayName
-              }`}
               id={`children-${props.node.id}-${idx()}`}
             >
               <span aria-hidden={true}>{child.displayName}</span>

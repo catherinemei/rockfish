@@ -52,6 +52,7 @@ export type HypergraphNodeWithSiblingsProps = {
 export type HypergraphNodeProps = {
   node: RelationNode;
   nodeGraph: Hypergraph;
+  history?: string[];
   onNodeClick: (curId: string, newId: string) => void;
 };
 

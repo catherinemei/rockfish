@@ -5,6 +5,7 @@ import { Pulley } from "../src/pulley";
 import { TraversalOutputComponent } from "../benthic/priority-traversal";
 import { TraversalOutputComponentKeyboardOnly } from "../benthic/old/priority-traversal-keyboard";
 import { TraversalOutputComponentKeyboardFlat } from "../benthic/priority-traversal-flat-keyboard";
+import { TraversalOutputComponentKeyboardParentFocus } from "../benthic/priority-traversal-parent-focus";
 import { Hypergraph } from "../benthic/priority-traversal-types";
 import { TraverseObjRelComponent } from "../benthic/obj-rel-traversal";
 import { NodeMap } from "../benthic/obj-rel-traversal-types";
