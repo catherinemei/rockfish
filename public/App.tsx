@@ -1147,7 +1147,7 @@ const App: Component = () => {
 
   return (
     <>
-      <TraversalOutputComponentKeyboardFlat
+      <TraversalOutputComponentKeyboardParentFocus
         // nodeGraph={planetsHypergraph}
         nodeGraph={stackedBarChartHypergraph}
         // nodeGraph={topologyHypergraph}

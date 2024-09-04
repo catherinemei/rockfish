@@ -35,7 +35,7 @@ export function TraversalOutputComponentKeyboardParentFocus(
 
   const calculateParentIndex = () => {
     const parents = props.nodeGraph[currentNodeId()!].parents;
-    const previousNodeId = history()[history().length - 1];
+    const previousNodeId = history()[history().length - 2];
     return parents.indexOf(previousNodeId);
   };
 
@@ -158,13 +158,20 @@ export function TraversalOutputComponentKeyboardParentFocus(
         let nextIndex = (parentIndex + 1) % parents.length;
 
         const nextParentId = parents[nextIndex];
-        setHistory((prev) => [...prev, currentNodeId() as string]);
-        setCurrentNodeId(nextParentId);
+        let curHistory = history();
+        const curNodeId = curHistory.pop();
+        const oldParent = curHistory.pop();
+        setHistory((prev) => [...curHistory, nextParentId, currentNodeId()!]);
 
-        const parentSection = document.getElementById(`info-${nextParentId}`);
-        if (parentSection) {
-          parentSection.focus();
-        }
+        setTimeout(() => {
+          const curNodeSection = document.getElementById(
+            `info-${currentNodeId()}`
+          );
+
+          if (curNodeSection) {
+            curNodeSection.focus();
+          }
+        }, 500);
       }
       event.preventDefault();
     } else if (event.key === "Backspace") {
