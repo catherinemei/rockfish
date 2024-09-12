@@ -26,6 +26,11 @@ export function TraversalOutputComponentKeyboardParentFocus(
   // Keeps track of traversal history for undo
   const [history, setHistory] = createSignal<string[]>(["0"]);
 
+  // This will store the default paths from the root node to each node
+  const [defaultPaths, setDefaultPaths] = createSignal<Map<string, string[]>>(
+    new Map()
+  );
+
   const currentNode = createMemo(() => {
     if (currentNodeId() !== null) {
       return props.nodeGraph[currentNodeId()!];
@@ -57,57 +62,36 @@ export function TraversalOutputComponentKeyboardParentFocus(
   };
 
   const handleKeyPress = (event: KeyboardEvent) => {
-    // if (event.key === "Shift") {
-    //   const handleArrowKey = (arrowEvent: KeyboardEvent) => {
-    //     if (arrowEvent.key === "ArrowUp") {
-    //       // Navigate up through the parent focus using history
-    //       const historyList = history();
-    //       if (historyList.length > 1) {
-    //         const curNodeId = historyList.pop();
-    //         const previousNodeId = historyList[historyList.length - 1];
-    //         if (previousNodeId) {
-    //           setHistory([...historyList]); // Update history without the last node
-    //           setCurrentNodeId(previousNodeId);
-    //           const previousNodeElement = document.getElementById(
-    //             `info-${previousNodeId}`
-    //           );
-    //           if (previousNodeElement) {
-    //             previousNodeElement.focus();
-    //           }
-    //         }
-    //       }
-    //       arrowEvent.preventDefault();
-    //     } else if (arrowEvent.key === "ArrowDown") {
-    //       // Directly navigate to first child if children exist
-    //       // If not, then select entire group and announce that no children exist
-
-    //       const firstChildId = props.nodeGraph[currentNodeId()!].children[0];
-
-    //       if (firstChildId) {
-    //         // update history list with traversed children node
-    //         setHistory((prev) => [...prev, firstChildId]);
-    //         setCurrentNodeId(firstChildId);
-    //         const newSection = document.getElementById(`info-${firstChildId}`);
-    //         if (newSection) {
-    //           newSection.focus();
-    //         }
-    //       } else {
-    //         const childSection = document.getElementById(`children-group`);
-    //         if (childSection) {
-    //           childSection.focus();
-    //         }
-    //       }
-    //       arrowEvent.preventDefault();
-    //     }
-    //   };
-
-    //   window.addEventListener("keydown", handleArrowKey, { once: true });
-    // }
-
     if (event.key === "u") {
       // Navigate up through the parent focus using history
       const historyList = history();
-      if (historyList.length > 1) {
+      if (historyList.length > 2) {
+        const curNodeId = historyList.pop();
+        const parentNodeId = historyList[historyList.length - 1];
+        const grandParentNodeId = historyList[historyList.length - 2];
+
+        // Check if grandparent node is a valid parent of parent node
+        if (
+          grandParentNodeId &&
+          props.nodeGraph[parentNodeId!].parents.includes(grandParentNodeId)
+        ) {
+          setHistory([...historyList]);
+          setCurrentNodeId(parentNodeId);
+        } else {
+          // update history to be default path up to parent node
+          const defaultPath = defaultPaths().get(parentNodeId!);
+          setHistory([...(defaultPath ?? ["0"])]);
+          setCurrentNodeId(parentNodeId);
+        }
+
+        const parentNodeElement = document.getElementById(
+          `info-${parentNodeId}`
+        );
+
+        if (parentNodeElement) {
+          parentNodeElement.focus();
+        }
+      } else if (historyList.length > 1) {
         const curNodeId = historyList.pop();
         const previousNodeId = historyList[historyList.length - 1];
         if (previousNodeId) {
@@ -117,11 +101,13 @@ export function TraversalOutputComponentKeyboardParentFocus(
           const previousNodeElement = document.getElementById(
             `info-${previousNodeId}`
           );
-
           if (previousNodeElement) {
             previousNodeElement.focus();
           }
         }
+      } else {
+        const parentSection = document.getElementById(`parents-group`);
+        parentSection?.focus();
       }
       event.preventDefault();
     } else if (event.key === "d") {
@@ -163,15 +149,18 @@ export function TraversalOutputComponentKeyboardParentFocus(
         const oldParent = curHistory.pop();
         setHistory((prev) => [...curHistory, nextParentId, currentNodeId()!]);
 
+        const switchingFocus = document.getElementById("switch-focus");
+        if (switchingFocus) {
+          switchingFocus.focus();
+        }
+
         setTimeout(() => {
-          const curNodeSection = document.getElementById(
-            `info-${currentNodeId()}`
-          );
+          const curNodeSection = document.getElementById(`info-${curNodeId}`);
 
           if (curNodeSection) {
             curNodeSection.focus();
           }
-        }, 500);
+        }, 700);
       }
       event.preventDefault();
     } else if (event.key === "Backspace") {
@@ -229,9 +218,13 @@ export function TraversalOutputComponentKeyboardParentFocus(
 
         const newNodeId = buttonsInGroup[newIndex]?.id.split("info-")[1];
         if (newNodeId) {
+          const historyList = history();
+          const previousAdjNode = historyList.pop();
+          setHistory([...historyList, newNodeId]);
           setCurrentNodeId(newNodeId);
         }
         buttonsInGroup[newIndex]?.focus();
+
         event.preventDefault();
       } else {
         event.preventDefault();
@@ -240,6 +233,9 @@ export function TraversalOutputComponentKeyboardParentFocus(
   };
 
   onMount(() => {
+    const paths = calculateDefaultPaths(props.nodeGraph);
+    setDefaultPaths(paths);
+
     window.addEventListener("keydown", handleKeyPress);
   });
 
@@ -265,6 +261,23 @@ export function TraversalOutputComponentKeyboardParentFocus(
         aria-hidden="true"
       >
         Pressing Undo
+      </button>
+      <button
+        id="switch-focus"
+        style={{
+          position: "absolute",
+          width: "1px",
+          height: "1px",
+          margin: "-1px",
+          padding: "0",
+          border: "0",
+          clip: "rect(0, 0, 0, 0)",
+          overflow: "hidden",
+          "white-space": "nowrap",
+        }}
+        aria-hidden="true"
+      >
+        Switching Parent
       </button>
       <Show when={currentNodeId()}>
         <HypergraphNodeComponentKeyboardOnly
@@ -452,4 +465,36 @@ export function HypergraphNodeComponentKeyboardOnly(
       </div>
     </div>
   );
+}
+
+/**
+ * Function to calculate the shortest path from root (node "0") to all other nodes.
+ * This function uses BFS to explore the graph and generates a map of default paths.
+ */
+function calculateDefaultPaths(
+  nodeGraph: Record<string, any>,
+  rootId: string = "0"
+) {
+  const defaultPaths = new Map<string, string[]>();
+  const queue: [string, string[]][] = [[rootId, [rootId]]]; // Tuple of [currentNode, path to currentNode]
+
+  while (queue.length > 0) {
+    const [currentNodeId, pathToCurrent] = queue.shift()!;
+
+    // If this node is already visited, skip it
+    if (defaultPaths.has(currentNodeId)) continue;
+
+    // Store the path to the current node
+    defaultPaths.set(currentNodeId, pathToCurrent);
+
+    // Explore the children of the current node and continue BFS
+    const children = nodeGraph[currentNodeId].children;
+    for (const childId of children) {
+      if (!defaultPaths.has(childId)) {
+        queue.push([childId, [...pathToCurrent, childId]]);
+      }
+    }
+  }
+
+  return defaultPaths;
 }
