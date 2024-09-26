@@ -16,6 +16,7 @@ import {
   ParentProps,
   Show,
   createEffect,
+  onCleanup,
   createUniqueId,
   mergeProps,
 } from "solid-js";
@@ -33,6 +34,7 @@ export type BluefishProps = ParentProps<{
   id?: string;
   debug?: boolean;
   positioning?: "absolute" | "relative";
+  "aria-data"?: any;
 }>;
 
 declare global {
@@ -86,6 +88,19 @@ export function Bluefish(props: BluefishProps) {
   const id = autoGenId;
   const scopeId = props.id ?? autoGenScopeId;
 
+  createEffect(() => {
+    if (window.bluefish === undefined) {
+      window.bluefish = {};
+    }
+
+    if (window.bluefish[id] !== undefined) {
+      console.error(`Duplicate id ${id}. Not writing to window.bluefish`);
+    } else {
+      window.bluefish[id] = scenegraph;
+      console.log("setting the scenegraph");
+    }
+  });
+
   const layout = (childNodes: ChildNode[]) => {
     for (const childNode of childNodes) {
       if (!childNode.owned.left) {
@@ -127,6 +142,9 @@ export function Bluefish(props: BluefishProps) {
         },
       },
       bbox: { left, top, width, height },
+      customData: {
+        "aria-data": props["aria-data"],
+      },
     };
   };
 

@@ -9,6 +9,7 @@ export type CircleProps = JSX.CircleSVGAttributes<SVGCircleElement> & {
   cx?: number;
   cy?: number;
   r: number;
+  "aria-data"?: any;
 };
 
 export const Circle = withBluefish(
@@ -26,6 +27,9 @@ export const Circle = withBluefish(
             x: props.cx,
             y: props.cy,
           },
+        },
+        customData: {
+          "aria-data": props["aria-data"],
         },
       };
     };

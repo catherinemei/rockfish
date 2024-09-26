@@ -97,6 +97,7 @@ export type AlignProps = ParentProps<{
   x?: number;
   y?: number;
   alignment: Alignment2D | Alignment1D;
+  "aria-data"?: any;
 }>;
 
 export const Align = withBluefish(
@@ -185,6 +186,9 @@ export const Align = withBluefish(
             verticalAlignment(props.alignment) !== undefined
               ? bbox.height
               : undefined,
+        },
+        customData: {
+          "aria-data": props["aria-data"],
         },
       };
     };

@@ -13,6 +13,7 @@ export type GraphLayeredProps = ParentProps<{
   direction?: "left-right" | "right-left" | "top-bottom" | "bottom-top";
   x?: number;
   y?: number;
+  "aria-label"?: string;
 }>;
 
 export const convertDirection = {

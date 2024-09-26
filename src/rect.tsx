@@ -10,6 +10,7 @@ export type RectProps = JSX.RectSVGAttributes<SVGRectElement> & {
   y?: number;
   width?: number;
   height?: number;
+  "aria-data"?: any;
 };
 
 export const Rect = withBluefish(
@@ -27,6 +28,9 @@ export const Rect = withBluefish(
             x: props.x,
             y: props.y,
           },
+        },
+        customData: {
+          "aria-data": props["aria-data"],
         },
       };
     };

@@ -14,6 +14,7 @@ export type DistributeProps = ParentProps<{
   direction: "vertical" | "horizontal";
   total?: number;
   spacing?: number;
+  "aria-data"?: any;
 }>;
 
 export const Distribute = withBluefish(
@@ -67,7 +68,11 @@ export const Distribute = withBluefish(
                   dim: "height",
                 })
               );
-              return { bbox: {}, transform: { translate: {} } };
+              return {
+                bbox: {},
+                transform: { translate: {} },
+                customData: { "aria-data": props["aria-data"] },
+              };
             }
           }
 
@@ -86,7 +91,11 @@ export const Distribute = withBluefish(
                   dim: "height",
                 })
               );
-              return { bbox: {}, transform: { translate: {} } };
+              return {
+                bbox: {},
+                transform: { translate: {} },
+                customData: { "aria-data": props["aria-data"] },
+              };
             }
           }
 
@@ -134,6 +143,9 @@ export const Distribute = withBluefish(
           transform: {
             translate: {},
           },
+          customData: {
+            "aria-data": props["aria-data"],
+          },
         };
       } else if (props.direction === "horizontal") {
         let width: number;
@@ -174,7 +186,13 @@ export const Distribute = withBluefish(
                   dim: "width",
                 })
               );
-              return { bbox: {}, transform: { translate: {} } };
+              return {
+                bbox: {},
+                transform: { translate: {} },
+                customData: {
+                  "aria-data": props["aria-data"],
+                },
+              };
             }
           }
 
@@ -193,7 +211,11 @@ export const Distribute = withBluefish(
                   dim: "width",
                 })
               );
-              return { bbox: {}, transform: { translate: {} } };
+              return {
+                bbox: {},
+                transform: { translate: {} },
+                customData: { "aria-data": props["aria-data"] },
+              };
             }
           }
 
@@ -239,6 +261,9 @@ export const Distribute = withBluefish(
           },
           transform: {
             translate: {},
+          },
+          customData: {
+            "aria-data": props["aria-data"],
           },
         };
       } else {
